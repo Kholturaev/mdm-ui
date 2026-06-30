@@ -1,0 +1,91 @@
+{
+  "common": {
+    "status": {
+      "ACTIVE": "Faol",
+      "INACTIVE": "Nofaol",
+      "PASSIVE": "Passiv",
+      "TEMPORARILY_PASSIVE": "Vaqtincha passiv",
+      "SYNCED": "Sinxronlashdi",
+      "PENDING": "Kutilmoqda",
+      "FAILED": "Xato",
+      "STALE": "Eskirgan",
+      "MISSING": "Yo'q"
+    },
+    "action": {
+      "CREATE": "Yaratildi",
+      "UPDATE": "Yangilandi",
+      "DELETE": "O'chirildi",
+      "EXPORT": "Eksport",
+      "IMPORT": "Import",
+      "LOGIN": "Kirdi",
+      "APPROVE": "Tasdiqlandi"
+    },
+    "audit": {
+      "showChanges": "O'zgarishlarni ko'rsatish",
+      "hideChanges": "Yashirish",
+      "noChanges": "O'zgarishlar yo'q",
+      "fieldOldValue": "Eski",
+      "fieldNewValue": "Yangi"
+    },
+    "coverage": {
+      "covered": "Sinxronlashdi",
+      "of": "dan",
+      "pct": "%"
+    }
+  },
+  "nav": {
+    "dashboard": "Boshqaruv paneli",
+    "catalog": "KATALOG",
+    "products": "Mahsulotlar",
+    "characteristics": "Xususiyatlar",
+    "classification": "Klassifikatsiya",
+    "commercial": "SAVDO",
+    "pricing": "Narxlar",
+    "currencies": "Valyutalar",
+    "clientTypes": "Mijoz turlari",
+    "segments": "Segmentlar",
+    "discounts": "Chegirmalar",
+    "operations": "OPERATSIYALAR",
+    "integrations": "Integratsiyalar",
+    "partners": "Hamkorlar",
+    "geography": "Geografiya",
+    "import": "Import",
+    "administration": "BOSHQARUV",
+    "usersAccess": "Foydalanuvchilar",
+    "auditActivity": "Audit va faoliyat",
+    "platformHealth": "Platforma holati",
+    "settings": "Sozlamalar"
+  },
+  "dashboard": {
+    "title": "Boshqaruv paneli",
+    "kpi": {
+      "totalProducts": "Jami mahsulotlar",
+      "activeProducts": "Faol mahsulotlar",
+      "avgCoverage": "O'rt. qamrov",
+      "needsFix": "E'tibor talab qiladi",
+      "usersOnline": "Onlayn foydalanuvchilar"
+    },
+    "sections": {
+      "systemCoverage": "Tizimlar bo'yicha qamrov",
+      "recentActivity": "So'nggi faoliyat",
+      "alerts": "Ogohlantirishlar"
+    },
+    "alert": {
+      "CRITICAL": "Kritik",
+      "HIGH": "Yuqori",
+      "WARNING": "Ogohlantirish",
+      "INFO": "Ma'lumot"
+    },
+    "viewAll": "Hammasini ko'rish",
+    "viewSessions": "Sessiyalar →"
+  },
+  "placeholder": {
+    "phase2": "2-faza — hali amalga oshirilmagan",
+    "comingSoon": "Bu bo'lim keyingi rivojlanish fazasida qo'shiladi."
+  },
+  "forbidden": {
+    "title": "Kirish taqiqlangan",
+    "message": "Bu sahifani ko'rish uchun ruxsatingiz yo'q.",
+    "back": "Boshqaruv paneliga"
+  }
+}
