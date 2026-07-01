@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+/* Enables the `dark:` utility variant when the `.dark` class is present on
+   an ancestor (html), for one-off overrides on top of the semantic tokens. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Brand tokens: static values, same in light and dark. */
+@theme {
+  --color-primary: #1f90f9;
+  --color-primary-hover: #1878d1;
+  --color-primary-foreground: #ffffff;
+
+  --color-danger: #f15e29;
+  --color-danger-hover: #e32f27;
+  --color-danger-foreground: #ffffff;
+
+  --color-success: #1fa971;
+  --color-warning: #f2a93b;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/* Semantic surface/text tokens: raw CSS variables, reassigned under .dark.
+   Exposed as Tailwind utilities via the `@theme inline` block below, so
+   `bg-bg`, `bg-surface`, `text-fg`, `border-border`, etc. resolve to the
+   correct value per theme with zero `dark:` variants in component code. */
+:root {
+  --color-bg: #f8f9fb;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f4f6f9;
+  --color-border: #dce0e8;
+  --color-border-strong: #b9c6dc;
+
+  --color-fg: #1a344d;
+  --color-fg-muted: #7a889b;
+  --color-fg-invert: #ffffff;
+
+  --color-disabled-bg: #eceef5;
+  --color-disabled-fg: #b9c3d1;
+}
+
+.dark {
+  --color-bg: #0f1720;
+  --color-surface: #182430;
+  --color-surface-hover: #202f3d;
+  --color-border: #2c3c4d;
+  --color-border-strong: #3c4f63;
+
+  --color-fg: #e7edf6;
+  --color-fg-muted: #93a4bd;
+  --color-fg-invert: #0f1720;
+
+  --color-disabled-bg: #1f2b38;
+  --color-disabled-fg: #4a5b73;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-hover: var(--color-surface-hover);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-fg: var(--color-fg);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-invert: var(--color-fg-invert);
+  --color-disabled-bg: var(--color-disabled-bg);
+  --color-disabled-fg: var(--color-disabled-fg);
+}

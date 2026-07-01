@@ -1,0 +1,42 @@
+{
+  "common": {
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "create": "Yaratish",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish",
+    "search": "Qidirish",
+    "noData": "Ma'lumot yo'q",
+    "loading": "Yuklanmoqda...",
+    "required": "Majburiy maydon"
+  },
+  "nav": {
+    "dealers": "Dilerlar"
+  },
+  "auth": {
+    "login": "Kirish",
+    "email": "Email",
+    "password": "Parol"
+  },
+  "dealer": {
+    "title": "Dilerlar",
+    "createTitle": "Yangi diler",
+    "editTitle": "Dilerni tahrirlash",
+    "name": "Nomi",
+    "description": "Tavsif",
+    "dealerCode": "Diler kodi",
+    "discountRate": "Chegirma, %",
+    "registeredAt": "Ro'yxatga olingan sana",
+    "contactPhone": "Telefon",
+    "region": "Hudud",
+    "active": "Faol"
+  },
+  "message": {
+    "error": "Xatolik yuz berdi",
+    "networkError": "Tarmoq xatosi",
+    "permissionDenied": "Ruxsat berilmagan",
+    "notFound": "Topilmadi",
+    "validationError": "Tekshiruv xatosi",
+    "serverError": "Server xatosi"
+  }
+}

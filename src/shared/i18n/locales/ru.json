@@ -1,0 +1,42 @@
+{
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "create": "Создать",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "search": "Поиск",
+    "noData": "Нет данных",
+    "loading": "Загрузка...",
+    "required": "Обязательное поле"
+  },
+  "nav": {
+    "dealers": "Дилеры"
+  },
+  "auth": {
+    "login": "Войти",
+    "email": "Email",
+    "password": "Пароль"
+  },
+  "dealer": {
+    "title": "Дилеры",
+    "createTitle": "Новый дилер",
+    "editTitle": "Редактировать дилера",
+    "name": "Название",
+    "description": "Описание",
+    "dealerCode": "Код дилера",
+    "discountRate": "Скидка, %",
+    "registeredAt": "Дата регистрации",
+    "contactPhone": "Телефон",
+    "region": "Регион",
+    "active": "Активен"
+  },
+  "message": {
+    "error": "Произошла ошибка",
+    "networkError": "Ошибка сети",
+    "permissionDenied": "Доступ запрещён",
+    "notFound": "Не найдено",
+    "validationError": "Ошибка валидации",
+    "serverError": "Ошибка сервера"
+  }
+}
