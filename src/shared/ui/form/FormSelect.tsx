@@ -12,6 +12,7 @@ type FormSelectProps<
   options: Option[];
   label?: string;
   placeholder?: string;
+  required?: boolean;
   isClearable?: boolean;
   isSearchable?: boolean;
   isLoading?: boolean;

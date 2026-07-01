@@ -6,54 +6,62 @@
 
 /* Brand tokens: static values, same in light and dark. */
 @theme {
-  --color-primary: #1f90f9;
-  --color-primary-hover: #1878d1;
-  --color-primary-foreground: #ffffff;
-
-  --color-danger: #f15e29;
-  --color-danger-hover: #e32f27;
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
   --color-danger-foreground: #ffffff;
 
-  --color-success: #1fa971;
-  --color-warning: #f2a93b;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
 
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
 }
 
-/* Semantic surface/text tokens: raw CSS variables, reassigned under .dark.
-   Exposed as Tailwind utilities via the `@theme inline` block below, so
-   `bg-bg`, `bg-surface`, `text-fg`, `border-border`, etc. resolve to the
-   correct value per theme with zero `dark:` variants in component code. */
-:root {
-  --color-bg: #f8f9fb;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f4f6f9;
-  --color-border: #dce0e8;
-  --color-border-strong: #b9c6dc;
+/* Semantic tokens: raw CSS variables, reassigned under .dark. Exposed as
+   Tailwind utilities via the `@theme inline` block below, so `bg-bg`,
+   `bg-surface`, `text-fg`, `bg-primary`, etc. resolve to the correct value
+   per theme with zero `dark:` variants in component code.
 
-  --color-fg: #1a344d;
-  --color-fg-muted: #7a889b;
+   Light mode is neutral black/white/gray. Dark mode pairs a near-black
+   surface with a green accent instead of carrying the light mode's black
+   primary into the dark palette. */
+:root {
+  --color-bg: #f7f7f8;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f2f2f3;
+  --color-border: #e4e4e7;
+  --color-border-strong: #c9c9ce;
+
+  --color-fg: #18181b;
+  --color-fg-muted: #71717a;
   --color-fg-invert: #ffffff;
 
-  --color-disabled-bg: #eceef5;
-  --color-disabled-fg: #b9c3d1;
+  --color-disabled-bg: #f0f0f1;
+  --color-disabled-fg: #b4b4b8;
+
+  --color-primary: #18181b;
+  --color-primary-hover: #313135;
+  --color-primary-foreground: #ffffff;
 }
 
 .dark {
-  --color-bg: #0f1720;
-  --color-surface: #182430;
-  --color-surface-hover: #202f3d;
-  --color-border: #2c3c4d;
-  --color-border-strong: #3c4f63;
+  --color-bg: #0d1210;
+  --color-surface: #151b19;
+  --color-surface-hover: #1d2624;
+  --color-border: #2a332f;
+  --color-border-strong: #3a453f;
 
-  --color-fg: #e7edf6;
-  --color-fg-muted: #93a4bd;
-  --color-fg-invert: #0f1720;
+  --color-fg: #edf2ef;
+  --color-fg-muted: #8b9992;
+  --color-fg-invert: #0d1210;
 
-  --color-disabled-bg: #1f2b38;
-  --color-disabled-fg: #4a5b73;
+  --color-disabled-bg: #1a211f;
+  --color-disabled-fg: #4c5a54;
+
+  --color-primary: #22c55e;
+  --color-primary-hover: #4ade80;
+  --color-primary-foreground: #052e14;
 }
 
 @theme inline {
@@ -67,4 +75,7 @@
   --color-fg-invert: var(--color-fg-invert);
   --color-disabled-bg: var(--color-disabled-bg);
   --color-disabled-fg: var(--color-disabled-fg);
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-foreground: var(--color-primary-foreground);
 }

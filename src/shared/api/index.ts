@@ -18,7 +18,7 @@ export interface FetchArgs {
 
 const axiosInstance = axios.create({ withCredentials: true });
 
-const AUTH_NO_REFRESH = ['/auth/login', '/auth/refresh-token', '/auth/logout'];
+const AUTH_NO_REFRESH = ['/auth', '/auth/refresh-token', '/auth/logout'];
 
 // Shared refresh promise so concurrent 401s only trigger ONE refresh call.
 let refreshPromise: Promise<boolean> | null = null;
@@ -26,7 +26,7 @@ let refreshPromise: Promise<boolean> | null = null;
 async function performRefresh(): Promise<boolean> {
   if (!refreshPromise) {
     refreshPromise = axiosInstance
-      .post(`${env.apiUrl}/auth/refresh-token`, undefined, {
+      .post(`${env.authApiUrl}/auth/refresh-token`, undefined, {
         withCredentials: true,
       })
       .then((res) => res.status >= 200 && res.status < 300)
@@ -130,7 +130,7 @@ export const apiService = createApi({
 
 export async function logout() {
   try {
-    await axiosInstance.post(`${env.apiUrl}/auth/logout`, undefined, {
+    await axiosInstance.post(`${env.authApiUrl}/auth/logout`, undefined, {
       withCredentials: true,
     });
   } finally {

@@ -8,15 +8,24 @@
     "search": "Поиск",
     "noData": "Нет данных",
     "loading": "Загрузка...",
-    "required": "Обязательное поле"
+    "required": "Обязательное поле",
+    "export": "Экспорт",
+    "previous": "Назад",
+    "next": "Далее",
+    "rowsPerPage": "На странице",
+    "goToPage": "Перейти",
+    "go": "Ок",
+    "reload": "Обновить",
+    "showingRange": "Показано {{start}}-{{end}} из {{total}}"
   },
   "nav": {
     "dealers": "Дилеры"
   },
   "auth": {
     "login": "Войти",
-    "email": "Email",
-    "password": "Пароль"
+    "username": "Логин",
+    "password": "Пароль",
+    "loginFailed": "Неверный логин или пароль"
   },
   "dealer": {
     "title": "Дилеры",
@@ -25,9 +34,9 @@
     "name": "Название",
     "description": "Описание",
     "dealerCode": "Код дилера",
-    "discountRate": "Скидка, %",
-    "registeredAt": "Дата регистрации",
-    "contactPhone": "Телефон",
+    "counterAgent": "Контрагент",
+    "clientType": "Тип клиента",
+    "regionalBase": "Региональная база",
     "region": "Регион",
     "active": "Активен"
   },
@@ -37,6 +46,8 @@
     "permissionDenied": "Доступ запрещён",
     "notFound": "Не найдено",
     "validationError": "Ошибка валидации",
-    "serverError": "Ошибка сервера"
+    "serverError": "Ошибка сервера",
+    "saved": "Сохранено",
+    "deleted": "Удалено"
   }
 }

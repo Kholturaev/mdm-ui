@@ -8,15 +8,24 @@
     "search": "Qidirish",
     "noData": "Ma'lumot yo'q",
     "loading": "Yuklanmoqda...",
-    "required": "Majburiy maydon"
+    "required": "Majburiy maydon",
+    "export": "Eksport",
+    "previous": "Orqaga",
+    "next": "Keyingi",
+    "rowsPerPage": "Sahifada",
+    "goToPage": "O'tish",
+    "go": "OK",
+    "reload": "Yangilash",
+    "showingRange": "{{total}} ta natijadan {{start}}-{{end}} oralig'idagilari ko'rsatilmoqda"
   },
   "nav": {
     "dealers": "Dilerlar"
   },
   "auth": {
     "login": "Kirish",
-    "email": "Email",
-    "password": "Parol"
+    "username": "Login",
+    "password": "Parol",
+    "loginFailed": "Login yoki parol noto'g'ri"
   },
   "dealer": {
     "title": "Dilerlar",
@@ -25,9 +34,9 @@
     "name": "Nomi",
     "description": "Tavsif",
     "dealerCode": "Diler kodi",
-    "discountRate": "Chegirma, %",
-    "registeredAt": "Ro'yxatga olingan sana",
-    "contactPhone": "Telefon",
+    "counterAgent": "Kontragent",
+    "clientType": "Mijoz turi",
+    "regionalBase": "Regional baza",
     "region": "Hudud",
     "active": "Faol"
   },
@@ -37,6 +46,8 @@
     "permissionDenied": "Ruxsat berilmagan",
     "notFound": "Topilmadi",
     "validationError": "Tekshiruv xatosi",
-    "serverError": "Server xatosi"
+    "serverError": "Server xatosi",
+    "saved": "Saqlandi",
+    "deleted": "O'chirildi"
   }
 }

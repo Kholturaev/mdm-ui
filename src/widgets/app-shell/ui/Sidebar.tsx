@@ -9,10 +9,10 @@ export function Sidebar() {
 
   return (
     <aside className="border-border bg-surface flex w-56 flex-col border-r">
-      <div className="border-border flex h-14 items-center border-b px-4 text-sm font-semibold">
+      <div className="border-border flex h-12 items-center border-b px-4 text-sm font-semibold">
         MDM
       </div>
-      <nav className="flex flex-col gap-1 p-3">
+      <nav className="flex flex-col gap-1 p-2">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}

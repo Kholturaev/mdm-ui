@@ -1,35 +1,26 @@
-import type { Dealer, DealerFormValues, DealerPayload } from './types';
+import type { DealerFormValues, IDealer } from './types';
 
 const EMPTY_VALUES: DealerFormValues = {
   name: '',
   description: '',
   dealerCode: '',
-  discountRate: null,
-  registeredAt: null,
-  contactPhone: '',
+  active: 'INACTIVE',
+  counterAgentId: null,
   regionId: null,
-  active: true,
+  regionalBaseId: null,
+  clientTypeId: null,
 };
 
-export function toDealerFormValues(dealer?: Dealer): DealerFormValues {
+export function toDealerFormValues(dealer?: IDealer): DealerFormValues {
   if (!dealer) return EMPTY_VALUES;
   return {
     name: dealer.name,
     description: dealer.description,
     dealerCode: dealer.dealerCode,
-    discountRate: dealer.discountRate,
-    registeredAt: dealer.registeredAt ? new Date(dealer.registeredAt) : null,
-    contactPhone: dealer.contactPhone,
-    regionId: dealer.regionId,
     active: dealer.active,
-  };
-}
-
-export function toDealerPayload(values: DealerFormValues): DealerPayload {
-  return {
-    ...values,
-    registeredAt: values.registeredAt
-      ? values.registeredAt.toISOString()
-      : null,
+    counterAgentId: dealer.counterAgentId,
+    regionId: dealer.regionId ?? null,
+    regionalBaseId: dealer.regionalBaseId,
+    clientTypeId: dealer.clientTypeId,
   };
 }

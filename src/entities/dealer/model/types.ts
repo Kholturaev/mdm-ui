@@ -1,32 +1,23 @@
-export type Dealer = {
+import type { IContractor } from '@entities/contractor/model/types';
+import type { IClientType } from '@entities/client-type/model/types';
+import type { IRegion } from '@entities/region/model/types';
+
+export interface IDealer {
   id: number;
   name: string;
   description: string;
   dealerCode: string;
-  discountRate: number | null;
-  registeredAt: string | null;
-  contactPhone: string;
-  regionId: number | null;
-  active: boolean;
-};
+  active: 'ACTIVE' | 'INACTIVE';
+  counterAgentId: string | null;
+  regionId?: number | null;
+  regionalBaseId: number | null;
+  clientTypeId: number | null;
+  contractor?: IContractor;
+  clientType?: IClientType;
+  region?: IRegion;
+}
 
-/** Form-facing shape: `registeredAt` is a `Date` for the date picker. */
-export type DealerFormValues = {
-  name: string;
-  description: string;
-  dealerCode: string;
-  discountRate: number | null;
-  registeredAt: Date | null;
-  contactPhone: string;
-  regionId: number | null;
-  active: boolean;
-};
-
-/** Wire shape sent to the API: `registeredAt` serialized back to an ISO string. */
-export type DealerPayload = Omit<DealerFormValues, 'registeredAt'> & {
-  registeredAt: string | null;
-};
-
-export type DealerListFilters = {
-  name?: string;
-};
+export type DealerFormValues = Omit<
+  IDealer,
+  'id' | 'contractor' | 'clientType' | 'region'
+>;

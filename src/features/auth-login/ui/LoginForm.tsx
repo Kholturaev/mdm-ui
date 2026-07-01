@@ -1,35 +1,36 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@app/store';
 import { setAuthenticated } from '@app/store/auth/authSlice';
 import { Button } from '@shared/ui/Button';
 import { FormInput, FormPasswordInput } from '@shared/ui/form';
-
-type LoginFormValues = {
-  email: string;
-  password: string;
-};
+import { parseApiError } from '@shared/api/parseApiError';
+import type { ApiException } from '@shared/api/type';
+import { notify } from '@shared/lib/toast';
+import { useSignInMutation } from '../api/authApi';
+import type { SignInRequest } from '../api/authApi';
 
 export function LoginForm() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signIn, { isLoading }] = useSignInMutation();
 
-  const { control, handleSubmit } = useForm<LoginFormValues>({
-    defaultValues: { email: '', password: '' },
+  const { control, handleSubmit, setError } = useForm<SignInRequest>({
+    defaultValues: { username: '', password: '' },
   });
 
-  const onSubmit = async (_values: LoginFormValues) => {
-    setIsSubmitting(true);
+  const onSubmit = async (values: SignInRequest) => {
     try {
-      // TODO: wire up to the real auth endpoint once the backend contract is available.
+      await signIn(values).unwrap();
       dispatch(setAuthenticated(true));
-      navigate('/dealers');
-    } finally {
-      setIsSubmitting(false);
+      navigate('/dealers', { replace: true });
+    } catch (error) {
+      const message =
+        parseApiError(error as ApiException) || t('auth.loginFailed');
+      notify.error(message);
+      setError('password', { type: 'custom', message: t('auth.loginFailed') });
     }
   };
 
@@ -39,9 +40,9 @@ export function LoginForm() {
       className="flex w-80 flex-col gap-4"
     >
       <FormInput
-        name="email"
+        name="username"
         control={control}
-        label={t('auth.email')}
+        label={t('auth.username')}
         required
         rules={{ required: t('common.required') }}
       />
@@ -52,7 +53,7 @@ export function LoginForm() {
         required
         rules={{ required: t('common.required') }}
       />
-      <Button type="submit" isLoading={isSubmitting} fullWidth>
+      <Button type="submit" isLoading={isLoading} fullWidth>
         {t('auth.login')}
       </Button>
     </form>

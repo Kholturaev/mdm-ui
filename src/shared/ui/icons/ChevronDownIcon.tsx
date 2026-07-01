@@ -1,4 +1,9 @@
-export function ChevronDownIcon({ size = 16 }: { size?: number }) {
+type IconProps = {
+  size?: number;
+  className?: string;
+};
+
+export function ChevronDownIcon({ size = 16, className }: IconProps) {
   return (
     <svg
       width={size}
@@ -7,13 +12,14 @@ export function ChevronDownIcon({ size = 16 }: { size?: number }) {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
+      className={className}
     >
       <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-export function CloseIcon({ size = 14 }: { size?: number }) {
+export function CloseIcon({ size = 14, className }: IconProps) {
   return (
     <svg
       width={size}
@@ -22,6 +28,7 @@ export function CloseIcon({ size = 14 }: { size?: number }) {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
+      className={className}
     >
       <path
         d="M18 6L6 18M6 6l12 12"

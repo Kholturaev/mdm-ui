@@ -8,5 +8,7 @@ export * from './Radio';
 export * from './Field';
 export * from './Table';
 export * from './Modal';
+export * from './Menu';
 export { Spinner } from './Spinner';
+export { LoadingBar } from './LoadingBar';
 export type { ControlSize } from './types';

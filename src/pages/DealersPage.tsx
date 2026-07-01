@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Dealer, DealerFormValues } from '@entities/dealer/model/types';
-import { toDealerPayload } from '@entities/dealer/model/mapping';
+import type { IDealer, DealerFormValues } from '@entities/dealer/model/types';
 import {
   useCreateDealerMutation,
   useDeleteDealerMutation,
@@ -9,13 +8,17 @@ import {
 } from '@entities/dealer/api/dealerApi';
 import { DealerForm } from '@features/dealer-create-edit/ui/DealerForm';
 import { DealerTable } from '@widgets/dealer-table/ui/DealerTable';
-import { Button } from '@shared/ui/Button';
 import { Modal } from '@shared/ui/Modal';
+import { parseApiError } from '@shared/api/parseApiError';
+import type { ApiException } from '@shared/api/type';
+import { notify } from '@shared/lib/toast';
+import { usePageTitle } from '@shared/lib/pageTitle';
 
-type ModalState = { mode: 'create' } | { mode: 'edit'; dealer: Dealer } | null;
+type ModalState = { mode: 'create' } | { mode: 'edit'; dealer: IDealer } | null;
 
 export function DealersPage() {
   const { t } = useTranslation();
+  usePageTitle(t('dealer.title'));
   const [modalState, setModalState] = useState<ModalState>(null);
 
   const [createDealer, { isLoading: isCreating }] = useCreateDealerMutation();
@@ -25,28 +28,34 @@ export function DealersPage() {
   const closeModal = () => setModalState(null);
 
   const handleSubmit = async (values: DealerFormValues) => {
-    const payload = toDealerPayload(values);
-
-    if (modalState?.mode === 'edit') {
-      await updateDealer({ id: modalState.dealer.id, data: payload }).unwrap();
-    } else {
-      await createDealer(payload).unwrap();
+    try {
+      if (modalState?.mode === 'edit') {
+        await updateDealer({ id: modalState.dealer.id, data: values }).unwrap();
+      } else {
+        await createDealer(values).unwrap();
+      }
+      notify.success(t('message.saved'));
+      closeModal();
+    } catch (error) {
+      notify.error(parseApiError(error as ApiException));
     }
-    closeModal();
+  };
+
+  const handleDelete = async (dealer: IDealer) => {
+    try {
+      await deleteDealer(dealer.id).unwrap();
+      notify.success(t('message.deleted'));
+    } catch (error) {
+      notify.error(parseApiError(error as ApiException));
+    }
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-fg text-lg font-semibold">{t('dealer.title')}</h1>
-        <Button onClick={() => setModalState({ mode: 'create' })}>
-          {t('common.create')}
-        </Button>
-      </div>
-
+    <div className="flex flex-col gap-2">
       <DealerTable
+        onCreate={() => setModalState({ mode: 'create' })}
         onEdit={(dealer) => setModalState({ mode: 'edit', dealer })}
-        onDelete={(dealer) => deleteDealer(dealer.id)}
+        onDelete={handleDelete}
       />
 
       <Modal
