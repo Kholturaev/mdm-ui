@@ -51,7 +51,7 @@ export function DealersPage() {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="h-full">
       <DealerTable
         onCreate={() => setModalState({ mode: 'create' })}
         onEdit={(dealer) => setModalState({ mode: 'edit', dealer })}

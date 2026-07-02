@@ -32,9 +32,10 @@ export function SortableHeader({
       >
         {label}
       </span>
-      <span className="flex items-center">
+      <span className="flex flex-col items-center justify-center gap-0">
         <SortArrowUpIcon
           className={cn(
+            'block',
             isActive && direction === 'asc'
               ? 'text-primary'
               : 'text-border-strong',
@@ -42,6 +43,7 @@ export function SortableHeader({
         />
         <SortArrowDownIcon
           className={cn(
+            'block',
             isActive && direction === 'desc'
               ? 'text-primary'
               : 'text-border-strong',

@@ -11,4 +11,5 @@ export * from './Modal';
 export * from './Menu';
 export { Spinner } from './Spinner';
 export { LoadingBar } from './LoadingBar';
+export { HighlightMatch } from './HighlightMatch';
 export type { ControlSize } from './types';

@@ -7,8 +7,8 @@ export function SortArrowUpIcon({ size = 10, className }: SortArrowIconProps) {
   return (
     <svg
       width={size}
-      height={size}
-      viewBox="0 0 10 10"
+      height={size / 2}
+      viewBox="0 1 10 5"
       fill="currentColor"
       className={className}
     >
@@ -24,8 +24,8 @@ export function SortArrowDownIcon({
   return (
     <svg
       width={size}
-      height={size}
-      viewBox="0 0 10 10"
+      height={size / 2}
+      viewBox="0 4 10 5"
       fill="currentColor"
       className={className}
     >

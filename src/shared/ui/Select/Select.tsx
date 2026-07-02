@@ -62,7 +62,7 @@ export function Select<
         classNames={{
           control: ({ isFocused }) =>
             cn(
-              'w-full rounded-md border bg-surface px-2.5 text-sm transition-colors',
+              'w-full rounded border bg-surface px-2.5 text-sm transition-colors',
               CONTROL_HEIGHT[size],
               isFocused
                 ? 'border-primary ring-2 ring-primary/20'
@@ -85,7 +85,7 @@ export function Select<
           clearIndicator: () =>
             'text-fg-muted hover:text-danger cursor-pointer',
           menu: () =>
-            'mt-1 rounded-md border border-border bg-surface shadow-lg overflow-hidden z-20',
+            'mt-1 rounded border border-border bg-surface shadow-lg overflow-hidden z-20',
           menuList: () => 'py-1 max-h-60 overflow-auto',
           noOptionsMessage: () => 'text-fg-muted text-sm py-2 text-center',
           loadingMessage: () => 'text-fg-muted text-sm py-2 text-center',

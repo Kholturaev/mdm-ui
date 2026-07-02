@@ -10,16 +10,22 @@
     "loading": "Загрузка...",
     "required": "Обязательное поле",
     "export": "Экспорт",
+    "clear": "Очистить",
     "previous": "Назад",
     "next": "Далее",
     "rowsPerPage": "На странице",
     "goToPage": "Перейти",
     "go": "Ок",
     "reload": "Обновить",
-    "showingRange": "Показано {{start}}-{{end}} из {{total}}"
+    "showingRange": "Показано <b>{{start}}-{{end}}</b> из <b>{{total}}</b>"
   },
   "nav": {
-    "dealers": "Дилеры"
+    "dealership": "Дилер",
+    "dealers": "Дилеры",
+    "nsi": "НСИ",
+    "nomenclature": "Номенклатура",
+    "collapseSidebar": "Свернуть панель",
+    "expandSidebar": "Развернуть панель"
   },
   "auth": {
     "login": "Войти",
@@ -29,6 +35,7 @@
   },
   "dealer": {
     "title": "Дилеры",
+    "addDealer": "Добавить дилера",
     "createTitle": "Новый дилер",
     "editTitle": "Редактировать дилера",
     "name": "Название",
@@ -38,7 +45,39 @@
     "clientType": "Тип клиента",
     "regionalBase": "Региональная база",
     "region": "Регион",
-    "active": "Активен"
+    "active": "Активен",
+    "inactive": "Неактивен"
+  },
+  "product": {
+    "title": "Номенклатура",
+    "id": "ID",
+    "name": "Название",
+    "code": "Код",
+    "article": "Артикул",
+    "description": "Описание",
+    "comment": "Комментарий",
+    "sapCode": "Код SAP",
+    "sapText": "Текст SAP",
+    "productGroup": "Группа номенклатуры",
+    "category": "Категория",
+    "segment": "Сегмент",
+    "typeOfNomenclature": "Тип номенклатуры",
+    "productStatus": "Статус",
+    "baseUnit": "Базовая единица",
+    "accountingProduct": "Учётный продукт",
+    "accountingUnit": "Единица учёта",
+    "alternateUnit": "Дополнительная единица",
+    "accountAmountPercent": "Учётный процент, %",
+    "gtin": "GTIN",
+    "additionalGtins": "Доп. GTIN",
+    "createdAt": "Дата создания",
+    "createdBy": "Создал",
+    "updatedBy": "Изменил",
+    "status": {
+      "ACTIVE": "Активный",
+      "PASSIVE": "Неактивный",
+      "TEMPORARILY_PASSIVE": "Временно неактивный"
+    }
   },
   "message": {
     "error": "Произошла ошибка",

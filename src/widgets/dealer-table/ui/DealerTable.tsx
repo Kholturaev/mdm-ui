@@ -11,8 +11,12 @@ import {
   TableToolbar,
 } from '@shared/ui/Table';
 import type { SortDirection } from '@shared/ui/Table';
-import { ActionsMenu } from '@shared/ui/Menu';
+import { RowActions } from '@shared/ui/Menu';
 import { Button } from '@shared/ui/Button';
+import { Badge } from '@shared/ui/Badge';
+import { EditIcon } from '@shared/ui/icons/EditIcon';
+import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
+import { PlusIcon } from '@shared/ui/icons/PlusIcon';
 import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
 
 type DealerTableProps = {
@@ -24,7 +28,7 @@ type DealerTableProps = {
 export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [nameFilter, setNameFilter] = useState('');
   const debouncedName = useDebouncedValue(nameFilter);
 
@@ -101,27 +105,35 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
       {
         id: 'active',
         header: t('dealer.active'),
-        cell: ({ row }) => (row.original.active === 'ACTIVE' ? '✓' : '—'),
+        cell: ({ row }) => {
+          const isActive = row.original.active === 'ACTIVE';
+          return (
+            <Badge variant={isActive ? 'success' : 'neutral'} dot>
+              {isActive ? t('dealer.active') : t('dealer.inactive')}
+            </Badge>
+          );
+        },
       },
       {
         id: 'actions',
         header: '',
+        meta: { pin: 'right' },
         cell: ({ row }) => (
-          <div className="flex justify-end">
-            <ActionsMenu
-              items={[
-                {
-                  label: t('common.edit'),
-                  onClick: () => onEdit(row.original),
-                },
-                {
-                  label: t('common.delete'),
-                  onClick: () => onDelete(row.original),
-                  danger: true,
-                },
-              ]}
-            />
-          </div>
+          <RowActions
+            items={[
+              {
+                label: t('common.edit'),
+                icon: <EditIcon size={15} />,
+                onClick: () => onEdit(row.original),
+              },
+              {
+                label: t('common.delete'),
+                icon: <DeleteIcon size={15} />,
+                onClick: () => onDelete(row.original),
+                danger: true,
+              },
+            ]}
+          />
         ),
       },
     ],
@@ -129,7 +141,7 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex h-full flex-col">
       <TableToolbar
         searchValue={nameFilter}
         onSearchChange={(value) => {
@@ -155,16 +167,20 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
             { label: t('dealer.active'), getValue: (r) => r.active },
           ]}
         />
-        <Button onClick={onCreate}>{t('common.create')}</Button>
+        <Button size="sm" icon={<PlusIcon size={15} />} onClick={onCreate}>
+          {t('dealer.addDealer')}
+        </Button>
       </TableToolbar>
 
-      <DataTable
-        columns={columns}
-        data={rows}
-        isLoading={isFetching}
-        emptyMessage={t('common.noData')}
-        sortedColumnId={sortField ?? undefined}
-      />
+      <div className="min-h-0 flex-1">
+        <DataTable
+          columns={columns}
+          data={rows}
+          isLoading={isFetching}
+          emptyMessage={t('common.noData')}
+          sortedColumnId={sortField ?? undefined}
+        />
+      </div>
 
       <Pagination
         page={page}

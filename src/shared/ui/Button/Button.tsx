@@ -16,9 +16,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const SIZE_CLASSES: Record<ControlSize, string> = {
-  sm: 'h-8 px-3 text-xs gap-1.5 rounded-sm',
-  md: 'h-9 px-4 text-sm gap-2 rounded-md',
-  lg: 'h-11 px-5 text-base gap-2 rounded-md',
+  sm: 'h-8 px-3 text-xs gap-1.5 rounded',
+  md: 'h-9 px-4 text-sm gap-2 rounded',
+  lg: 'h-11 px-5 text-base gap-2 rounded',
 };
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {

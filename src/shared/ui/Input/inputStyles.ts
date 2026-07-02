@@ -2,9 +2,9 @@ import type { ControlSize } from '../types';
 
 /** Shared frame classes for every text-like control (Input, Textarea, PhoneField, Select trigger, DatePicker). */
 export const INPUT_SIZE_CLASSES: Record<ControlSize, string> = {
-  sm: 'h-8 px-2.5 text-xs rounded-sm',
-  md: 'h-9 px-3 text-sm rounded-md',
-  lg: 'h-11 px-4 text-base rounded-md',
+  sm: 'h-8 px-2.5 text-xs rounded',
+  md: 'h-9 px-3 text-sm rounded',
+  lg: 'h-11 px-4 text-base rounded',
 };
 
 export const INPUT_FRAME_CLASSES =

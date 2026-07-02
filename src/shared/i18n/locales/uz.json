@@ -10,16 +10,22 @@
     "loading": "Yuklanmoqda...",
     "required": "Majburiy maydon",
     "export": "Eksport",
+    "clear": "Tozalash",
     "previous": "Orqaga",
     "next": "Keyingi",
     "rowsPerPage": "Sahifada",
     "goToPage": "O'tish",
     "go": "OK",
     "reload": "Yangilash",
-    "showingRange": "{{total}} ta natijadan {{start}}-{{end}} oralig'idagilari ko'rsatilmoqda"
+    "showingRange": "<b>{{total}}</b> ta natijadan <b>{{start}}-{{end}}</b> oralig'idagilari ko'rsatilmoqda"
   },
   "nav": {
-    "dealers": "Dilerlar"
+    "dealership": "Diler",
+    "dealers": "Dilerlar",
+    "nsi": "NSI",
+    "nomenclature": "Nomenklatura",
+    "collapseSidebar": "Panelni yig'ish",
+    "expandSidebar": "Panelni yoyish"
   },
   "auth": {
     "login": "Kirish",
@@ -29,6 +35,7 @@
   },
   "dealer": {
     "title": "Dilerlar",
+    "addDealer": "Diler qo'shish",
     "createTitle": "Yangi diler",
     "editTitle": "Dilerni tahrirlash",
     "name": "Nomi",
@@ -38,7 +45,39 @@
     "clientType": "Mijoz turi",
     "regionalBase": "Regional baza",
     "region": "Hudud",
-    "active": "Faol"
+    "active": "Faol",
+    "inactive": "Nofaol"
+  },
+  "product": {
+    "title": "Nomenklatura",
+    "id": "ID",
+    "name": "Nomi",
+    "code": "Kod",
+    "article": "Artikul",
+    "description": "Tavsif",
+    "comment": "Izoh",
+    "sapCode": "SAP kodi",
+    "sapText": "SAP matni",
+    "productGroup": "Nomenklatura guruhi",
+    "category": "Kategoriya",
+    "segment": "Segment",
+    "typeOfNomenclature": "Nomenklatura turi",
+    "productStatus": "Status",
+    "baseUnit": "Asosiy birlik",
+    "accountingProduct": "Hisob mahsuloti",
+    "accountingUnit": "Hisob birligi",
+    "alternateUnit": "Qo'shimcha birlik",
+    "accountAmountPercent": "Hisob miqdori, %",
+    "gtin": "GTIN",
+    "additionalGtins": "Qo'shimcha GTIN",
+    "createdAt": "Yaratilgan sana",
+    "createdBy": "Yaratgan",
+    "updatedBy": "Yangilagan",
+    "status": {
+      "ACTIVE": "Faol",
+      "PASSIVE": "Nofaol",
+      "TEMPORARILY_PASSIVE": "Vaqtincha nofaol"
+    }
   },
   "message": {
     "error": "Xatolik yuz berdi",

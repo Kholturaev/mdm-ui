@@ -35,16 +35,19 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
   @apply bg-border-strong;
-  border: 2px solid transparent;
   border-radius: 8px;
-  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-track {

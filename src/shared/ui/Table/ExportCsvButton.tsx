@@ -21,6 +21,7 @@ export function ExportCsvButton<TRow>({
   return (
     <Button
       variant="outline"
+      size="sm"
       icon={<DownloadIcon size={14} />}
       onClick={() => exportToCsv(filename, rows, columns)}
       disabled={rows.length === 0}

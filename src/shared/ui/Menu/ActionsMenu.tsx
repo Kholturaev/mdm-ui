@@ -13,12 +13,14 @@ export type ActionsMenuItem = {
 
 type ActionsMenuProps = {
   items: ActionsMenuItem[];
+  /** Override the trigger button's own styling — e.g. to sit flush inside a connected button group. */
+  triggerClassName?: string;
 };
 
 type MenuPosition = { top: number; right: number };
 
 /** Kebab-menu for row actions — use instead of a row of separate buttons once there are more than one or two actions. */
-export function ActionsMenu({ items }: ActionsMenuProps) {
+export function ActionsMenu({ items, triggerClassName }: ActionsMenuProps) {
   const [position, setPosition] = useState<MenuPosition | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -61,7 +63,10 @@ export function ActionsMenu({ items }: ActionsMenuProps) {
         type="button"
         onClick={toggle}
         aria-label="Row actions"
-        className="text-fg-muted hover:bg-surface-hover hover:text-fg flex size-8 items-center justify-center rounded-md transition-colors"
+        className={cn(
+          'border-border bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors',
+          triggerClassName,
+        )}
       >
         <DotsVerticalIcon />
       </button>
