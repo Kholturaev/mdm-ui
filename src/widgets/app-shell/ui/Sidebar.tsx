@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@shared/lib/cn';
@@ -8,6 +9,7 @@ import { LayersIcon } from '@shared/ui/icons/LayersIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 
 type NavChild = { to: string; labelKey: string };
+type TooltipState = { groupKey: string; top: number; left: number };
 type NavGroup = {
   key: string;
   labelKey: string;
@@ -64,6 +66,19 @@ export function Sidebar() {
     localStorage.setItem(COLLAPSE_STORAGE_KEY, collapsed ? '1' : '0');
   }, [collapsed]);
 
+  // Tooltip for collapsed icons is portalled to <body> — rendering it inline
+  // would push past the sidebar's narrow width and force an unwanted
+  // horizontal scrollbar on `nav` (its `overflow-y-auto` implicitly turns
+  // `overflow-x` into `auto` too, per spec).
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  // The hovered icon unmounts once the sidebar expands, so it never fires
+  // `onMouseLeave` — clear the tooltip during render instead of relying on it.
+  const [lastCollapsed, setLastCollapsed] = useState(collapsed);
+  if (collapsed !== lastCollapsed) {
+    setLastCollapsed(collapsed);
+    if (!collapsed) setTooltip(null);
+  }
+
   return (
     <aside
       className={cn(
@@ -94,22 +109,28 @@ export function Sidebar() {
 
           if (collapsed) {
             return (
-              <div key={group.key} className="group relative">
-                <NavLink
-                  to={group.children[0].to}
-                  className={cn(
-                    'flex h-9 items-center justify-center rounded-md transition-colors',
-                    active
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
-                  )}
-                >
-                  {group.icon}
-                </NavLink>
-                <span className="bg-fg text-fg-invert pointer-events-none absolute top-1/2 left-full z-50 ml-2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-medium whitespace-nowrap opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                  {t(group.labelKey)}
-                </span>
-              </div>
+              <NavLink
+                key={group.key}
+                to={group.children[0].to}
+                onClick={() => setCollapsed(false)}
+                onMouseEnter={(event) => {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  setTooltip({
+                    groupKey: group.key,
+                    top: rect.top + rect.height / 2,
+                    left: rect.right + 8,
+                  });
+                }}
+                onMouseLeave={() => setTooltip(null)}
+                className={cn(
+                  'flex h-9 items-center justify-center rounded-md transition-colors',
+                  active
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
+                )}
+              >
+                {group.icon}
+              </NavLink>
             );
           }
 
@@ -159,6 +180,20 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {tooltip &&
+        createPortal(
+          <div
+            style={{ top: tooltip.top, left: tooltip.left }}
+            className="bg-fg text-fg-invert pointer-events-none fixed z-100 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-medium whitespace-nowrap shadow-lg"
+          >
+            {t(
+              NAV_GROUPS.find((group) => group.key === tooltip.groupKey)!
+                .labelKey,
+            )}
+          </div>,
+          document.body,
+        )}
     </aside>
   );
 }

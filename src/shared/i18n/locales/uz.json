@@ -5,6 +5,8 @@
     "create": "Yaratish",
     "edit": "Tahrirlash",
     "delete": "O'chirish",
+    "history": "Tarix",
+    "properties": "Xususiyatlari",
     "search": "Qidirish",
     "noData": "Ma'lumot yo'q",
     "loading": "Yuklanmoqda...",

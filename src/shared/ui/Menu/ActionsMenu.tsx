@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@shared/lib/cn';
 import { useClickOutside } from '@shared/lib/hooks/useClickOutside';
 import { DotsVerticalIcon } from '../icons/DotsIcon';
@@ -57,44 +58,46 @@ export function ActionsMenu({ items, triggerClassName }: ActionsMenuProps) {
   };
 
   return (
-    <div ref={containerRef} className="inline-block text-left">
+    <div ref={containerRef} className="inline-block shrink-0 text-left">
       <button
         ref={buttonRef}
         type="button"
         onClick={toggle}
         aria-label="Row actions"
         className={cn(
-          'border-border bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg flex size-7 items-center justify-center rounded-md border shadow-sm transition-colors',
+          'border-border bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg flex size-7 shrink-0 items-center justify-center rounded-md border shadow-sm transition-colors',
           triggerClassName,
         )}
       >
         <DotsVerticalIcon />
       </button>
 
-      {position && (
-        <div
-          style={{ top: position.top, right: position.right }}
-          className="border-border bg-surface fixed z-40 w-40 rounded-md border py-1 shadow-lg"
-        >
-          {items.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              onClick={() => {
-                setPosition(null);
-                item.onClick();
-              }}
-              className={cn(
-                'hover:bg-surface-hover flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors',
-                item.danger ? 'text-danger' : 'text-fg',
-              )}
-            >
-              {item.icon}
-              {item.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {position &&
+        createPortal(
+          <div
+            style={{ top: position.top, right: position.right }}
+            className="border-border bg-surface fixed z-100 w-40 rounded border py-1 shadow-lg"
+          >
+            {items.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => {
+                  setPosition(null);
+                  item.onClick();
+                }}
+                className={cn(
+                  'hover:bg-surface-hover flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors',
+                  item.danger ? 'text-danger' : 'text-fg',
+                )}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

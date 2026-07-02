@@ -52,16 +52,16 @@ function pinnedCellStyle(
   return {};
 }
 
-/** Shadow marking the boundary between a frozen column group and the columns scrolling past it. */
+/** Marks the boundary between a frozen column group and the columns scrolling past it — a token-based border color (visible in both light and dark themes) plus a subtle shadow for depth. */
 function pinnedEdgeClass(
   column: Column<unknown, unknown>,
   pinned: 'left' | 'right' | false,
 ) {
   if (pinned === 'left' && column.getIsLastColumn('left')) {
-    return 'shadow-[4px_0_6px_-4px_rgba(0,0,0,0.2)]';
+    return 'border-r-border-strong shadow-[4px_0_6px_-4px_rgba(0,0,0,0.2)]';
   }
   if (pinned === 'right' && column.getIsFirstColumn('right')) {
-    return 'shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.2)]';
+    return 'border-l border-l-border-strong shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.2)]';
   }
   return '';
 }

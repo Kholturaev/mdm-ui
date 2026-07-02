@@ -22,7 +22,7 @@ export function RowActions({ items, maxVisible = 2 }: RowActionsProps) {
   const overflow = items.length > maxVisible ? items.slice(maxVisible) : [];
 
   return (
-    <div className="border-border bg-surface divide-border ml-auto flex w-fit items-center divide-x overflow-hidden rounded border">
+    <div className="border-border bg-surface divide-border ml-auto flex w-fit shrink-0 items-center divide-x overflow-hidden rounded border">
       {visible.map((item) => (
         <button
           key={item.label}
@@ -31,7 +31,7 @@ export function RowActions({ items, maxVisible = 2 }: RowActionsProps) {
           aria-label={item.label}
           title={item.label}
           className={cn(
-            'flex size-7 items-center justify-center transition-colors',
+            'flex size-7 shrink-0 items-center justify-center transition-colors',
             item.danger
               ? 'text-danger hover:bg-danger/10'
               : 'text-fg-muted hover:bg-surface-hover hover:text-fg',

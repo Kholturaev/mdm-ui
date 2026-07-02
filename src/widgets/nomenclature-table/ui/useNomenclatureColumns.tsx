@@ -11,6 +11,8 @@ import { RowActions } from '@shared/ui/Menu';
 import type { SortDirection, ToggleableColumn } from '@shared/ui/Table';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
+import { ClockIcon } from '@shared/ui/icons/ClockIcon';
+import { InfoIcon } from '@shared/ui/icons/InfoIcon';
 import { SortableHeader } from '@shared/ui/Table';
 import { STATUS_VARIANT } from '../lib/constants';
 import { systemAbbr } from '../lib/systemAbbr';
@@ -389,7 +391,7 @@ export function useNomenclatureColumns({
       {
         id: 'actions',
         header: '',
-        size: 90,
+        size: 112,
         enableResizing: false,
         meta: { pin: 'right' },
         cell: () => (
@@ -405,6 +407,16 @@ export function useNomenclatureColumns({
                 icon: <DeleteIcon size={14} />,
                 onClick: () => {},
                 danger: true,
+              },
+              {
+                label: t('common.history'),
+                icon: <ClockIcon size={14} />,
+                onClick: () => {},
+              },
+              {
+                label: t('common.properties'),
+                icon: <InfoIcon size={14} />,
+                onClick: () => {},
               },
             ]}
           />
