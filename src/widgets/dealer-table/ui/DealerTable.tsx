@@ -4,13 +4,14 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { IDealer } from '@entities/dealer/model/types';
 import { useGetDealersQuery } from '@entities/dealer/api/dealerApi';
 import {
+  ColumnVisibilityButton,
   DataTable,
   ExportCsvButton,
   Pagination,
   SortableHeader,
   TableToolbar,
 } from '@shared/ui/Table';
-import type { SortDirection } from '@shared/ui/Table';
+import type { SortDirection, ToggleableColumn } from '@shared/ui/Table';
 import { RowActions } from '@shared/ui/Menu';
 import { Button } from '@shared/ui/Button';
 import { Badge } from '@shared/ui/Badge';
@@ -63,6 +64,20 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
   });
   const meta = data?.data;
   const rows = meta?.data ?? [];
+
+  const toggleableColumns = useMemo<ToggleableColumn[]>(
+    () => [
+      { id: 'name', label: t('dealer.name') },
+      { id: 'dealerCode', label: t('dealer.dealerCode') },
+      { id: 'counterAgent', label: t('dealer.counterAgent') },
+      { id: 'clientType', label: t('dealer.clientType') },
+      { id: 'active', label: t('dealer.active') },
+    ],
+    [t],
+  );
+  const [visibleColumnKeys, setVisibleColumnKeys] = useState<string[]>(() =>
+    toggleableColumns.map((column) => column.id),
+  );
 
   const columns = useMemo<ColumnDef<IDealer>[]>(
     () => [
@@ -123,12 +138,12 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
             items={[
               {
                 label: t('common.edit'),
-                icon: <EditIcon size={15} />,
+                icon: <EditIcon size={14} />,
                 onClick: () => onEdit(row.original),
               },
               {
                 label: t('common.delete'),
-                icon: <DeleteIcon size={15} />,
+                icon: <DeleteIcon size={14} />,
                 onClick: () => onDelete(row.original),
                 danger: true,
               },
@@ -138,6 +153,16 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
       },
     ],
     [t, sortField, sortDirection, onEdit, onDelete, handleSort],
+  );
+
+  const visibleColumns = useMemo(
+    () =>
+      columns.filter(
+        (column) =>
+          column.id === 'actions' ||
+          (column.id ? visibleColumnKeys.includes(column.id) : true),
+      ),
+    [columns, visibleColumnKeys],
   );
 
   return (
@@ -167,6 +192,11 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
             { label: t('dealer.active'), getValue: (r) => r.active },
           ]}
         />
+        <ColumnVisibilityButton
+          columns={toggleableColumns}
+          visible={visibleColumnKeys}
+          onChange={setVisibleColumnKeys}
+        />
         <Button size="sm" icon={<PlusIcon size={15} />} onClick={onCreate}>
           {t('dealer.addDealer')}
         </Button>
@@ -174,7 +204,7 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
 
       <div className="min-h-0 flex-1">
         <DataTable
-          columns={columns}
+          columns={visibleColumns}
           data={rows}
           isLoading={isFetching}
           emptyMessage={t('common.noData')}

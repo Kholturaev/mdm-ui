@@ -38,4 +38,6 @@ export interface IProduct {
   createdAt?: string;
   createdBy?: string;
   updatedBy?: string;
+  /** IDs of the external systems (SAP, 1C, etc.) this product has been sent to. */
+  externalSystemIds?: number[];
 }

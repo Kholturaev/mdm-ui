@@ -9,6 +9,8 @@ type TableToolbarProps = {
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
+  /** Rendered in the left slot when there's no search input — e.g. a result-count label. Ignored if `onSearchChange` is set. */
+  leftContent?: ReactNode;
   /** Right-aligned actions, e.g. "Create" / "Export" buttons. */
   children?: ReactNode;
 };
@@ -18,6 +20,7 @@ export function TableToolbar({
   searchValue,
   onSearchChange,
   searchPlaceholder,
+  leftContent,
   children,
 }: TableToolbarProps) {
   const { t } = useTranslation();
@@ -46,7 +49,7 @@ export function TableToolbar({
           containerClassName="max-w-xs"
         />
       ) : (
-        <div />
+        (leftContent ?? <div />)
       )}
       {children && <div className="flex items-center gap-2">{children}</div>}
     </div>

@@ -31,7 +31,7 @@ export function RowActions({ items, maxVisible = 2 }: RowActionsProps) {
           aria-label={item.label}
           title={item.label}
           className={cn(
-            'flex size-8 items-center justify-center transition-colors',
+            'flex size-7 items-center justify-center transition-colors',
             item.danger
               ? 'text-danger hover:bg-danger/10'
               : 'text-fg-muted hover:bg-surface-hover hover:text-fg',

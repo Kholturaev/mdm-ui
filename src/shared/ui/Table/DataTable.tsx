@@ -8,10 +8,13 @@ import {
 import type { Column, ColumnDef, RowData } from '@tanstack/react-table';
 import { cn } from '@shared/lib/cn';
 import { LoadingBar } from '../LoadingBar';
+import { DatePicker } from '../DatePicker';
 
 export type ColumnFilterConfig =
   | { type: 'text' }
-  | { type: 'select'; options: { label: string; value: string }[] };
+  | { type: 'date' }
+  | { type: 'select'; options: { label: string; value: string }[] }
+  | { type: 'custom'; render: () => ReactNode };
 
 /* eslint-disable @typescript-eslint/no-unused-vars -- required to match the augmented ColumnMeta's generic signature */
 declare module '@tanstack/react-table' {
@@ -91,6 +94,21 @@ function TruncatedCell({ children }: { children: ReactNode }) {
 const FILTER_INPUT_CLASSES =
   'border-border bg-surface text-fg placeholder:text-fg-muted focus:border-primary focus:ring-primary/20 h-7 w-full rounded border px-2 text-xs font-normal outline-none focus:ring-2';
 
+/** Parses a `YYYY-MM-DD` filter value as a local date — avoids the day-off-by-one bug `new Date(string)` has (it parses date-only strings as UTC midnight). */
+function parseFilterDate(value: string): Date | null {
+  if (!value) return null;
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return null;
+  return new Date(year, month - 1, day);
+}
+
+function formatFilterDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function DataTable<TData>({
   columns,
   data,
@@ -168,7 +186,7 @@ export function DataTable<TData>({
                     key={header.id}
                     style={{ width, ...pinnedCellStyle(column, pinned) }}
                     className={cn(
-                      'border-border bg-surface relative border-r border-b px-3 py-1.5 text-xs font-semibold last:border-r-0',
+                      'border-border bg-surface relative border-r border-b px-3 py-1 text-xs font-semibold last:border-r-0',
                       sortedColumnId === header.column.id && 'bg-surface-hover',
                       pinned && 'sticky z-10',
                       pinnedEdgeClass(column, pinned),
@@ -236,6 +254,19 @@ export function DataTable<TData>({
                           </option>
                         ))}
                       </select>
+                    ) : filterConfig.type === 'custom' ? (
+                      filterConfig.render()
+                    ) : filterConfig.type === 'date' ? (
+                      <DatePicker
+                        selected={parseFilterDate(value)}
+                        onChange={(date) =>
+                          setValue(date ? formatFilterDate(date) : '')
+                        }
+                        isClearable
+                        popperProps={{ strategy: 'fixed' }}
+                        wrapperClassName="block"
+                        className={FILTER_INPUT_CLASSES}
+                      />
                     ) : (
                       <input
                         type="text"
@@ -284,7 +315,7 @@ export function DataTable<TData>({
                     key={cell.id}
                     style={{ width, ...pinnedCellStyle(column, pinned) }}
                     className={cn(
-                      'border-border text-fg border-r border-b px-3 py-1 last:border-r-0',
+                      'border-border text-fg border-r border-b px-3 py-0.5 last:border-r-0',
                       sortedColumnId === cell.column.id && 'bg-surface-hover',
                       pinned &&
                         'bg-surface group-hover:bg-surface-hover sticky z-10',

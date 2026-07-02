@@ -36,3 +36,27 @@
 .react-datepicker__triangle::after {
   border-bottom-color: var(--color-surface) !important;
 }
+
+.react-datepicker__close-icon {
+  padding: 0 8px 0 0;
+}
+
+.react-datepicker__close-icon::after {
+  background-color: transparent;
+  color: var(--color-fg-muted);
+  border-radius: 0;
+  height: 16px;
+  width: 16px;
+  font-size: 15px;
+  font-weight: 400;
+  transition: color 0.15s ease;
+}
+
+.react-datepicker__close-icon:hover::after {
+  color: var(--color-fg);
+}
+
+.react-datepicker__close-icon--disabled::after {
+  background-color: transparent;
+  color: var(--color-disabled-fg);
+}

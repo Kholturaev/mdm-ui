@@ -64,7 +64,7 @@ export function ActionsMenu({ items, triggerClassName }: ActionsMenuProps) {
         onClick={toggle}
         aria-label="Row actions"
         className={cn(
-          'border-border bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg flex size-8 items-center justify-center rounded-md border shadow-sm transition-colors',
+          'border-border bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg flex size-7 items-center justify-center rounded-md border shadow-sm transition-colors',
           triggerClassName,
         )}
       >
