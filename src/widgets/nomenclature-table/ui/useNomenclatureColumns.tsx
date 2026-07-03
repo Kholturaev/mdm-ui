@@ -15,7 +15,7 @@ import { ClockIcon } from '@shared/ui/icons/ClockIcon';
 import { InfoIcon } from '@shared/ui/icons/InfoIcon';
 import { SortableHeader } from '@shared/ui/Table';
 import { STATUS_VARIANT } from '../lib/constants';
-import { systemAbbr } from '../lib/systemAbbr';
+import { systemAbbr } from '@shared/lib/systemAbbr';
 import { PersonCell } from './PersonCell';
 import { TextCell } from './TextCell';
 import { StatusFilterDropdown } from './StatusFilterDropdown';

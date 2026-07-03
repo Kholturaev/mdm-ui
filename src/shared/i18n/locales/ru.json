@@ -26,12 +26,96 @@
     "showingRange": "Показано <b>{{start}}-{{end}}</b> из <b>{{total}}</b>"
   },
   "nav": {
+    "analytics": "Аналитика",
     "dealership": "Дилер",
     "dealers": "Дилеры",
     "nsi": "НСИ",
     "nomenclature": "Номенклатура",
     "collapseSidebar": "Свернуть панель",
     "expandSidebar": "Развернуть панель"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "subtitle": "Статус данных по всем внешним системам",
+    "updatedAt": "Обновлено: {{time}}",
+    "period": {
+      "7d": "7 дней",
+      "30d": "30 дней",
+      "90d": "90 дней"
+    },
+    "units": {
+      "hours": "{{count}} ч",
+      "days": "{{count}} дн"
+    },
+    "stats": {
+      "total": "Всего номенклатуры",
+      "totalSubtext": "Подключено к {{count}} системам",
+      "fullySynced": "Полностью синхронизировано",
+      "fullySyncedSubtext": "{{count}}/{{count}} систем",
+      "partial": "Частично распределено",
+      "partialSubtext": "{{pending}} в очереди • {{error}} с ошибкой",
+      "unconnected": "Не подключено ни к одной системе",
+      "unconnectedSubtext": "Требует немедленного внимания"
+    },
+    "attention": {
+      "title": "Требует внимания",
+      "allClear": "Нет проблем, требующих внимания",
+      "unconnected": {
+        "title": "{{count}} товара нет ни в одной системе",
+        "desc": "Ещё не отправлены ни в одну внешнюю систему",
+        "cta": "Распределить"
+      },
+      "syncErrors": {
+        "title": "Ошибка отправки у {{count}} товаров",
+        "desc": "Система не ответила — нужна повторная попытка",
+        "cta": "Повторить"
+      },
+      "pendingSync": {
+        "title": "{{count}} товара ожидают синхронизации",
+        "desc": "В очереди — обычно занимает 1-2 минуты",
+        "cta": "Посмотреть"
+      }
+    },
+    "coverage": {
+      "title": "Покрытие систем",
+      "legend": {
+        "synced": "Синхронизировано",
+        "pending": "В очереди",
+        "error": "Ошибка"
+      }
+    },
+    "trend": {
+      "title": "Динамика синхронизации",
+      "subtitle": "Доля ошибок: {{rate}}%",
+      "success": "Успешно",
+      "errors": "Ошибки"
+    },
+    "completeness": {
+      "title": "Полнота данных",
+      "fullComplete": "Полностью заполнено",
+      "partial": "Частично заполнено",
+      "incomplete": "Недостаточно данных"
+    },
+    "performance": {
+      "title": "Операционная скорость",
+      "timeToMarket": "Время выхода на рынок",
+      "mttr": "Среднее время восстановления"
+    },
+    "dataQuality": {
+      "title": "Качество данных",
+      "duplicates": "{{count}} групп дублей",
+      "duplicatesDesc": "Затрагивает {{count}} товаров",
+      "validationErrors": "{{count}} ошибок валидации",
+      "validationErrorsDesc": "Не заполнены обязательные поля"
+    },
+    "recentActivity": {
+      "title": "Последняя активность",
+      "syncCompleted": "Синхронизация с {{system}} завершена",
+      "syncFailed": "Ошибка отправки в {{system}}",
+      "productUpdated": "{{actor}} обновил товар",
+      "bulkImport": "{{actor}} импортировал товары из файла",
+      "productCreated": "{{actor}} добавил новый товар"
+    }
   },
   "auth": {
     "login": "Войти",

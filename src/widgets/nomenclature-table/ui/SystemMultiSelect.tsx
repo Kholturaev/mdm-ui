@@ -5,7 +5,7 @@ import { cn } from '@shared/lib/cn';
 import { useClickOutside } from '@shared/lib/hooks/useClickOutside';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 import { LayersIcon } from '@shared/ui/icons/LayersIcon';
-import { systemAbbr } from '../lib/systemAbbr';
+import { systemAbbr } from '@shared/lib/systemAbbr';
 
 type SystemMultiSelectProps = {
   systems: IExternalSystem[];

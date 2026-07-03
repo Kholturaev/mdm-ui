@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@shared/lib/cn';
 import { BuildingIcon } from '@shared/ui/icons/BuildingIcon';
 import { LayersIcon } from '@shared/ui/icons/LayersIcon';
+import { BarChartIcon } from '@shared/ui/icons/BarChartIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 
 type NavChild = { to: string; labelKey: string };
@@ -18,6 +19,12 @@ type NavGroup = {
 };
 
 const NAV_GROUPS: NavGroup[] = [
+  {
+    key: 'analytics',
+    labelKey: 'nav.analytics',
+    icon: <BarChartIcon size={18} />,
+    children: [{ to: '/analytics', labelKey: 'nav.analytics' }],
+  },
   {
     key: 'dealership',
     labelKey: 'nav.dealership',

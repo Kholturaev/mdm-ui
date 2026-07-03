@@ -26,12 +26,96 @@
     "showingRange": "<b>{{total}}</b> ta natijadan <b>{{start}}-{{end}}</b> oralig'idagilari ko'rsatilmoqda"
   },
   "nav": {
+    "analytics": "Analitika",
     "dealership": "Diler",
     "dealers": "Dilerlar",
     "nsi": "NSI",
     "nomenclature": "Nomenklatura",
     "collapseSidebar": "Panelni yig'ish",
     "expandSidebar": "Panelni yoyish"
+  },
+  "analytics": {
+    "title": "Analitika",
+    "subtitle": "Barcha tashqi tizimlar bo'yicha ma'lumotlar holati",
+    "updatedAt": "Yangilandi: {{time}}",
+    "period": {
+      "7d": "7 kun",
+      "30d": "30 kun",
+      "90d": "90 kun"
+    },
+    "units": {
+      "hours": "{{count}} soat",
+      "days": "{{count}} kun"
+    },
+    "stats": {
+      "total": "Jami nomenklatura",
+      "totalSubtext": "{{count}} ta tizimga ulangan",
+      "fullySynced": "To'liq sinxron",
+      "fullySyncedSubtext": "{{count}}/{{count}} tizimda mavjud",
+      "partial": "Qisman taqsimlangan",
+      "partialSubtext": "{{pending}} kutilmoqda • {{error}} xato",
+      "unconnected": "Hech bir tizimda yo'q",
+      "unconnectedSubtext": "Darhol e'tibor talab qiladi"
+    },
+    "attention": {
+      "title": "E'tibor talab qiladi",
+      "allClear": "Diqqat talab qiladigan muammolar yo'q",
+      "unconnected": {
+        "title": "{{count}} mahsulot hech bir tizimda yo'q",
+        "desc": "Hali birorta tashqi tizimga yuborilmagan",
+        "cta": "Taqsimlash"
+      },
+      "syncErrors": {
+        "title": "{{count}} mahsulotda yuborish xatosi",
+        "desc": "Tizim javob bermadi — qayta urinish kerak",
+        "cta": "Qayta urinish"
+      },
+      "pendingSync": {
+        "title": "{{count}} mahsulot sinxron kutmoqda",
+        "desc": "Navbatda — odatda 1-2 daqiqada yetadi",
+        "cta": "Ko'rish"
+      }
+    },
+    "coverage": {
+      "title": "Tizimlar qamrovi",
+      "legend": {
+        "synced": "Sinxron",
+        "pending": "Kutilmoqda",
+        "error": "Xato"
+      }
+    },
+    "trend": {
+      "title": "Sinxronlash dinamikasi",
+      "subtitle": "Xatolik darajasi: {{rate}}%",
+      "success": "Muvaffaqiyatli",
+      "errors": "Xatolar"
+    },
+    "completeness": {
+      "title": "Ma'lumotlar to'liqligi",
+      "fullComplete": "To'liq to'ldirilgan",
+      "partial": "Qisman to'ldirilgan",
+      "incomplete": "Yetarli emas"
+    },
+    "performance": {
+      "title": "Operatsion tezlik",
+      "timeToMarket": "Bozorga chiqish vaqti",
+      "mttr": "O'rtacha tiklash vaqti"
+    },
+    "dataQuality": {
+      "title": "Ma'lumotlar sifati",
+      "duplicates": "{{count}} ta dublikat guruh",
+      "duplicatesDesc": "{{count}} ta mahsulotga ta'sir qiladi",
+      "validationErrors": "{{count}} ta validatsiya xatosi",
+      "validationErrorsDesc": "Majburiy maydonlar to'ldirilmagan"
+    },
+    "recentActivity": {
+      "title": "So'nggi faoliyat",
+      "syncCompleted": "{{system}} tizimi bilan sinxronlash yakunlandi",
+      "syncFailed": "{{system}} tizimiga yuborishda xatolik yuz berdi",
+      "productUpdated": "{{actor}} mahsulotni yangiladi",
+      "bulkImport": "{{actor}} fayldan mahsulotlarni import qildi",
+      "productCreated": "{{actor}} yangi mahsulot qo'shdi"
+    }
   },
   "auth": {
     "login": "Kirish",

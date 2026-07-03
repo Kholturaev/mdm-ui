@@ -9,6 +9,8 @@ export * from './Field';
 export * from './Table';
 export * from './Modal';
 export * from './Menu';
+export * from './Card';
+export * from './Progress';
 export { Spinner } from './Spinner';
 export { LoadingBar } from './LoadingBar';
 export { HighlightMatch } from './HighlightMatch';
