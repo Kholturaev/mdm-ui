@@ -31,6 +31,9 @@
     "dealers": "Дилеры",
     "nsi": "НСИ",
     "nomenclature": "Номенклатура",
+    "access": "Контроль доступа",
+    "users": "Пользователи",
+    "roles": "Роли",
     "collapseSidebar": "Свернуть панель",
     "expandSidebar": "Развернуть панель"
   },
@@ -119,9 +122,18 @@
   },
   "auth": {
     "login": "Войти",
+    "logout": "Выйти",
     "username": "Логин",
     "password": "Пароль",
     "loginFailed": "Неверный логин или пароль"
+  },
+  "header": {
+    "systemHealth": {
+      "healthy": "Системы в порядке",
+      "warning": "Требует внимания",
+      "critical": "Требуется немедленное внимание",
+      "syncedSuffix": "{{percent}}% синхронизировано"
+    }
   },
   "dealer": {
     "title": "Дилеры",
@@ -193,5 +205,68 @@
     "serverError": "Ошибка сервера",
     "saved": "Сохранено",
     "deleted": "Удалено"
+  },
+  "role": {
+    "title": "Роли",
+    "name": "Название",
+    "description": "Описание",
+    "permissions": "Права",
+    "users": "Пользователи",
+    "addRole": "Добавить роль",
+    "createTitle": "Новая роль",
+    "editTitle": "Редактировать роль",
+    "userCount": "{{count}} польз.",
+    "backToList": "Назад к списку ролей",
+    "permissionCount": "{{count}}/{{total}} прав",
+    "permissionsTitle": "Права доступа",
+    "permissionsSubtitle": "Права, закреплённые за этой ролью — изменения вступают в силу только после нажатия «Сохранить»",
+    "permissionsAfterCreateHint": "Права назначаются на странице роли после её создания"
+  },
+  "user": {
+    "title": "Пользователи",
+    "name": "ФИО",
+    "email": "Эл. почта",
+    "roles": "Роли",
+    "status": "Статус",
+    "lastLogin": "Последний вход",
+    "neverLoggedIn": "Ещё не входил",
+    "addUser": "Добавить пользователя",
+    "createTitle": "Новый пользователь",
+    "editTitle": "Редактировать пользователя",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "username": "Логин",
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "backToList": "Назад к списку пользователей",
+    "createdAt": "Зарегистрирован: {{date}}",
+    "tabOverview": "Общее",
+    "tabPermissions": "Права",
+    "rolesTitle": "Роли",
+    "rolesSubtitle": "Все права пользователя формируются из ролей, назначенных здесь",
+    "permissionsTitle": "Действующие права",
+    "permissionsSubtitle": "Только просмотр — чтобы изменить, отредактируйте роли выше"
+  },
+  "permission": {
+    "search": "Поиск права",
+    "selectedCount": "{{count}}/{{total}} выбрано",
+    "modules": {
+      "DEALER": "Дилеры",
+      "NOMENCLATURE": "Номенклатура",
+      "ANALYTICS": "Аналитика",
+      "USER": "Пользователи",
+      "ROLE": "Роли"
+    },
+    "actions": {
+      "CREATE": "Создание",
+      "READ": "Просмотр",
+      "UPDATE": "Редактирование",
+      "DELETE": "Удаление",
+      "EXPORT": "Экспорт",
+      "VIEW": "Просмотр",
+      "ASSIGN_ROLE": "Назначение роли",
+      "RESET_PASSWORD": "Сброс пароля",
+      "ASSIGN_PERMISSIONS": "Назначение прав"
+    }
   }
 }

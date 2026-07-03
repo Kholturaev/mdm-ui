@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '@shared/ui/Card';
 import { Progress } from '@shared/ui/Progress';
 import { cn } from '@shared/lib/cn';
@@ -12,6 +13,8 @@ type StatTileProps = {
   progressValue: number;
   progressMax: number;
   progressClassName: string;
+  /** When set, the whole tile links here — e.g. the same product list filtered to this bucket. */
+  to?: string;
 };
 
 export function StatTile({
@@ -23,9 +26,16 @@ export function StatTile({
   progressValue,
   progressMax,
   progressClassName,
+  to,
 }: StatTileProps) {
-  return (
-    <Card className="flex flex-col gap-3">
+  const card = (
+    <Card
+      className={cn(
+        'flex flex-col gap-3',
+        to &&
+          'hover:border-border-strong hover:bg-surface-hover transition-colors',
+      )}
+    >
       <div className="flex items-center justify-between">
         <span className="text-fg-muted text-xs font-medium tracking-wide uppercase">
           {label}
@@ -51,5 +61,12 @@ export function StatTile({
         segments={[{ value: progressValue, className: progressClassName }]}
       />
     </Card>
+  );
+
+  if (!to) return card;
+  return (
+    <Link to={to} className="block">
+      {card}
+    </Link>
   );
 }

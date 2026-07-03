@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { AnalyticsTotals } from '@entities/analytics/model/types';
+import { buildNomenclatureLink } from '@shared/lib/nomenclatureLink';
 import { PackageIcon } from '@shared/ui/icons/PackageIcon';
 import { CheckCircleIcon } from '@shared/ui/icons/CheckCircleIcon';
 import { AlertTriangleIcon } from '@shared/ui/icons/AlertTriangleIcon';
@@ -26,6 +27,7 @@ export function StatTilesRow({ totals }: StatTilesRowProps) {
         progressValue={totals.connectedProductsCount}
         progressMax={totals.totalProducts}
         progressClassName="bg-fg"
+        to={buildNomenclatureLink()}
       />
       <StatTile
         label={t('analytics.stats.fullySynced')}
@@ -38,6 +40,7 @@ export function StatTilesRow({ totals }: StatTilesRowProps) {
         progressValue={totals.fullySyncedCount}
         progressMax={totals.totalProducts}
         progressClassName="bg-success"
+        to={buildNomenclatureLink({ sync: 'full' })}
       />
       <StatTile
         label={t('analytics.stats.partial')}
@@ -51,6 +54,7 @@ export function StatTilesRow({ totals }: StatTilesRowProps) {
         progressValue={totals.partialCount}
         progressMax={totals.totalProducts}
         progressClassName="bg-warning"
+        to={buildNomenclatureLink({ sync: 'partial' })}
       />
       <StatTile
         label={t('analytics.stats.unconnected')}
@@ -61,6 +65,7 @@ export function StatTilesRow({ totals }: StatTilesRowProps) {
         progressValue={totals.unconnectedCount}
         progressMax={totals.totalProducts}
         progressClassName="bg-danger"
+        to={buildNomenclatureLink({ sync: 'none' })}
       />
     </div>
   );

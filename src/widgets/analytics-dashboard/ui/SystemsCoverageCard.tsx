@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import type { SystemCoverageItem } from '@entities/analytics/model/types';
 import { Card, CardHeader } from '@shared/ui/Card';
 import { Progress } from '@shared/ui/Progress';
 import { LayersIcon } from '@shared/ui/icons/LayersIcon';
 import { systemAbbr } from '@shared/lib/systemAbbr';
+import { buildNomenclatureLink } from '@shared/lib/nomenclatureLink';
 
 type SystemsCoverageCardProps = {
   systems: SystemCoverageItem[];
@@ -44,7 +46,11 @@ export function SystemsCoverageCard({ systems }: SystemsCoverageCardProps) {
           const covered =
             system.syncedCount + system.pendingCount + system.errorCount;
           return (
-            <div key={system.systemId}>
+            <Link
+              key={system.systemId}
+              to={buildNomenclatureLink({ systemId: system.systemId })}
+              className="hover:bg-surface-hover -mx-2 block rounded-md px-2 py-1 transition-colors"
+            >
               <div className="mb-1.5 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="bg-primary/10 text-primary flex size-6 shrink-0 items-center justify-center rounded text-[10px] font-semibold">
@@ -66,7 +72,7 @@ export function SystemsCoverageCard({ systems }: SystemsCoverageCardProps) {
                   { value: system.errorCount, className: 'bg-danger' },
                 ]}
               />
-            </div>
+            </Link>
           );
         })}
       </div>

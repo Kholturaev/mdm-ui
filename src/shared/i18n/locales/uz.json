@@ -31,6 +31,9 @@
     "dealers": "Dilerlar",
     "nsi": "NSI",
     "nomenclature": "Nomenklatura",
+    "access": "Kirish nazorati",
+    "users": "Foydalanuvchilar",
+    "roles": "Rollar",
     "collapseSidebar": "Panelni yig'ish",
     "expandSidebar": "Panelni yoyish"
   },
@@ -119,9 +122,18 @@
   },
   "auth": {
     "login": "Kirish",
+    "logout": "Chiqish",
     "username": "Login",
     "password": "Parol",
     "loginFailed": "Login yoki parol noto'g'ri"
+  },
+  "header": {
+    "systemHealth": {
+      "healthy": "Tizimlar sog'lom",
+      "warning": "E'tibor talab qilinadi",
+      "critical": "Darhol e'tibor kerak",
+      "syncedSuffix": "{{percent}}% sinxron"
+    }
   },
   "dealer": {
     "title": "Dilerlar",
@@ -193,5 +205,68 @@
     "serverError": "Server xatosi",
     "saved": "Saqlandi",
     "deleted": "O'chirildi"
+  },
+  "role": {
+    "title": "Rollar",
+    "name": "Nomi",
+    "description": "Tavsif",
+    "permissions": "Ruxsatlar",
+    "users": "Foydalanuvchilar",
+    "addRole": "Rol qo'shish",
+    "createTitle": "Yangi rol",
+    "editTitle": "Rolni tahrirlash",
+    "userCount": "{{count}} ta foydalanuvchi",
+    "backToList": "Rollar ro'yxatiga qaytish",
+    "permissionCount": "{{count}}/{{total}} ruxsat",
+    "permissionsTitle": "Ruxsatlar",
+    "permissionsSubtitle": "Ushbu rolga biriktirilgan ruxsatlar — o'zgartirish darhol saqlanmaydi, \"Saqlash\" bosilgach kuchga kiradi",
+    "permissionsAfterCreateHint": "Ruxsatlarni rol yaratilgach, uning sahifasida biriktirasiz"
+  },
+  "user": {
+    "title": "Foydalanuvchilar",
+    "name": "F.I.Sh.",
+    "email": "Elektron pochta",
+    "roles": "Rollar",
+    "status": "Holati",
+    "lastLogin": "Oxirgi kirish",
+    "neverLoggedIn": "Hali kirmagan",
+    "addUser": "Foydalanuvchi qo'shish",
+    "createTitle": "Yangi foydalanuvchi",
+    "editTitle": "Foydalanuvchini tahrirlash",
+    "firstName": "Ism",
+    "lastName": "Familiya",
+    "username": "Login",
+    "active": "Faol",
+    "inactive": "Nofaol",
+    "backToList": "Foydalanuvchilar ro'yxatiga qaytish",
+    "createdAt": "Ro'yxatdan o'tgan: {{date}}",
+    "tabOverview": "Umumiy",
+    "tabPermissions": "Ruxsatlar",
+    "rolesTitle": "Rollar",
+    "rolesSubtitle": "Foydalanuvchining barcha ruxsatlari shu yerdagi rollardan keladi",
+    "permissionsTitle": "Amaldagi ruxsatlar",
+    "permissionsSubtitle": "Faqat ko'rish uchun — o'zgartirish uchun yuqoridagi rollarni tahrirlang"
+  },
+  "permission": {
+    "search": "Ruxsatni qidirish",
+    "selectedCount": "{{count}}/{{total}} tanlangan",
+    "modules": {
+      "DEALER": "Dilerlar",
+      "NOMENCLATURE": "Nomenklatura",
+      "ANALYTICS": "Analitika",
+      "USER": "Foydalanuvchilar",
+      "ROLE": "Rollar"
+    },
+    "actions": {
+      "CREATE": "Yaratish",
+      "READ": "Ko'rish",
+      "UPDATE": "Tahrirlash",
+      "DELETE": "O'chirish",
+      "EXPORT": "Eksport qilish",
+      "VIEW": "Ko'rish",
+      "ASSIGN_ROLE": "Rol biriktirish",
+      "RESET_PASSWORD": "Parolni tiklash",
+      "ASSIGN_PERMISSIONS": "Ruxsatlarni biriktirish"
+    }
   }
 }

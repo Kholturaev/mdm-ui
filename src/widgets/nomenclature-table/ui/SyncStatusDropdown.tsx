@@ -9,7 +9,7 @@ import { AlertTriangleIcon } from '@shared/ui/icons/AlertTriangleIcon';
 import { XCircleIcon } from '@shared/ui/icons/XCircleIcon';
 import { ClockIcon } from '@shared/ui/icons/ClockIcon';
 import { LayersIcon } from '@shared/ui/icons/LayersIcon';
-import type { SyncStatusFilter } from '../model/types';
+import type { SyncStatusFilter } from '@shared/lib/nomenclatureLink';
 
 const SYNC_STATUS_OPTIONS: {
   value: SyncStatusFilter;

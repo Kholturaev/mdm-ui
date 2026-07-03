@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@app/store';
-import { setAuthenticated } from '@app/store/auth/authSlice';
+import { login } from '@app/store/auth/authSlice';
 import { Button } from '@shared/ui/Button';
 import { FormInput, FormPasswordInput } from '@shared/ui/form';
 import { parseApiError } from '@shared/api/parseApiError';
@@ -24,8 +24,8 @@ export function LoginForm() {
   const onSubmit = async (values: SignInRequest) => {
     try {
       await signIn(values).unwrap();
-      dispatch(setAuthenticated(true));
-      navigate('/dealers', { replace: true });
+      dispatch(login({ username: values.username }));
+      navigate('/analytics', { replace: true });
     } catch (error) {
       const message =
         parseApiError(error as ApiException) || t('auth.loginFailed');

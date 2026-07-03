@@ -7,6 +7,7 @@ import { cn } from '@shared/lib/cn';
 import { BuildingIcon } from '@shared/ui/icons/BuildingIcon';
 import { LayersIcon } from '@shared/ui/icons/LayersIcon';
 import { BarChartIcon } from '@shared/ui/icons/BarChartIcon';
+import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 
 type NavChild = { to: string; labelKey: string };
@@ -36,6 +37,15 @@ const NAV_GROUPS: NavGroup[] = [
     labelKey: 'nav.nsi',
     icon: <LayersIcon size={18} />,
     children: [{ to: '/nomenclature', labelKey: 'nav.nomenclature' }],
+  },
+  {
+    key: 'access',
+    labelKey: 'nav.access',
+    icon: <ShieldIcon size={18} />,
+    children: [
+      { to: '/access/users', labelKey: 'nav.users' },
+      { to: '/access/roles', labelKey: 'nav.roles' },
+    ],
   },
 ];
 

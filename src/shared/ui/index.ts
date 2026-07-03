@@ -11,6 +11,8 @@ export * from './Modal';
 export * from './Menu';
 export * from './Card';
 export * from './Progress';
+export * from './Tabs';
+export * from './Avatar';
 export { Spinner } from './Spinner';
 export { LoadingBar } from './LoadingBar';
 export { HighlightMatch } from './HighlightMatch';

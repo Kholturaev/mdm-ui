@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { useGetProductsQuery } from '@entities/product/api/productApi';
 import { useGetExternalSystemsQuery } from '@entities/external-system/api/externalSystemApi';
 import {
@@ -13,23 +14,42 @@ import type { SortDirection } from '@shared/ui/Table';
 import { Button } from '@shared/ui/Button';
 import { PlusIcon } from '@shared/ui/icons/PlusIcon';
 import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
+import type { SyncStatusFilter } from '@shared/lib/nomenclatureLink';
 import { FILTER_KEY_BY_COLUMN } from '../lib/constants';
-import type { SyncStatusFilter } from '../model/types';
 import { SyncStatusDropdown } from './SyncStatusDropdown';
 import { SystemMultiSelect } from './SystemMultiSelect';
 import { useNomenclatureColumns } from './useNomenclatureColumns';
 
+const SYNC_STATUS_VALUES: SyncStatusFilter[] = [
+  'all',
+  'full',
+  'partial',
+  'error',
+  'none',
+];
+
 export function NomenclatureTable() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>(
     {},
   );
   const debouncedColumnFilters = useDebouncedValue(columnFilters);
-  const [systemFilter, setSystemFilter] = useState<number[]>([]);
-  const [syncStatusFilter, setSyncStatusFilter] =
-    useState<SyncStatusFilter>('all');
+  // Seeded once from the URL so links from elsewhere (e.g. the analytics
+  // dashboard's attention/coverage cards) land here pre-filtered — deep
+  // linking only, not kept in sync as the user changes filters afterwards.
+  const [systemFilter, setSystemFilter] = useState<number[]>(() => {
+    const systemId = Number(searchParams.get('system'));
+    return Number.isInteger(systemId) && systemId > 0 ? [systemId] : [];
+  });
+  const [syncStatusFilter, setSyncStatusFilter] = useState<SyncStatusFilter>(
+    () => {
+      const value = searchParams.get('sync') as SyncStatusFilter | null;
+      return value && SYNC_STATUS_VALUES.includes(value) ? value : 'all';
+    },
+  );
 
   const { data: externalSystemsData } = useGetExternalSystemsQuery({
     page: 0,
