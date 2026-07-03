@@ -1,7 +1,6 @@
 import type {
   AnalyticsOverview,
   AnalyticsPeriod,
-  PerformanceTrendPoint,
   TrendPoint,
 } from '../model/types';
 
@@ -27,23 +26,6 @@ function buildTrend(days: number): TrendPoint[] {
     );
     const errorCount = Math.round(2 + Math.random() * (isWeekend ? 3 : 6));
     return { date: isoDate(daysAgo), successCount, errorCount };
-  });
-}
-
-function buildPerformanceTrend(
-  days: number,
-  avg: number,
-  spread: number,
-): PerformanceTrendPoint[] {
-  return Array.from({ length: days }, (_, index) => {
-    const daysAgo = days - 1 - index;
-    const avgHours = Math.max(
-      0.5,
-      avg +
-        Math.sin(index / 4) * spread +
-        (Math.random() - 0.5) * spread * 0.25,
-    );
-    return { date: isoDate(daysAgo), avgHours: Number(avgHours.toFixed(1)) };
   });
 }
 
@@ -138,79 +120,35 @@ export function generateAnalyticsOverview(
       partial: 11,
       incomplete: 4,
     },
-    performance: {
-      timeToMarket: {
-        avgHours: 6.4,
-        trend: buildPerformanceTrend(days, 6.4, 2.5),
-      },
-      mttr: {
-        avgHours: 2.1,
-        trend: buildPerformanceTrend(days, 2.1, 1.2),
-      },
+    conflicts: {
+      totalCount: 7,
+      items: [
+        {
+          productId: 101,
+          productName: 'Montaj kopik 750ml professional',
+          field: 'PRICE',
+          severity: 'warning',
+          values: [
+            { systemName: 'SAP', value: '42 000' },
+            { systemName: '1C', value: '45 000' },
+          ],
+        },
+        {
+          productId: 102,
+          productName: 'Plastik podkladka 6mm 150x50mm',
+          field: 'UNIT',
+          severity: 'warning',
+          values: [
+            { systemName: 'SAP', value: 'mm' },
+            { systemName: 'WMS', value: 'sm' },
+          ],
+        },
+      ],
     },
     dataQuality: {
       duplicateGroups: 3,
       affectedProducts: 7,
       validationErrorCount: 12,
     },
-    recentActivity: [
-      {
-        id: '1',
-        actionType: 'SYNC',
-        actor: 'SAP',
-        description: 'recentActivity.syncCompleted',
-        systemName: 'SAP',
-        timestamp: minutesAgo(6),
-      },
-      {
-        id: '2',
-        actionType: 'UPDATE',
-        actor: 'a.tursunov',
-        description: 'recentActivity.productUpdated',
-        timestamp: minutesAgo(24),
-      },
-      {
-        id: '3',
-        actionType: 'SYNC',
-        actor: 'B2B',
-        description: 'recentActivity.syncFailed',
-        systemName: 'B2B',
-        timestamp: minutesAgo(41),
-      },
-      {
-        id: '4',
-        actionType: 'IMPORT',
-        actor: 'sh.karimov',
-        description: 'recentActivity.bulkImport',
-        timestamp: hoursAgo(2),
-      },
-      {
-        id: '5',
-        actionType: 'CREATE',
-        actor: 'a.tursunov',
-        description: 'recentActivity.productCreated',
-        timestamp: hoursAgo(3),
-      },
-      {
-        id: '6',
-        actionType: 'SYNC',
-        actor: 'ESHOP',
-        description: 'recentActivity.syncCompleted',
-        systemName: 'ESHOP',
-        timestamp: hoursAgo(5),
-      },
-    ],
   };
-}
-
-function minutesAgo(minutes: number): string {
-  const date = new Date();
-  date.setMinutes(date.getMinutes() - minutes);
-  return date.toISOString();
-}
-
-function hoursAgo(hours: number): string {
-  const date = new Date();
-  date.setHours(date.getHours() - hours);
-  return date.toISOString();
 }

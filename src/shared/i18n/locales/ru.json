@@ -27,6 +27,7 @@
   },
   "nav": {
     "analytics": "Аналитика",
+    "audit": "Аудит",
     "dealership": "Дилер",
     "dealers": "Дилеры",
     "nsi": "НСИ",
@@ -45,10 +46,6 @@
       "7d": "7 дней",
       "30d": "30 дней",
       "90d": "90 дней"
-    },
-    "units": {
-      "hours": "{{count}} ч",
-      "days": "{{count}} дн"
     },
     "stats": {
       "total": "Всего номенклатуры",
@@ -99,10 +96,17 @@
       "partial": "Частично заполнено",
       "incomplete": "Недостаточно данных"
     },
-    "performance": {
-      "title": "Операционная скорость",
-      "timeToMarket": "Время выхода на рынок",
-      "mttr": "Среднее время восстановления"
+    "conflicts": {
+      "title": "Расхождение между системами",
+      "subtitle": "Один товар — разные значения в разных системах",
+      "countLabel": "товаров с расхождением",
+      "viewAll": "Смотреть все",
+      "differsAcross": "{{field}}: отличается в {{count}} системах",
+      "field": {
+        "PRICE": "Цена",
+        "UNIT": "Ед. изм.",
+        "BARCODE": "Штрихкод"
+      }
     },
     "dataQuality": {
       "title": "Качество данных",
@@ -110,14 +114,119 @@
       "duplicatesDesc": "Затрагивает {{count}} товаров",
       "validationErrors": "{{count}} ошибок валидации",
       "validationErrorsDesc": "Не заполнены обязательные поля"
+    }
+  },
+  "audit": {
+    "title": "Аудит",
+    "subtitle": "Активность команды, история изменений и здоровье системы — в одном месте",
+    "logTitle": "Журнал аудита",
+    "totalCount": "Всего: {{count}} записей",
+    "dashboardPeriod": {
+      "today": "Сегодня",
+      "todayYesterday": "Вчера + сегодня",
+      "7d": "7 дней",
+      "30d": "30 дней"
     },
-    "recentActivity": {
-      "title": "Последняя активность",
-      "syncCompleted": "Синхронизация с {{system}} завершена",
-      "syncFailed": "Ошибка отправки в {{system}}",
-      "productUpdated": "{{actor}} обновил товар",
-      "bulkImport": "{{actor}} импортировал товары из файла",
-      "productCreated": "{{actor}} добавил новый товар"
+    "stats": {
+      "actionsToday": "Действий сегодня",
+      "actionsTodaySubtext": "{{percent}}% ко вчера",
+      "actionsTodaySubtextFlat": "Как и вчера",
+      "totalUsers": "Всего пользователей",
+      "totalUsersSubtext": "{{count}} активных",
+      "pendingApprovals": "Ожидают подтверждения",
+      "pendingApprovalsSubtext": "ждут вашего решения",
+      "syncSuccess": "Успешность синхронизации",
+      "syncSuccessSubtext": "за последние 24 часа"
+    },
+    "trend": {
+      "title": "Динамика активности",
+      "subtitle": "Количество изменений в день — последние {{count}} дней",
+      "tooltipCount": "{{count}} действий",
+      "today": "Сегодня",
+      "breakdownTitle": "Типы действий ({{count}} дней)"
+    },
+    "approvals": {
+      "title": "Очередь на подтверждение",
+      "empty": "Нет запросов, ожидающих подтверждения",
+      "approve": "Подтвердить",
+      "reject": "Отклонить",
+      "kind": {
+        "priceChange": "Изменение цены",
+        "deleteRequest": "Запрос на удаление"
+      }
+    },
+    "team": {
+      "title": "Активность команды",
+      "today": "сегодня",
+      "actionCount": "{{count}} действий"
+    },
+    "recentTitle": "История действий",
+    "viewAll": "Смотреть все",
+    "viewChanges": "Смотреть изменения ({{count}})",
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "empty": "За этот период действий не зафиксировано",
+    "systemActor": "Система (автоматически)",
+    "reason": "Причина",
+    "noChanges": "Подробные изменения не зафиксированы",
+    "changesModalTitle": "Детали изменений",
+    "filters": {
+      "dateFrom": "С даты",
+      "dateTo": "По дату",
+      "person": "Сотрудник",
+      "personAll": "Все сотрудники",
+      "actionType": "Тип действия",
+      "actionTypeAll": "Все",
+      "searchPlaceholder": "Поиск по объекту или сотруднику"
+    },
+    "columns": {
+      "time": "Время",
+      "actor": "Кто",
+      "action": "Действие",
+      "record": "Объект",
+      "details": "Подробности",
+      "changes": "Изменения",
+      "status": "Статус",
+      "field": "Поле",
+      "oldValue": "Старое значение",
+      "newValue": "Новое значение"
+    },
+    "action": {
+      "CREATE": "Создание",
+      "UPDATE": "Изменение",
+      "DELETE": "Удаление",
+      "SYNC": "Распределение",
+      "IMPORT": "Импорт",
+      "EXPORT": "Экспорт",
+      "APPROVE": "Подтверждение",
+      "REJECT": "Отклонение",
+      "LOGIN": "Вход"
+    },
+    "status": {
+      "SUCCESS": "Успешно",
+      "FAILED": "Ошибка"
+    },
+    "entityType": {
+      "PRODUCT": "Товар",
+      "DEALER": "Партнёр",
+      "UNIT": "Ед. измерения",
+      "SEGMENT": "Сегмент",
+      "USER": "Пользователь",
+      "ROLE": "Роль",
+      "SESSION": "Сессия"
+    },
+    "feed": {
+      "create": "{{actor}} добавил новый объект: {{record}}",
+      "createWithSystems": "{{actor}} добавил новый товар «{{record}}» → отправлено в {{systems}}",
+      "update": "{{actor}} обновил данные «{{record}}»",
+      "delete": "{{actor}} удалил «{{record}}»",
+      "approve": "{{actor}} подтвердил изменение по «{{record}}»",
+      "reject": "{{actor}} отклонил изменение по «{{record}}» — причина: {{reason}}",
+      "login": "{{actor}} вошёл в систему — IP {{ip}}",
+      "syncSuccess": "«{{record}}» синхронизирован с {{systems}}",
+      "syncFailed": "«{{record}}» не отправлен в {{systems}} ({{reason}})",
+      "import": "{{actor}} импортировал из файла: {{record}}",
+      "export": "{{actor}} экспортировал: {{record}}"
     }
   },
   "auth": {

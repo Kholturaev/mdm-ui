@@ -27,6 +27,7 @@
   },
   "nav": {
     "analytics": "Analitika",
+    "audit": "Audit",
     "dealership": "Diler",
     "dealers": "Dilerlar",
     "nsi": "NSI",
@@ -45,10 +46,6 @@
       "7d": "7 kun",
       "30d": "30 kun",
       "90d": "90 kun"
-    },
-    "units": {
-      "hours": "{{count}} soat",
-      "days": "{{count}} kun"
     },
     "stats": {
       "total": "Jami nomenklatura",
@@ -99,10 +96,17 @@
       "partial": "Qisman to'ldirilgan",
       "incomplete": "Yetarli emas"
     },
-    "performance": {
-      "title": "Operatsion tezlik",
-      "timeToMarket": "Bozorga chiqish vaqti",
-      "mttr": "O'rtacha tiklash vaqti"
+    "conflicts": {
+      "title": "Tizimlararo qarama-qarshilik",
+      "subtitle": "Bir mahsulot — turli tizimda turli qiymat",
+      "countLabel": "ta mahsulotda ziddiyat",
+      "viewAll": "Barchasini ko'rish",
+      "differsAcross": "{{field}}: {{count}} tizimda farqli",
+      "field": {
+        "PRICE": "Narx",
+        "UNIT": "O'lchov",
+        "BARCODE": "Shtrix-kod"
+      }
     },
     "dataQuality": {
       "title": "Ma'lumotlar sifati",
@@ -110,14 +114,119 @@
       "duplicatesDesc": "{{count}} ta mahsulotga ta'sir qiladi",
       "validationErrors": "{{count}} ta validatsiya xatosi",
       "validationErrorsDesc": "Majburiy maydonlar to'ldirilmagan"
+    }
+  },
+  "audit": {
+    "title": "Audit",
+    "subtitle": "Jamoa faoliyati, o'zgarishlar tarixi va tizim salomatligi — bir joyda",
+    "logTitle": "Audit jurnali",
+    "totalCount": "Jami: {{count}} ta yozuv",
+    "dashboardPeriod": {
+      "today": "Bugun",
+      "todayYesterday": "Kecha + Bugun",
+      "7d": "7 kun",
+      "30d": "30 kun"
     },
-    "recentActivity": {
-      "title": "So'nggi faoliyat",
-      "syncCompleted": "{{system}} tizimi bilan sinxronlash yakunlandi",
-      "syncFailed": "{{system}} tizimiga yuborishda xatolik yuz berdi",
-      "productUpdated": "{{actor}} mahsulotni yangiladi",
-      "bulkImport": "{{actor}} fayldan mahsulotlarni import qildi",
-      "productCreated": "{{actor}} yangi mahsulot qo'shdi"
+    "stats": {
+      "actionsToday": "Bugungi amallar",
+      "actionsTodaySubtext": "{{percent}}% kechagidan",
+      "actionsTodaySubtextFlat": "Kecha bilan bir xil",
+      "totalUsers": "Jami foydalanuvchilar",
+      "totalUsersSubtext": "{{count}} ta faol",
+      "pendingApprovals": "Tasdiqlash kutilmoqda",
+      "pendingApprovalsSubtext": "sizning tasdig'ingizni kutmoqda",
+      "syncSuccess": "Sinxron muvaffaqiyat",
+      "syncSuccessSubtext": "oxirgi 24 soat"
+    },
+    "trend": {
+      "title": "Faoliyat dinamikasi",
+      "subtitle": "Kunlik o'zgarishlar soni — oxirgi {{count}} kun",
+      "tooltipCount": "{{count}} ta amal",
+      "today": "Bugun",
+      "breakdownTitle": "Amal turlari ({{count}} kun)"
+    },
+    "approvals": {
+      "title": "Tasdiqlash navbati",
+      "empty": "Tasdiqlash kutayotgan so'rovlar yo'q",
+      "approve": "Tasdiqlash",
+      "reject": "Rad etish",
+      "kind": {
+        "priceChange": "Narx o'zgarishi",
+        "deleteRequest": "O'chirish so'rovi"
+      }
+    },
+    "team": {
+      "title": "Jamoa faolligi",
+      "today": "bugun",
+      "actionCount": "{{count}} amal"
+    },
+    "recentTitle": "Faoliyat tarixi",
+    "viewAll": "Barchasini ko'rish",
+    "viewChanges": "O'zgarishlarni ko'rish ({{count}})",
+    "today": "Bugun",
+    "yesterday": "Kecha",
+    "empty": "Bu davrda hech qanday amal qayd etilmagan",
+    "systemActor": "Tizim (avtomatik)",
+    "reason": "Sabab",
+    "noChanges": "Batafsil o'zgarishlar qayd etilmagan",
+    "changesModalTitle": "O'zgarishlar tafsiloti",
+    "filters": {
+      "dateFrom": "Sanadan",
+      "dateTo": "Sanagacha",
+      "person": "Xodim",
+      "personAll": "Barcha xodimlar",
+      "actionType": "Amal turi",
+      "actionTypeAll": "Barchasi",
+      "searchPlaceholder": "Obyekt yoki xodim bo'yicha qidirish"
+    },
+    "columns": {
+      "time": "Vaqt",
+      "actor": "Kim",
+      "action": "Amal",
+      "record": "Obyekt",
+      "details": "Tafsilot",
+      "changes": "O'zgarishlar",
+      "status": "Holati",
+      "field": "Maydon",
+      "oldValue": "Eski qiymat",
+      "newValue": "Yangi qiymat"
+    },
+    "action": {
+      "CREATE": "Yaratish",
+      "UPDATE": "O'zgartirish",
+      "DELETE": "O'chirish",
+      "SYNC": "Taqsimlash",
+      "IMPORT": "Import",
+      "EXPORT": "Eksport",
+      "APPROVE": "Tasdiqlash",
+      "REJECT": "Rad etish",
+      "LOGIN": "Kirish"
+    },
+    "status": {
+      "SUCCESS": "Muvaffaqiyatli",
+      "FAILED": "Xato"
+    },
+    "entityType": {
+      "PRODUCT": "Mahsulot",
+      "DEALER": "Sherik",
+      "UNIT": "O'lchov birligi",
+      "SEGMENT": "Segment",
+      "USER": "Foydalanuvchi",
+      "ROLE": "Rol",
+      "SESSION": "Sessiya"
+    },
+    "feed": {
+      "create": "{{actor}} yangi {{record}} qo'shdi",
+      "createWithSystems": "{{actor}} yangi {{record}} qo'shdi → {{systems}} ga yuborildi",
+      "update": "{{actor}} {{record}} ma'lumotlarini yangiladi",
+      "delete": "{{actor}} {{record}} o'chirdi",
+      "approve": "{{actor}} {{record}} bo'yicha o'zgarishni tasdiqladi",
+      "reject": "{{actor}} {{record}} bo'yicha o'zgarishni rad etdi — sabab: {{reason}}",
+      "login": "{{actor}} tizimga kirdi — IP {{ip}}",
+      "syncSuccess": "{{record}} {{systems}} bilan sinxronlandi",
+      "syncFailed": "{{record}} {{systems}} ga yuborilmadi ({{reason}})",
+      "import": "{{actor}} fayldan {{record}}ni import qildi",
+      "export": "{{actor}} {{record}}ni eksport qildi"
     }
   },
   "auth": {

@@ -55,38 +55,32 @@ export interface CompletenessSummary {
   incomplete: number;
 }
 
-export interface PerformanceTrendPoint {
-  date: string;
-  avgHours: number;
+export type ConflictField = 'PRICE' | 'UNIT' | 'BARCODE';
+
+export interface ConflictSystemValue {
+  systemName: string;
+  value: string;
 }
 
-export interface PerformanceSummary {
-  timeToMarket: {
-    avgHours: number;
-    trend: PerformanceTrendPoint[];
-  };
-  mttr: {
-    avgHours: number;
-    trend: PerformanceTrendPoint[];
-  };
+export interface ProductConflict {
+  productId: number;
+  productName: string;
+  field: ConflictField;
+  severity: AttentionSeverity;
+  /** The differing value recorded in each system that disagrees — 2+ entries. */
+  values: ConflictSystemValue[];
+}
+
+export interface ConflictsSummary {
+  /** Full count across all systems — `items` below is only the top examples shown on the dashboard. */
+  totalCount: number;
+  items: ProductConflict[];
 }
 
 export interface DataQualitySummary {
   duplicateGroups: number;
   affectedProducts: number;
   validationErrorCount: number;
-}
-
-export type ActivityActionType =
-  'CREATE' | 'UPDATE' | 'DELETE' | 'SYNC' | 'IMPORT';
-
-export interface RecentActivityItem {
-  id: string;
-  actionType: ActivityActionType;
-  actor: string;
-  description: string;
-  systemName?: string;
-  timestamp: string;
 }
 
 export interface AnalyticsOverview {
@@ -96,7 +90,6 @@ export interface AnalyticsOverview {
   systemsCoverage: SystemCoverageItem[];
   trend: TrendPoint[];
   completeness: CompletenessSummary;
-  performance: PerformanceSummary;
+  conflicts: ConflictsSummary;
   dataQuality: DataQualitySummary;
-  recentActivity: RecentActivityItem[];
 }

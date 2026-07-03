@@ -11,9 +11,8 @@ import { AttentionPanel } from './AttentionPanel';
 import { SystemsCoverageCard } from './SystemsCoverageCard';
 import { TrendChartCard } from './TrendChartCard';
 import { CompletenessCard } from './CompletenessCard';
-import { PerformanceCard } from './PerformanceCard';
+import { DataConflictsCard } from './DataConflictsCard';
 import { DataQualityCard } from './DataQualityCard';
-import { RecentActivityCard } from './RecentActivityCard';
 import { PeriodToggle } from './PeriodToggle';
 
 export function AnalyticsDashboard() {
@@ -73,11 +72,12 @@ export function AnalyticsDashboard() {
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               <CompletenessCard completeness={data.completeness} />
-              <PerformanceCard performance={data.performance} />
+              <DataConflictsCard
+                totalCount={data.conflicts.totalCount}
+                items={data.conflicts.items}
+              />
               <DataQualityCard dataQuality={data.dataQuality} />
             </div>
-
-            <RecentActivityCard items={data.recentActivity} />
           </>
         )}
       </div>

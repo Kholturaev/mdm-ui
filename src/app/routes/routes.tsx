@@ -2,6 +2,8 @@ import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '@widgets/app-shell/ui/AppShell';
 import { LoginPage } from '@pages/LoginPage';
 import { AnalyticsPage } from '@pages/AnalyticsPage';
+import { AuditPage } from '@pages/AuditPage';
+import { AuditLogPage } from '@pages/AuditLogPage';
 import { DealersPage } from '@pages/DealersPage';
 import { NomenclaturePage } from '@pages/NomenclaturePage';
 import { UsersPage } from '@pages/UsersPage';
@@ -25,6 +27,8 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="/analytics" replace /> },
           { path: 'analytics', element: <AnalyticsPage /> },
+          { path: 'audit', element: <AuditPage /> },
+          { path: 'audit/log', element: <AuditLogPage /> },
           { path: 'dealers', element: <DealersPage /> },
           { path: 'nomenclature', element: <NomenclaturePage /> },
           { path: 'access/users', element: <UsersPage /> },

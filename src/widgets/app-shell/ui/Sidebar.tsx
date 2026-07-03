@@ -8,37 +8,60 @@ import { BuildingIcon } from '@shared/ui/icons/BuildingIcon';
 import { LayersIcon } from '@shared/ui/icons/LayersIcon';
 import { BarChartIcon } from '@shared/ui/icons/BarChartIcon';
 import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
+import { ActivityIcon } from '@shared/ui/icons/ActivityIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 
 type NavChild = { to: string; labelKey: string };
-type TooltipState = { groupKey: string; top: number; left: number };
+type TooltipState = { key: string; top: number; left: number };
 type NavGroup = {
+  kind: 'group';
   key: string;
   labelKey: string;
   icon: ReactNode;
   children: NavChild[];
 };
+type NavFlatLink = {
+  kind: 'link';
+  key: string;
+  labelKey: string;
+  icon: ReactNode;
+  to: string;
+};
+type NavEntry = NavGroup | NavFlatLink;
 
-const NAV_GROUPS: NavGroup[] = [
+// Not every section needs a parent/child dropdown — a flat `link` entry
+// (e.g. `audit`) navigates directly, with no expand/collapse chevron.
+const NAV_ITEMS: NavEntry[] = [
   {
+    kind: 'group',
     key: 'analytics',
     labelKey: 'nav.analytics',
     icon: <BarChartIcon size={18} />,
     children: [{ to: '/analytics', labelKey: 'nav.analytics' }],
   },
   {
+    kind: 'link',
+    key: 'audit',
+    labelKey: 'nav.audit',
+    icon: <ActivityIcon size={18} />,
+    to: '/audit',
+  },
+  {
+    kind: 'group',
     key: 'dealership',
     labelKey: 'nav.dealership',
     icon: <BuildingIcon size={18} />,
     children: [{ to: '/dealers', labelKey: 'nav.dealers' }],
   },
   {
+    kind: 'group',
     key: 'nsi',
     labelKey: 'nav.nsi',
     icon: <LayersIcon size={18} />,
     children: [{ to: '/nomenclature', labelKey: 'nav.nomenclature' }],
   },
   {
+    kind: 'group',
     key: 'access',
     labelKey: 'nav.access',
     icon: <ShieldIcon size={18} />,
@@ -51,8 +74,13 @@ const NAV_GROUPS: NavGroup[] = [
 
 const COLLAPSE_STORAGE_KEY = 'mdm:sidebar-collapsed';
 
-function isGroupActive(group: NavGroup, pathname: string) {
-  return group.children.some((child) => pathname.startsWith(child.to));
+function isEntryActive(entry: NavEntry, pathname: string): boolean {
+  if (entry.kind === 'link') return pathname.startsWith(entry.to);
+  return entry.children.some((child) => pathname.startsWith(child.to));
+}
+
+function primaryTo(entry: NavEntry): string {
+  return entry.kind === 'link' ? entry.to : entry.children[0].to;
 }
 
 export function Sidebar() {
@@ -64,7 +92,9 @@ export function Sidebar() {
   );
 
   const activeGroupKey =
-    NAV_GROUPS.find((group) => isGroupActive(group, pathname))?.key ?? null;
+    NAV_ITEMS.find(
+      (entry) => entry.kind === 'group' && isEntryActive(entry, pathname),
+    )?.key ?? null;
 
   // Track the route's active group so navigation (not just clicks) can open
   // its section — adjusted during render instead of an effect, per
@@ -120,20 +150,19 @@ export function Sidebar() {
       </button>
 
       <nav className="flex flex-col gap-1 overflow-y-auto p-2">
-        {NAV_GROUPS.map((group) => {
-          const active = isGroupActive(group, pathname);
-          const isOpen = openGroupKey === group.key;
+        {NAV_ITEMS.map((entry) => {
+          const active = isEntryActive(entry, pathname);
 
           if (collapsed) {
             return (
               <NavLink
-                key={group.key}
-                to={group.children[0].to}
+                key={entry.key}
+                to={primaryTo(entry)}
                 onClick={() => setCollapsed(false)}
                 onMouseEnter={(event) => {
                   const rect = event.currentTarget.getBoundingClientRect();
                   setTooltip({
-                    groupKey: group.key,
+                    key: entry.key,
                     top: rect.top + rect.height / 2,
                     left: rect.right + 8,
                   });
@@ -146,18 +175,38 @@ export function Sidebar() {
                     : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
                 )}
               >
-                {group.icon}
+                {entry.icon}
               </NavLink>
             );
           }
 
+          if (entry.kind === 'link') {
+            return (
+              <NavLink
+                key={entry.key}
+                to={entry.to}
+                className={cn(
+                  'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  active
+                    ? 'text-primary'
+                    : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
+                )}
+              >
+                {entry.icon}
+                <span className="flex-1 text-left">{t(entry.labelKey)}</span>
+              </NavLink>
+            );
+          }
+
+          const isOpen = openGroupKey === entry.key;
+
           return (
-            <div key={group.key} className="flex flex-col gap-0.5">
+            <div key={entry.key} className="flex flex-col gap-0.5">
               <button
                 type="button"
                 onClick={() =>
                   setManualOpenGroupKey((current) =>
-                    current === group.key ? null : group.key,
+                    current === entry.key ? null : entry.key,
                   )
                 }
                 className={cn(
@@ -167,8 +216,8 @@ export function Sidebar() {
                     : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
                 )}
               >
-                {group.icon}
-                <span className="flex-1 text-left">{t(group.labelKey)}</span>
+                {entry.icon}
+                <span className="flex-1 text-left">{t(entry.labelKey)}</span>
                 <ChevronDownIcon
                   size={14}
                   className={cn('transition-transform', isOpen && 'rotate-180')}
@@ -177,7 +226,7 @@ export function Sidebar() {
 
               {isOpen && (
                 <div className="border-border ml-3.5 flex flex-col gap-0.5 border-l pl-3">
-                  {group.children.map((child) => (
+                  {entry.children.map((child) => (
                     <NavLink
                       key={child.to}
                       to={child.to}
@@ -204,10 +253,7 @@ export function Sidebar() {
             style={{ top: tooltip.top, left: tooltip.left }}
             className="bg-fg text-fg-invert pointer-events-none fixed z-100 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-medium whitespace-nowrap shadow-lg"
           >
-            {t(
-              NAV_GROUPS.find((group) => group.key === tooltip.groupKey)!
-                .labelKey,
-            )}
+            {t(NAV_ITEMS.find((entry) => entry.key === tooltip.key)!.labelKey)}
           </div>,
           document.body,
         )}
