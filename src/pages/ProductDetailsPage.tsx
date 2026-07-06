@@ -21,9 +21,12 @@ import { useProductGroupOptions } from '@entities/product-group/lib/useProductGr
 import { useSegmentOptions } from '@entities/segment/lib/useSegmentOptions';
 import { useAccountingProductOptions } from '@entities/accounting-product/lib/useAccountingProductOptions';
 import { useGetExternalSystemsQuery } from '@entities/external-system/api/externalSystemApi';
+import { ProductReferenceModals } from '@features/product-reference-quick-create/ui/ProductReferenceModals';
+import type { ProductReferenceType } from '@features/product-reference-quick-create/model/types';
 import { Badge } from '@shared/ui/Badge';
 import { Button } from '@shared/ui/Button';
 import { Card } from '@shared/ui/Card';
+import { AddMoreLink } from '@shared/ui/AddMoreLink';
 import { ProgressRing } from '@shared/ui/ProgressRing';
 import {
   FormCheckbox,
@@ -77,6 +80,7 @@ const GENERAL_FIELDS: (keyof ProductFormValues)[] = [
   'categoryId',
   'segmentId',
   'sapCode',
+  'sapText',
   'article',
   'baseUnitId',
   'productStatus',
@@ -94,6 +98,7 @@ const GENERAL_FIELD_LABEL_KEYS: Record<string, string> = {
   categoryId: 'product.category',
   segmentId: 'product.segment',
   sapCode: 'product.sapCode',
+  sapText: 'product.sapText',
   article: 'product.article',
   baseUnitId: 'product.baseUnit',
   productStatus: 'product.productStatus',
@@ -103,6 +108,17 @@ const GENERAL_FIELD_LABEL_KEYS: Record<string, string> = {
 };
 
 const ACTIVATION_THRESHOLD = 90;
+
+const REFERENCE_FIELD_BY_TYPE: Record<
+  ProductReferenceType,
+  keyof ProductFormValues
+> = {
+  typeOfNomenclature: 'typeOfNomenclatureId',
+  productGroup: 'productGroupId',
+  category: 'categoryId',
+  segment: 'segmentId',
+  unit: 'baseUnitId',
+};
 
 function isFilled(value: unknown): boolean {
   return value !== null && value !== undefined && value !== '';
@@ -168,10 +184,14 @@ export function ProductDetailsPage() {
   useClickOutside([missingPanelRef, missingTriggerRef], () =>
     setIsMissingPanelOpen(false),
   );
+  const [activeReferenceModal, setActiveReferenceModal] =
+    useState<ProductReferenceType | null>(null);
 
-  const { control, handleSubmit, reset } = useForm<ProductFormValues>({
-    defaultValues: toProductFormValues(product),
-  });
+  const { control, handleSubmit, reset, setValue } = useForm<ProductFormValues>(
+    {
+      defaultValues: toProductFormValues(product),
+    },
+  );
 
   useEffect(() => {
     reset(toProductFormValues(product));
@@ -470,7 +490,7 @@ export function ProductDetailsPage() {
                   />
 
                   <div className="flex gap-4">
-                    <div className="flex-1">
+                    <div className="flex flex-1 flex-col gap-1">
                       <FormSelect
                         name="typeOfNomenclatureId"
                         control={control}
@@ -481,8 +501,13 @@ export function ProductDetailsPage() {
                         isLoading={typeOfNomenclature.isFetching}
                         onInputChange={typeOfNomenclature.onInputChange}
                       />
+                      <AddMoreLink
+                        onClick={() =>
+                          setActiveReferenceModal('typeOfNomenclature')
+                        }
+                      />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex flex-1 flex-col gap-1">
                       <FormSelect
                         name="productGroupId"
                         control={control}
@@ -493,11 +518,14 @@ export function ProductDetailsPage() {
                         isLoading={productGroup.isFetching}
                         onInputChange={productGroup.onInputChange}
                       />
+                      <AddMoreLink
+                        onClick={() => setActiveReferenceModal('productGroup')}
+                      />
                     </div>
                   </div>
 
                   <div className="flex gap-4">
-                    <div className="flex-1">
+                    <div className="flex flex-1 flex-col gap-1">
                       <FormSelect
                         name="categoryId"
                         control={control}
@@ -508,8 +536,11 @@ export function ProductDetailsPage() {
                         isLoading={productCategory.isFetching}
                         onInputChange={productCategory.onInputChange}
                       />
+                      <AddMoreLink
+                        onClick={() => setActiveReferenceModal('category')}
+                      />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex flex-1 flex-col gap-1">
                       <FormSelect
                         name="segmentId"
                         control={control}
@@ -519,6 +550,9 @@ export function ProductDetailsPage() {
                         isSearchable
                         isLoading={segment.isFetching}
                         onInputChange={segment.onInputChange}
+                      />
+                      <AddMoreLink
+                        onClick={() => setActiveReferenceModal('segment')}
                       />
                     </div>
                   </div>
@@ -533,15 +567,22 @@ export function ProductDetailsPage() {
                     </div>
                     <div className="flex-1">
                       <FormInput
+                        name="sapText"
+                        control={control}
+                        label={t('product.sapText')}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <FormInput
                         name="article"
                         control={control}
                         label={t('product.article')}
                       />
                     </div>
-                  </div>
-
-                  <div className="flex items-end gap-4">
-                    <div className="flex-1">
+                    <div className="flex flex-1 flex-col gap-1">
                       <FormSelect
                         name="baseUnitId"
                         control={control}
@@ -552,7 +593,13 @@ export function ProductDetailsPage() {
                         isLoading={unit.isFetching}
                         onInputChange={unit.onInputChange}
                       />
+                      <AddMoreLink
+                        onClick={() => setActiveReferenceModal('unit')}
+                      />
                     </div>
+                  </div>
+
+                  <div className="flex items-end gap-4">
                     <div className="flex-1">
                       <FormSelect
                         name="productStatus"
@@ -562,13 +609,14 @@ export function ProductDetailsPage() {
                         isClearable
                       />
                     </div>
+                    <div className="flex-1">
+                      <FormCheckbox
+                        name="isFree"
+                        control={control}
+                        label={t('product.isFree')}
+                      />
+                    </div>
                   </div>
-
-                  <FormCheckbox
-                    name="isFree"
-                    control={control}
-                    label={t('product.isFree')}
-                  />
                 </Card>
 
                 <Card className="flex flex-col gap-4">
@@ -631,6 +679,16 @@ export function ProductDetailsPage() {
                     />
                   </div>
                 </Card>
+
+                <ProductReferenceModals
+                  activeModal={activeReferenceModal}
+                  onClose={() => setActiveReferenceModal(null)}
+                  onCreated={(type, referenceId) =>
+                    setValue(REFERENCE_FIELD_BY_TYPE[type], referenceId, {
+                      shouldDirty: true,
+                    })
+                  }
+                />
               </form>
             ) : (
               <ProductGeneralReadOnly product={product} />
@@ -757,8 +815,8 @@ function ProductGeneralReadOnly({ product }: { product: IProduct }) {
           </div>
           <div className="flex-1">
             <ReadOnlyField
-              label={t('product.article')}
-              value={product.article}
+              label={t('product.sapText')}
+              value={product.sapText}
             />
           </div>
         </div>
@@ -766,10 +824,19 @@ function ProductGeneralReadOnly({ product }: { product: IProduct }) {
         <div className="flex gap-4">
           <div className="flex-1">
             <ReadOnlyField
+              label={t('product.article')}
+              value={product.article}
+            />
+          </div>
+          <div className="flex-1">
+            <ReadOnlyField
               label={t('product.baseUnit')}
               value={product.baseUnit?.name}
             />
           </div>
+        </div>
+
+        <div className="flex gap-4">
           <div className="flex-1">
             <ReadOnlyField
               label={t('product.productStatus')}
@@ -780,12 +847,13 @@ function ProductGeneralReadOnly({ product }: { product: IProduct }) {
               }
             />
           </div>
+          <div className="flex-1">
+            <ReadOnlyBooleanField
+              label={t('product.isFree')}
+              value={Boolean(product.isFree)}
+            />
+          </div>
         </div>
-
-        <ReadOnlyBooleanField
-          label={t('product.isFree')}
-          value={Boolean(product.isFree)}
-        />
       </Card>
 
       <Card className="flex flex-col gap-4">

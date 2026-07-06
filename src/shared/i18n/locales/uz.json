@@ -20,6 +20,7 @@
     "columns": "Ustunlar",
     "clear": "Tozalash",
     "comingSoon": "Tez orada",
+    "addMore": "Yana qo'shish",
     "previous": "Orqaga",
     "next": "Keyingi",
     "rowsPerPage": "Sahifada",
@@ -435,5 +436,32 @@
       "RESET_PASSWORD": "Parolni tiklash",
       "ASSIGN_PERMISSIONS": "Ruxsatlarni biriktirish"
     }
+  },
+  "typeOfNomenclature": {
+    "name": "Nomi",
+    "description": "Tavsif",
+    "createTitle": "Yangi nomenklatura turi"
+  },
+  "productCategory": {
+    "name": "Nomi",
+    "description": "Tavsif",
+    "createTitle": "Yangi kategoriya"
+  },
+  "segment": {
+    "name": "Nomi",
+    "createTitle": "Yangi segment"
+  },
+  "unit": {
+    "name": "Nomi",
+    "code": "Kod",
+    "symbol": "Belgi",
+    "internationalAbbreviation": "Xalqaro qisqartma",
+    "createTitle": "Yangi birlik"
+  },
+  "productGroup": {
+    "name": "Nomi",
+    "code": "Kod",
+    "description": "Tavsif",
+    "createTitle": "Yangi nomenklatura guruhi"
   }
 }

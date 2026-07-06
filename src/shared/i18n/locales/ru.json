@@ -20,6 +20,7 @@
     "columns": "Столбцы",
     "clear": "Очистить",
     "comingSoon": "Скоро",
+    "addMore": "Добавить ещё",
     "previous": "Назад",
     "next": "Далее",
     "rowsPerPage": "На странице",
@@ -435,5 +436,32 @@
       "RESET_PASSWORD": "Сброс пароля",
       "ASSIGN_PERMISSIONS": "Назначение прав"
     }
+  },
+  "typeOfNomenclature": {
+    "name": "Название",
+    "description": "Описание",
+    "createTitle": "Новый тип номенклатуры"
+  },
+  "productCategory": {
+    "name": "Название",
+    "description": "Описание",
+    "createTitle": "Новая категория"
+  },
+  "segment": {
+    "name": "Название",
+    "createTitle": "Новый сегмент"
+  },
+  "unit": {
+    "name": "Название",
+    "code": "Код",
+    "symbol": "Символ",
+    "internationalAbbreviation": "Международное сокращение",
+    "createTitle": "Новая единица"
+  },
+  "productGroup": {
+    "name": "Название",
+    "code": "Код",
+    "description": "Описание",
+    "createTitle": "Новая группа номенклатуры"
   }
 }
