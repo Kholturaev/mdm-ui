@@ -25,9 +25,13 @@ export function ActionsMenu({ items, triggerClassName }: ActionsMenuProps) {
   const [position, setPosition] = useState<MenuPosition | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const isOpen = position !== null;
 
-  useClickOutside(containerRef, () => setPosition(null));
+  // The dropdown itself is portaled to document.body, outside containerRef's
+  // own subtree — without menuRef here, a mousedown on a menu item registers
+  // as an "outside" click and closes the menu before its onClick can fire.
+  useClickOutside([containerRef, menuRef], () => setPosition(null));
 
   // Fixed positioning (computed from the trigger's rect) instead of `absolute`
   // so the menu escapes the table's `overflow-x-auto` clipping instead of
@@ -75,6 +79,7 @@ export function ActionsMenu({ items, triggerClassName }: ActionsMenuProps) {
       {position &&
         createPortal(
           <div
+            ref={menuRef}
             style={{ top: position.top, right: position.right }}
             className="border-border bg-surface fixed z-100 w-40 rounded border py-1 shadow-lg"
           >

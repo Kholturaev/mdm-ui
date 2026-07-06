@@ -7,6 +7,8 @@
     "delete": "Удалить",
     "history": "История",
     "properties": "Свойства",
+    "yes": "Да",
+    "no": "Нет",
     "search": "Поиск",
     "noData": "Нет данных",
     "loading": "Загрузка...",
@@ -17,13 +19,28 @@
     "deselectAll": "Снять",
     "columns": "Столбцы",
     "clear": "Очистить",
+    "comingSoon": "Скоро",
     "previous": "Назад",
     "next": "Далее",
     "rowsPerPage": "На странице",
     "goToPage": "Перейти",
     "go": "Ок",
     "reload": "Обновить",
-    "showingRange": "Показано <b>{{start}}-{{end}}</b> из <b>{{total}}</b>"
+    "showingRange": "Показано <b>{{start}}-{{end}}</b> из <b>{{total}}</b>",
+    "months": {
+      "0": "Январь",
+      "1": "Февраль",
+      "2": "Март",
+      "3": "Апрель",
+      "4": "Май",
+      "5": "Июнь",
+      "6": "Июль",
+      "7": "Август",
+      "8": "Сентябрь",
+      "9": "Октябрь",
+      "10": "Ноябрь",
+      "11": "Декабрь"
+    }
   },
   "nav": {
     "analytics": "Аналитика",
@@ -170,6 +187,15 @@
     "reason": "Причина",
     "noChanges": "Подробные изменения не зафиксированы",
     "changesModalTitle": "Детали изменений",
+    "recordAction": {
+      "created": "СОЗДАНО"
+    },
+    "recordHistory": {
+      "title": "История изменений",
+      "empty": "История изменений не найдена",
+      "loadError": "Ошибка загрузки истории",
+      "createdMessage": "Запись добавлена в систему"
+    },
     "filters": {
       "dateFrom": "С даты",
       "dateTo": "По дату",
@@ -262,6 +288,34 @@
   "product": {
     "title": "Номенклатура",
     "addProduct": "Добавить номенклатуру",
+    "createTitle": "Новая номенклатура",
+    "moreCreateOptions": "Другие способы",
+    "addOneByOne": "Добавить по одному",
+    "importExcel": "Импорт через Excel",
+    "backToList": "Вернуться к списку",
+    "viewingBadge": "ПРОСМОТР",
+    "editingBadge": "РЕДАКТИРОВАНИЕ",
+    "filled": "заполнено",
+    "activate": "Активировать",
+    "tabGeneral": "Общее",
+    "tabAttributes": "Атрибуты",
+    "tabCharacteristics": "Характеристики",
+    "tabPrices": "Цены",
+    "tabUnitConversion": "Конвертация единиц",
+    "tabMedia": "Медиа",
+    "tabSystems": "Системы",
+    "tabHistory": "История",
+    "tabPlaceholder": "Этот раздел скоро появится",
+    "completionHint": "Заполните поля раздела «Общее» — процент в кольце будет расти. При {{threshold}}% кнопка «Активировать» станет доступна.",
+    "generalInfo": "Общая информация",
+    "accountingInfo": "Бухгалтерская информация",
+    "isFree": "Бесплатно",
+    "isViewOnlySmap": "Только просмотр (SMAP)",
+    "isCalcAccAmountByPercent": "Рассчитывать сумму учёта в процентах",
+    "isAutoGenerateKM": "Автоматически создавать КМ",
+    "missingFieldsTitle": "Нужно заполнить",
+    "missingFieldsHint": "Ещё {{count}} полей для {{threshold}}%",
+    "missingFieldsEmpty": "Все поля заполнены",
     "totalCount": "Всего: {{count}}",
     "id": "ID",
     "name": "Название",
@@ -303,6 +357,10 @@
       "ACTIVE": "Активный",
       "PASSIVE": "Неактивный",
       "TEMPORARILY_PASSIVE": "Временно неактивный"
+    },
+    "historyField": {
+      "isGolden": "Золотая запись",
+      "isFree": "Бесплатно"
     }
   },
   "message": {

@@ -90,28 +90,35 @@ export function AuditLogTable() {
         }}
         searchPlaceholder={t('audit.filters.searchPlaceholder')}
       >
-        <DatePicker
-          selected={dateFrom}
-          onChange={(date: Date | null) => {
-            setDateFrom(date);
-            resetPage();
-          }}
-          isClearable
-          placeholderText={t('audit.filters.dateFrom')}
-          wrapperClassName="w-32"
-          popperProps={{ strategy: 'fixed' }}
-        />
-        <DatePicker
-          selected={dateTo}
-          onChange={(date: Date | null) => {
-            setDateTo(date);
-            resetPage();
-          }}
-          isClearable
-          placeholderText={t('audit.filters.dateTo')}
-          wrapperClassName="w-32"
-          popperProps={{ strategy: 'fixed' }}
-        />
+        <div className="w-34">
+          <DatePicker
+            selected={dateFrom}
+            onChange={(date: Date | null) => {
+              setDateFrom(date);
+              resetPage();
+            }}
+            isClearable
+            size="sm"
+            placeholderText={t('audit.filters.dateFrom')}
+            wrapperClassName=""
+            popperProps={{ strategy: 'fixed' }}
+          />
+        </div>
+        <div className="w-34">
+          <DatePicker
+            selected={dateTo}
+            onChange={(date: Date | null) => {
+              setDateTo(date);
+              resetPage();
+            }}
+            isClearable
+            size="sm"
+            placeholderText={t('audit.filters.dateTo')}
+            wrapperClassName="w-24"
+            popperProps={{ strategy: 'fixed' }}
+          />
+        </div>
+
         <Select
           options={personOptions}
           value={
@@ -125,7 +132,7 @@ export function AuditLogTable() {
             );
             resetPage();
           }}
-          containerClassName="w-56"
+          containerClassName="w-52 z-50"
           placeholder={t('audit.filters.person')}
         />
         <Select
@@ -141,7 +148,7 @@ export function AuditLogTable() {
             );
             resetPage();
           }}
-          containerClassName="w-52"
+          containerClassName="w-52 z-50"
           placeholder={t('audit.filters.actionType')}
         />
       </TableToolbar>

@@ -6,6 +6,7 @@ import { AuditPage } from '@pages/AuditPage';
 import { AuditLogPage } from '@pages/AuditLogPage';
 import { DealersPage } from '@pages/DealersPage';
 import { NomenclaturePage } from '@pages/NomenclaturePage';
+import { ProductDetailsPage } from '@pages/ProductDetailsPage';
 import { UsersPage } from '@pages/UsersPage';
 import { UserDetailsPage } from '@pages/UserDetailsPage';
 import { RolesPage } from '@pages/RolesPage';
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
           { path: 'audit/log', element: <AuditLogPage /> },
           { path: 'dealers', element: <DealersPage /> },
           { path: 'nomenclature', element: <NomenclaturePage /> },
+          { path: 'nomenclature/:id', element: <ProductDetailsPage /> },
           { path: 'access/users', element: <UsersPage /> },
           { path: 'access/users/:id', element: <UserDetailsPage /> },
           { path: 'access/roles', element: <RolesPage /> },

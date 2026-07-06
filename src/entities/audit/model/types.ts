@@ -113,3 +113,42 @@ export interface ActionTypeCount {
 
 /** Governs the trend chart's window on the audit dashboard — not the "today/yesterday" dashboard feed, which is always fixed regardless of this. */
 export type AuditDashboardPeriod = 'today' | 'todayYesterday' | '7d' | '30d';
+
+/**
+ * The real backend's `POST /audit/info/by-record` returns one row per
+ * changed field (unlike the grouped, mocked `AuditEntry` above) — these
+ * types model that raw shape so a per-record history view can group them
+ * client-side. See `entities/audit/lib/auditRecordHistory.ts`.
+ */
+export type AuditRecordActionType = 'INSERT' | 'UPDATE' | 'DELETE';
+
+export interface AuditRecordPerformer {
+  id: string;
+  username: string;
+  firstName?: string | null;
+  lastName?: string | null;
+}
+
+export interface AuditRecordFieldEntry {
+  id: number;
+  tableName: string;
+  recordId: number;
+  actionType: AuditRecordActionType;
+  actionTime: string;
+  fieldName: string;
+  oldValue: string | null;
+  newValue: string | null;
+  performedById: string;
+  performedBy: AuditRecordPerformer | null;
+  /** Shared by every field row inserted as part of the same action (e.g. all fields of a create/import) — the grouping key when present. */
+  activityLogId?: string | null;
+}
+
+/** Multiple `AuditRecordFieldEntry` rows belonging to one action, grouped client-side for the record history timeline. */
+export interface AuditRecordGroup {
+  key: string;
+  actionType: AuditRecordActionType;
+  actionTime: string;
+  performedBy: AuditRecordPerformer | null;
+  fieldChanges: AuditFieldChange[];
+}

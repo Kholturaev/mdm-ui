@@ -1,4 +1,11 @@
 /* Minimal token-based override on top of react-datepicker's base stylesheet. */
+
+/* The base stylesheet sets z-index: 1 on the popper, which puts it behind
+   sticky table headers (e.g. DataTable's thead, z-index: 20). */
+.react-datepicker-popper {
+  z-index: 30;
+}
+
 .react-datepicker {
   font-family: inherit;
   border-color: var(--color-border);

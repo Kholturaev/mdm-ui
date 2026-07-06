@@ -29,6 +29,8 @@ type UseNomenclatureColumnsParams = {
   externalSystems: IExternalSystem[];
   systemFilter: number[];
   onSystemFilterChange: (ids: number[]) => void;
+  onShowHistory: (product: IProduct) => void;
+  onEdit: (product: IProduct) => void;
 };
 
 /** Builds the product table's column definitions, the "show/hide columns" manifest, and the CSV export field list — all derived from the same field set so they stay in sync. */
@@ -41,6 +43,8 @@ export function useNomenclatureColumns({
   externalSystems,
   systemFilter,
   onSystemFilterChange,
+  onShowHistory,
+  onEdit,
 }: UseNomenclatureColumnsParams) {
   const { t } = useTranslation();
 
@@ -394,13 +398,13 @@ export function useNomenclatureColumns({
         size: 112,
         enableResizing: false,
         meta: { pin: 'right' },
-        cell: () => (
+        cell: ({ row }) => (
           <RowActions
             items={[
               {
                 label: t('common.edit'),
                 icon: <EditIcon size={14} />,
-                onClick: () => {},
+                onClick: () => onEdit(row.original),
               },
               {
                 label: t('common.delete'),
@@ -411,7 +415,7 @@ export function useNomenclatureColumns({
               {
                 label: t('common.history'),
                 icon: <ClockIcon size={14} />,
-                onClick: () => {},
+                onClick: () => onShowHistory(row.original),
               },
               {
                 label: t('common.properties'),
@@ -433,6 +437,8 @@ export function useNomenclatureColumns({
       externalSystems,
       systemFilter,
       onSystemFilterChange,
+      onShowHistory,
+      onEdit,
     ],
   );
 

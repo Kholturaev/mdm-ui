@@ -7,6 +7,8 @@
     "delete": "O'chirish",
     "history": "Tarix",
     "properties": "Xususiyatlari",
+    "yes": "Ha",
+    "no": "Yo'q",
     "search": "Qidirish",
     "noData": "Ma'lumot yo'q",
     "loading": "Yuklanmoqda...",
@@ -17,13 +19,28 @@
     "deselectAll": "Bekor qilish",
     "columns": "Ustunlar",
     "clear": "Tozalash",
+    "comingSoon": "Tez orada",
     "previous": "Orqaga",
     "next": "Keyingi",
     "rowsPerPage": "Sahifada",
     "goToPage": "O'tish",
     "go": "OK",
     "reload": "Yangilash",
-    "showingRange": "<b>{{total}}</b> ta natijadan <b>{{start}}-{{end}}</b> oralig'idagilari ko'rsatilmoqda"
+    "showingRange": "<b>{{total}}</b> ta natijadan <b>{{start}}-{{end}}</b> oralig'idagilari ko'rsatilmoqda",
+    "months": {
+      "0": "Yanvar",
+      "1": "Fevral",
+      "2": "Mart",
+      "3": "Aprel",
+      "4": "May",
+      "5": "Iyun",
+      "6": "Iyul",
+      "7": "Avgust",
+      "8": "Sentyabr",
+      "9": "Oktyabr",
+      "10": "Noyabr",
+      "11": "Dekabr"
+    }
   },
   "nav": {
     "analytics": "Analitika",
@@ -170,6 +187,15 @@
     "reason": "Sabab",
     "noChanges": "Batafsil o'zgarishlar qayd etilmagan",
     "changesModalTitle": "O'zgarishlar tafsiloti",
+    "recordAction": {
+      "created": "YARATILDI"
+    },
+    "recordHistory": {
+      "title": "O'zgarishlar tarixi",
+      "empty": "O'zgarishlar tarixi topilmadi",
+      "loadError": "Tarixni yuklashda xatolik yuz berdi",
+      "createdMessage": "Yozuv tizimga qo'shildi"
+    },
     "filters": {
       "dateFrom": "Sanadan",
       "dateTo": "Sanagacha",
@@ -262,6 +288,34 @@
   "product": {
     "title": "Nomenklatura",
     "addProduct": "Nomenklatura qo'shish",
+    "createTitle": "Yangi nomenklatura",
+    "moreCreateOptions": "Qo'shimcha usullar",
+    "addOneByOne": "Bittalab qo'shish",
+    "importExcel": "Excel orqali import",
+    "backToList": "Ro'yxatga qaytish",
+    "viewingBadge": "KO'RISH",
+    "editingBadge": "TAHRIRLASH",
+    "filled": "to'ldirilgan",
+    "activate": "Faollashtirish",
+    "tabGeneral": "Umumiy",
+    "tabAttributes": "Atributlar",
+    "tabCharacteristics": "Xususiyatlar",
+    "tabPrices": "Narxlar",
+    "tabUnitConversion": "Birlik konvertatsiyasi",
+    "tabMedia": "Media",
+    "tabSystems": "Tizimlar",
+    "tabHistory": "Tarix",
+    "tabPlaceholder": "Bu bo'lim tez orada qo'shiladi",
+    "completionHint": "\"Umumiy\" bo'limidagi maydonlarni to'ldiring — halqadagi foiz oshadi. {{threshold}}% ga yetganda \"Faollashtirish\" tugmasi yoqiladi.",
+    "generalInfo": "Umumiy ma'lumot",
+    "accountingInfo": "Buxgalteriya ma'lumotlar",
+    "isFree": "Bepul",
+    "isViewOnlySmap": "Faqat ko'rish (SMAP)",
+    "isCalcAccAmountByPercent": "Buxgalteriya summasini foiz bo'yicha hisoblash",
+    "isAutoGenerateKM": "KM ni avtomatik yaratish",
+    "missingFieldsTitle": "To'ldirilishi kerak",
+    "missingFieldsHint": "{{threshold}}% ga yetish uchun yana {{count}} ta maydon",
+    "missingFieldsEmpty": "Barcha maydonlar to'ldirilgan",
     "totalCount": "Jami: {{count}} ta",
     "id": "ID",
     "name": "Nomi",
@@ -277,7 +331,7 @@
     "typeOfNomenclature": "Nomenklatura turi",
     "productStatus": "Status",
     "baseUnit": "Asosiy birlik",
-    "accountingProduct": "Hisob mahsuloti",
+    "accountingProduct": "Buxgalteriya mahsuloti",
     "accountingUnit": "Hisob birligi",
     "alternateUnit": "Qo'shimcha birlik",
     "accountAmountPercent": "Hisob miqdori, %",
@@ -303,6 +357,10 @@
       "ACTIVE": "Faol",
       "PASSIVE": "Nofaol",
       "TEMPORARILY_PASSIVE": "Vaqtincha nofaol"
+    },
+    "historyField": {
+      "isGolden": "Oltin yozuv",
+      "isFree": "Bepul"
     }
   },
   "message": {

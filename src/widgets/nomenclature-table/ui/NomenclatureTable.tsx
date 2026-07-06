@@ -1,8 +1,17 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
-import { useGetProductsQuery } from '@entities/product/api/productApi';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  useCreateProductMutation,
+  useGetProductsQuery,
+} from '@entities/product/api/productApi';
+import type {
+  IProduct,
+  ProductFormValues,
+} from '@entities/product/model/types';
 import { useGetExternalSystemsQuery } from '@entities/external-system/api/externalSystemApi';
+import { RecordHistoryModal } from '@widgets/audit-log/ui/RecordHistoryModal';
+import { ProductCreateForm } from '@features/product-create/ui/ProductCreateForm';
 import {
   ColumnVisibilityButton,
   DataTable,
@@ -11,11 +20,14 @@ import {
   TableToolbar,
 } from '@shared/ui/Table';
 import type { SortDirection } from '@shared/ui/Table';
-import { Button } from '@shared/ui/Button';
-import { PlusIcon } from '@shared/ui/icons/PlusIcon';
+import { Modal } from '@shared/ui/Modal';
+import { parseApiError } from '@shared/api/parseApiError';
+import type { ApiException } from '@shared/api/type';
+import { notify } from '@shared/lib/toast';
 import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
 import type { SyncStatusFilter } from '@shared/lib/nomenclatureLink';
 import { FILTER_KEY_BY_COLUMN } from '../lib/constants';
+import { AddProductButton } from './AddProductButton';
 import { SyncStatusDropdown } from './SyncStatusDropdown';
 import { SystemMultiSelect } from './SystemMultiSelect';
 import { useNomenclatureColumns } from './useNomenclatureColumns';
@@ -30,6 +42,7 @@ const SYNC_STATUS_VALUES: SyncStatusFilter[] = [
 
 export function NomenclatureTable() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -62,6 +75,10 @@ export function NomenclatureTable() {
 
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  const [historyProduct, setHistoryProduct] = useState<IProduct | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createProduct, { isLoading: isCreatingProduct }] =
+    useCreateProductMutation();
 
   const handleSort = useCallback(
     (field: string) => {
@@ -94,6 +111,17 @@ export function NomenclatureTable() {
     setSystemFilter(systemIds);
     setPage(0);
   }, []);
+
+  const handleCreateSubmit = async (values: ProductFormValues) => {
+    try {
+      const created = await createProduct(values).unwrap();
+      notify.success(t('message.saved'));
+      setIsCreateOpen(false);
+      navigate(`/nomenclature/${created.data.id}`);
+    } catch (error) {
+      notify.error(parseApiError(error as ApiException));
+    }
+  };
 
   const filters = useMemo(() => {
     const entries: [string, unknown][] = Object.entries(debouncedColumnFilters)
@@ -170,6 +198,8 @@ export function NomenclatureTable() {
     externalSystems,
     systemFilter,
     onSystemFilterChange: handleSystemFilterChange,
+    onShowHistory: setHistoryProduct,
+    onEdit: (product) => navigate(`/nomenclature/${product.id}`),
   });
 
   const [visibleColumnKeys, setVisibleColumnKeys] = useState<string[]>(() =>
@@ -225,9 +255,7 @@ export function NomenclatureTable() {
           onChange={setVisibleColumnKeys}
         />
 
-        <Button size="sm" icon={<PlusIcon size={15} />} onClick={() => {}}>
-          {t('product.addProduct')}
-        </Button>
+        <AddProductButton onCreateOneByOne={() => setIsCreateOpen(true)} />
       </TableToolbar>
 
       <div className="min-h-0 flex-1">
@@ -255,6 +283,29 @@ export function NomenclatureTable() {
         }}
         onReload={refetch}
       />
+
+      {historyProduct && (
+        <RecordHistoryModal
+          isOpen
+          onClose={() => setHistoryProduct(null)}
+          tableName="product"
+          recordId={historyProduct.id}
+          recordTitle={historyProduct.name}
+          recordCode={historyProduct.sapCode}
+        />
+      )}
+
+      <Modal
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        title={t('product.createTitle')}
+      >
+        <ProductCreateForm
+          isSubmitting={isCreatingProduct}
+          onSubmit={handleCreateSubmit}
+          onCancel={() => setIsCreateOpen(false)}
+        />
+      </Modal>
     </div>
   );
 }

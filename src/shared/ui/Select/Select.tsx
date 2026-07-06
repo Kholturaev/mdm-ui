@@ -85,7 +85,7 @@ export function Select<
           clearIndicator: () =>
             'text-fg-muted hover:text-danger cursor-pointer',
           menu: () =>
-            'mt-1 rounded border border-border bg-surface shadow-lg overflow-hidden z-20',
+            'mt-1 rounded border border-border bg-surface shadow-lg overflow-hidden z-30',
           menuList: () => 'py-1 max-h-60 overflow-auto',
           noOptionsMessage: () => 'text-fg-muted text-sm py-2 text-center',
           loadingMessage: () => 'text-fg-muted text-sm py-2 text-center',

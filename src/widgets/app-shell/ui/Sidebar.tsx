@@ -83,13 +83,19 @@ function primaryTo(entry: NavEntry): string {
   return entry.kind === 'link' ? entry.to : entry.children[0].to;
 }
 
-export function Sidebar() {
+type SidebarProps = {
+  /** Forces the collapsed (icon-only) layout regardless of the user's own toggle preference — e.g. on the product details page, which needs the width back. Doesn't touch the persisted preference, so it resumes once the user navigates away. */
+  forceCollapsed?: boolean;
+};
+
+export function Sidebar({ forceCollapsed = false }: SidebarProps) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
 
   const [collapsed, setCollapsed] = useState(
     () => localStorage.getItem(COLLAPSE_STORAGE_KEY) === '1',
   );
+  const effectiveCollapsed = collapsed || forceCollapsed;
 
   const activeGroupKey =
     NAV_ITEMS.find(
@@ -120,32 +126,34 @@ export function Sidebar() {
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   // The hovered icon unmounts once the sidebar expands, so it never fires
   // `onMouseLeave` — clear the tooltip during render instead of relying on it.
-  const [lastCollapsed, setLastCollapsed] = useState(collapsed);
-  if (collapsed !== lastCollapsed) {
-    setLastCollapsed(collapsed);
-    if (!collapsed) setTooltip(null);
+  const [lastCollapsed, setLastCollapsed] = useState(effectiveCollapsed);
+  if (effectiveCollapsed !== lastCollapsed) {
+    setLastCollapsed(effectiveCollapsed);
+    if (!effectiveCollapsed) setTooltip(null);
   }
 
   return (
     <aside
       className={cn(
         'border-border bg-surface relative flex flex-col border-r transition-[width] duration-200',
-        collapsed ? 'w-16' : 'w-56',
+        effectiveCollapsed ? 'w-16' : 'w-56',
       )}
     >
       <div className="border-border flex h-12 items-center border-b px-4 text-sm font-semibold">
-        {collapsed ? 'M' : 'MDM'}
+        {effectiveCollapsed ? 'M' : 'MDM'}
       </div>
 
       <button
         type="button"
         onClick={() => setCollapsed((value) => !value)}
-        aria-label={t(collapsed ? 'nav.expandSidebar' : 'nav.collapseSidebar')}
+        aria-label={t(
+          effectiveCollapsed ? 'nav.expandSidebar' : 'nav.collapseSidebar',
+        )}
         className="border-border bg-surface text-fg-muted hover:text-fg absolute top-5 -right-3 flex size-6 items-center justify-center rounded-full border shadow-sm transition-colors"
       >
         <ChevronDownIcon
           size={12}
-          className={collapsed ? '-rotate-90' : 'rotate-90'}
+          className={effectiveCollapsed ? '-rotate-90' : 'rotate-90'}
         />
       </button>
 
@@ -153,7 +161,7 @@ export function Sidebar() {
         {NAV_ITEMS.map((entry) => {
           const active = isEntryActive(entry, pathname);
 
-          if (collapsed) {
+          if (effectiveCollapsed) {
             return (
               <NavLink
                 key={entry.key}
