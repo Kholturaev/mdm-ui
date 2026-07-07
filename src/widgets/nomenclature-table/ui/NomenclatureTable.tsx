@@ -299,9 +299,11 @@ export function NomenclatureTable() {
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         title={t('product.createTitle')}
+        size="lg"
       >
         <ProductCreateForm
           isSubmitting={isCreatingProduct}
+          externalSystems={externalSystems}
           onSubmit={handleCreateSubmit}
           onCancel={() => setIsCreateOpen(false)}
         />

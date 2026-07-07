@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 const DATE_TIME_FORMAT = new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit',
   month: '2-digit',
@@ -14,14 +16,26 @@ export function formatDateTime(value?: string | null): string {
   return DATE_TIME_FORMAT.format(date);
 }
 
-/** Formats an ISO timestamp as "6 minutes ago" / "2 hours ago" in the active locale. */
-export function formatRelativeTime(iso: string, locale: string): string {
-  const diffMs = new Date(iso).getTime() - Date.now();
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-  const diffMinutes = Math.round(diffMs / 60000);
-  if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, 'minute');
+/**
+ * Formats an ISO timestamp as "5 daqiqa oldin" / "2 soat oldin" using our own
+ * `common.relativeTime.*` translations. Deliberately not `Intl.RelativeTimeFormat`:
+ * without full ICU data for `uz`/`ru` it silently falls back to broken output
+ * like "this minute" or "-1 min" instead of throwing — the same class of issue
+ * `formatAuditTimelineDate` sidesteps for month names.
+ */
+export function formatRelativeTime(iso: string, t: TFunction): string {
+  const diffMinutes = Math.max(
+    0,
+    Math.round((Date.now() - new Date(iso).getTime()) / 60000),
+  );
+  if (diffMinutes < 1) return t('common.relativeTime.justNow');
+  if (diffMinutes < 60) {
+    return t('common.relativeTime.minutesAgo', { count: diffMinutes });
+  }
   const diffHours = Math.round(diffMinutes / 60);
-  if (Math.abs(diffHours) < 24) return rtf.format(diffHours, 'hour');
+  if (diffHours < 24) {
+    return t('common.relativeTime.hoursAgo', { count: diffHours });
+  }
   const diffDays = Math.round(diffHours / 24);
-  return rtf.format(diffDays, 'day');
+  return t('common.relativeTime.daysAgo', { count: diffDays });
 }

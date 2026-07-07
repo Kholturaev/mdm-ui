@@ -21,6 +21,8 @@
     "clear": "Tozalash",
     "comingSoon": "Tez orada",
     "addMore": "Yana qo'shish",
+    "copy": "Nusxalash",
+    "copied": "Nusxalandi",
     "previous": "Orqaga",
     "next": "Keyingi",
     "rowsPerPage": "Sahifada",
@@ -41,6 +43,12 @@
       "9": "Oktyabr",
       "10": "Noyabr",
       "11": "Dekabr"
+    },
+    "relativeTime": {
+      "justNow": "hozirgina",
+      "minutesAgo": "{{count}} daqiqa oldin",
+      "hoursAgo": "{{count}} soat oldin",
+      "daysAgo": "{{count}} kun oldin"
     }
   },
   "nav": {
@@ -261,7 +269,31 @@
     "logout": "Chiqish",
     "username": "Login",
     "password": "Parol",
-    "loginFailed": "Login yoki parol noto'g'ri"
+    "loginFailed": "Login yoki parol noto'g'ri",
+    "welcomeTitle": "Xush kelibsiz",
+    "welcomeSubtitle": "Tizimga kirish uchun hisobingizdan foydalaning",
+    "helpText": "Hisobingiz yo'qmi? Tizim administratoriga murojaat qiling",
+    "footerRights": "Barcha huquqlar himoyalangan",
+    "brandHeadline": "Master-ma'lumotlarni boshqarishning yagona tizimi",
+    "brandSubtitle": "Nomenklatura, dilerlar va kirish huquqlari — AKFA Group barcha bo'linmalari uchun bir joyda",
+    "features": {
+      "analytics": {
+        "title": "Real vaqt tahlili",
+        "desc": "Barcha tashqi tizimlar bo'yicha sinxronlashtirish holati"
+      },
+      "nomenclature": {
+        "title": "Yagona NSI ma'lumotnomasi",
+        "desc": "Nomenklatura va atributlarni markazlashtirilgan boshqarish"
+      },
+      "dealers": {
+        "title": "Dilerlarni boshqarish",
+        "desc": "Hamkorlar va mintaqaviy tuzilmalarning to'liq bazasi"
+      },
+      "access": {
+        "title": "Kirish nazorati va audit",
+        "desc": "Rollar, huquqlar va o'zgarishlar tarixi nazorat ostida"
+      }
+    }
   },
   "header": {
     "systemHealth": {
@@ -297,7 +329,6 @@
     "viewingBadge": "KO'RISH",
     "editingBadge": "TAHRIRLASH",
     "filled": "to'ldirilgan",
-    "activate": "Faollashtirish",
     "tabGeneral": "Umumiy",
     "tabAttributes": "Atributlar",
     "tabCharacteristics": "Xususiyatlar",
@@ -307,9 +338,22 @@
     "tabSystems": "Tizimlar",
     "tabHistory": "Tarix",
     "tabPlaceholder": "Bu bo'lim tez orada qo'shiladi",
-    "completionHint": "\"Umumiy\" bo'limidagi maydonlarni to'ldiring — halqadagi foiz oshadi. {{threshold}}% ga yetganda \"Faollashtirish\" tugmasi yoqiladi.",
+    "completionHint": "\"Umumiy\" bo'limidagi maydonlarni to'ldiring — halqadagi foiz oshadi.",
+    "createdMetaLine": "Yaratildi: {{date}} · {{by}}",
+    "updatedMetaLine": "yangilandi {{time}}",
+    "unsavedChangesTitle": "Saqlanmagan o'zgarishlar",
+    "unsavedChangesHint": "Siz ma'lumotlarni o'zgartirdingiz, lekin saqlamadingiz. Boshqa bo'limga o'tishdan oldin saqlaysizmi yoki bekor qilasizmi?",
+    "discardChanges": "O'zgarishlarni bekor qilish",
     "generalInfo": "Umumiy ma'lumot",
     "accountingInfo": "Buxgalteriya ma'lumotlar",
+    "externalSystemsTitle": "Tashqi tizimlar",
+    "externalSystemsHint": "Mahsulotni qaysi tizimlarga yuborishni tanlang (ixtiyoriy)",
+    "externalSystemsRequiredFields": "Kerak: {{fields}}",
+    "externalSystemsNoExtraFields": "Qo'shimcha maydon kerak emas",
+    "externalSystemsNoConfig": "Konfiguratsiya sozlanmagan",
+    "externalSystemsPreview": "Namunaviy JSON'ni ko'rish",
+    "externalSystemsPreviewHint": "Bu tizimga shu formatda yuboriladi (mapping konfiguratsiyasi asosida)",
+    "externalSystemsSelectedType": "Tanlangan nomenklatura turi: {{name}}",
     "isFree": "Bepul",
     "isViewOnlySmap": "Faqat ko'rish (SMAP)",
     "isCalcAccAmountByPercent": "Buxgalteriya summasini foiz bo'yicha hisoblash",
@@ -317,6 +361,8 @@
     "missingFieldsTitle": "To'ldirilishi kerak",
     "missingFieldsHint": "{{threshold}}% ga yetish uchun yana {{count}} ta maydon",
     "missingFieldsEmpty": "Barcha maydonlar to'ldirilgan",
+    "completeness": "To'liqlik",
+    "lastChange": "Oxirgi o'zgarish",
     "totalCount": "Jami: {{count}} ta",
     "id": "ID",
     "name": "Nomi",
@@ -362,6 +408,18 @@
     "historyField": {
       "isGolden": "Oltin yozuv",
       "isFree": "Bepul"
+    },
+    "attr": {
+      "title": "Atributlar",
+      "desc": "Mahsulotga tegishli qo'shimcha atributlar",
+      "add": "Atribut qo'shish",
+      "createTitle": "Yangi atribut",
+      "editTitle": "Atributni tahrirlash",
+      "name": "Nomi",
+      "key": "Kalit",
+      "value": "Qiymati",
+      "externalSystem": "Tashqi tizim",
+      "empty": "Atributlar yo'q"
     }
   },
   "message": {

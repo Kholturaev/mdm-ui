@@ -21,11 +21,24 @@ import { useProductGroupOptions } from '@entities/product-group/lib/useProductGr
 import { useSegmentOptions } from '@entities/segment/lib/useSegmentOptions';
 import { useAccountingProductOptions } from '@entities/accounting-product/lib/useAccountingProductOptions';
 import { useGetExternalSystemsQuery } from '@entities/external-system/api/externalSystemApi';
+import type { IExternalSystem } from '@entities/external-system/model/types';
+import { useGetAuditByRecordQuery } from '@entities/audit/api/auditRecordApi';
+import type { AuditRecordPerformer } from '@entities/audit/model/types';
+import {
+  formatAuditFieldValue,
+  getAuditFieldLabel,
+  groupAuditRecordEntries,
+} from '@entities/audit/lib/auditRecordHistory';
+import { RecordHistoryModal } from '@widgets/audit-log/ui/RecordHistoryModal';
+import { ProductAttributesTab } from '@widgets/product-attributes/ui/ProductAttributesTab';
 import { ProductReferenceModals } from '@features/product-reference-quick-create/ui/ProductReferenceModals';
 import type { ProductReferenceType } from '@features/product-reference-quick-create/model/types';
+import { Avatar } from '@shared/ui/Avatar';
 import { Badge } from '@shared/ui/Badge';
+import type { BadgeVariant } from '@shared/ui/Badge';
 import { Button } from '@shared/ui/Button';
-import { Card } from '@shared/ui/Card';
+import { Card, CardHeader } from '@shared/ui/Card';
+import { Modal } from '@shared/ui/Modal';
 import { AddMoreLink } from '@shared/ui/AddMoreLink';
 import { ProgressRing } from '@shared/ui/ProgressRing';
 import {
@@ -38,13 +51,16 @@ import type { SelectOption } from '@shared/ui/Select';
 import { cn } from '@shared/lib/cn';
 import { systemAbbr } from '@shared/lib/systemAbbr';
 import { useClickOutside } from '@shared/lib/hooks/useClickOutside';
+import { formatDateTime, formatRelativeTime } from '@shared/lib/formatDate';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
 import { usePageTitle } from '@shared/lib/pageTitle';
 import { ArrowLeftIcon } from '@shared/ui/icons/ArrowLeftIcon';
+import { ArrowRightIcon } from '@shared/ui/icons/ArrowRightIcon';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { CheckIcon } from '@shared/ui/icons/CheckIcon';
+import { CheckCircleIcon } from '@shared/ui/icons/CheckCircleIcon';
 import { CloseIcon } from '@shared/ui/icons/ChevronDownIcon';
 import { DocumentIcon } from '@shared/ui/icons/DocumentIcon';
 import { ChecklistIcon } from '@shared/ui/icons/ChecklistIcon';
@@ -54,7 +70,7 @@ import { SwapIcon } from '@shared/ui/icons/SwapIcon';
 import { ImageIcon } from '@shared/ui/icons/ImageIcon';
 import { ShareIcon } from '@shared/ui/icons/ShareIcon';
 import { ClockIcon } from '@shared/ui/icons/ClockIcon';
-import { LockIcon } from '@shared/ui/icons/LockIcon';
+import { InfoIcon } from '@shared/ui/icons/InfoIcon';
 
 type TabKey =
   | 'general'
@@ -109,6 +125,12 @@ const GENERAL_FIELD_LABEL_KEYS: Record<string, string> = {
 
 const ACTIVATION_THRESHOLD = 90;
 
+const STATUS_BADGE_VARIANT: Record<ProductStatus, BadgeVariant> = {
+  [ProductStatus.ACTIVE]: 'success',
+  [ProductStatus.TEMPORARILY_PASSIVE]: 'warning',
+  [ProductStatus.PASSIVE]: 'neutral',
+};
+
 const REFERENCE_FIELD_BY_TYPE: Record<
   ProductReferenceType,
   keyof ProductFormValues
@@ -122,6 +144,15 @@ const REFERENCE_FIELD_BY_TYPE: Record<
 
 function isFilled(value: unknown): boolean {
   return value !== null && value !== undefined && value !== '';
+}
+
+/** Drops null/empty-string fields from an update payload — an untouched field should be omitted rather than sent as an explicit null/blank value. */
+function cleanPayload<T extends object>(values: T): T {
+  return Object.fromEntries(
+    Object.entries(values).filter(
+      ([, value]) => value !== null && value !== '',
+    ),
+  ) as T;
 }
 
 function ReadOnlyField({
@@ -177,7 +208,6 @@ export function ProductDetailsPage() {
   const [tab, setTab] = useState<TabKey>('general');
   const [isEditing, setIsEditing] = useState(false);
   const [updateProduct, { isLoading: isSaving }] = useUpdateProductMutation();
-  const [isActivating, setIsActivating] = useState(false);
   const [isMissingPanelOpen, setIsMissingPanelOpen] = useState(false);
   const missingPanelRef = useRef<HTMLDivElement>(null);
   const missingTriggerRef = useRef<HTMLButtonElement>(null);
@@ -186,12 +216,17 @@ export function ProductDetailsPage() {
   );
   const [activeReferenceModal, setActiveReferenceModal] =
     useState<ProductReferenceType | null>(null);
+  const [pendingTab, setPendingTab] = useState<TabKey | null>(null);
 
-  const { control, handleSubmit, reset, setValue } = useForm<ProductFormValues>(
-    {
-      defaultValues: toProductFormValues(product),
-    },
-  );
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { isDirty },
+  } = useForm<ProductFormValues>({
+    defaultValues: toProductFormValues(product),
+  });
 
   useEffect(() => {
     reset(toProductFormValues(product));
@@ -229,7 +264,6 @@ export function ProductDetailsPage() {
   const completionPercent = Math.round(
     (filledCount / GENERAL_FIELDS.length) * 100,
   );
-  const canActivate = completionPercent >= ACTIVATION_THRESHOLD;
 
   const productStatusOptions = useMemo<SelectOption[]>(
     () =>
@@ -242,32 +276,55 @@ export function ProductDetailsPage() {
 
   const submitValues = async (formValues: ProductFormValues) => {
     try {
-      await updateProduct({ id: productId, data: formValues }).unwrap();
+      await updateProduct({
+        id: productId,
+        data: cleanPayload(formValues),
+      }).unwrap();
       notify.success(t('message.saved'));
       setIsEditing(false);
+      return true;
     } catch (error) {
       notify.error(parseApiError(error as ApiException));
+      return false;
     }
   };
 
-  const handleSave = handleSubmit(submitValues);
+  const handleSave = handleSubmit((formValues) => {
+    if (!isDirty) {
+      setIsEditing(false);
+      return;
+    }
+    return submitValues(formValues);
+  });
 
   const handleCancelEdit = () => {
     reset(toProductFormValues(product));
     setIsEditing(false);
   };
 
-  const handleActivate = handleSubmit(async (formValues) => {
-    setIsActivating(true);
-    try {
-      await submitValues({
-        ...formValues,
-        productStatus: ProductStatus.ACTIVE,
-      });
-    } finally {
-      setIsActivating(false);
+  const handleTabClick = (nextTab: TabKey) => {
+    if (nextTab === tab) return;
+    if (isEditing && isDirty) {
+      setPendingTab(nextTab);
+      return;
     }
-  });
+    setTab(nextTab);
+  };
+
+  const handleDiscardAndSwitchTab = () => {
+    handleCancelEdit();
+    setTab(pendingTab as TabKey);
+    setPendingTab(null);
+  };
+
+  const handleSaveAndSwitchTab = handleSubmit(
+    async (formValues) => {
+      const saved = await submitValues(formValues);
+      if (saved) setTab(pendingTab as TabKey);
+      setPendingTab(null);
+    },
+    () => setPendingTab(null),
+  );
 
   const sections: { key: TabKey; label: string; icon: ReactNode }[] = [
     {
@@ -320,6 +377,19 @@ export function ProductDetailsPage() {
     );
   }
 
+  const metaTooltip = [
+    t('product.createdMetaLine', {
+      date: formatDateTime(product.createdAt),
+      by: product.createdBy || '—',
+    }),
+    product.updatedAt &&
+      t('product.updatedMetaLine', {
+        time: formatRelativeTime(product.updatedAt, t),
+      }),
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-border bg-surface flex items-center justify-between gap-4 border-b px-6 py-4">
@@ -343,8 +413,16 @@ export function ProductDetailsPage() {
                   : t('product.viewingBadge')}
               </Badge>
             </div>
-            <p className="text-fg-muted text-xs">
-              {product.sapCode ?? '—'} · #{product.id} · product
+            <p className="text-fg-muted flex items-center gap-1 text-xs">
+              <span>
+                {product.sapCode ?? '—'} · #{product.id} · product
+              </span>
+              <span
+                title={metaTooltip}
+                className="text-fg-muted/70 hover:text-fg-muted inline-flex cursor-help"
+              >
+                <InfoIcon size={12} />
+              </span>
             </p>
           </div>
         </div>
@@ -354,7 +432,10 @@ export function ProductDetailsPage() {
             type="button"
             ref={missingTriggerRef}
             onClick={() => setIsMissingPanelOpen((value) => !value)}
-            className="flex items-center gap-2"
+            className={cn(
+              'flex items-center gap-2',
+              tab === 'general' && 'wide:hidden',
+            )}
           >
             <span className="relative inline-flex">
               <ProgressRing
@@ -375,7 +456,12 @@ export function ProductDetailsPage() {
           </button>
 
           {externalSystems.length > 0 && (
-            <div className="flex items-center gap-1">
+            <div
+              className={cn(
+                'flex items-center gap-1',
+                tab === 'general' && 'wide:hidden',
+              )}
+            >
               {externalSystems.map((system) => {
                 const present = (product.externalSystemIds ?? []).includes(
                   system.id,
@@ -398,41 +484,38 @@ export function ProductDetailsPage() {
             </div>
           )}
 
-          {isEditing ? (
-            <>
-              <Button variant="outline" size="sm" onClick={handleCancelEdit}>
-                {t('common.cancel')}
-              </Button>
+          {product.productStatus && (
+            <Badge variant={STATUS_BADGE_VARIANT[product.productStatus]} dot>
+              {t(`product.status.${product.productStatus}`)}
+            </Badge>
+          )}
+
+          {tab === 'general' &&
+            (isEditing ? (
+              <>
+                <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                  {t('common.cancel')}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={<CheckIcon size={14} />}
+                  onClick={handleSave}
+                  isLoading={isSaving}
+                >
+                  {t('common.save')}
+                </Button>
+              </>
+            ) : (
               <Button
                 variant="outline"
                 size="sm"
-                icon={<CheckIcon size={14} />}
-                onClick={handleSave}
-                isLoading={isSaving}
+                icon={<EditIcon size={14} />}
+                onClick={() => setIsEditing(true)}
               >
-                {t('common.save')}
+                {t('common.edit')}
               </Button>
-            </>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<EditIcon size={14} />}
-              onClick={() => setIsEditing(true)}
-            >
-              {t('common.edit')}
-            </Button>
-          )}
-
-          <Button
-            size="sm"
-            disabled={!canActivate}
-            icon={!canActivate ? <LockIcon size={13} /> : undefined}
-            onClick={handleActivate}
-            isLoading={isActivating}
-          >
-            {t('product.activate')}
-          </Button>
+            ))}
         </div>
       </div>
 
@@ -443,7 +526,7 @@ export function ProductDetailsPage() {
               <button
                 key={section.key}
                 type="button"
-                onClick={() => setTab(section.key)}
+                onClick={() => handleTabClick(section.key)}
                 className={cn(
                   'flex items-center gap-2 rounded px-3 py-2 text-sm transition-colors',
                   tab === section.key
@@ -465,234 +548,256 @@ export function ProductDetailsPage() {
 
         <div className="min-h-0 flex-1 overflow-y-auto p-6">
           {tab === 'general' ? (
-            isEditing ? (
-              <form
-                onSubmit={handleSave}
-                className="flex max-w-3xl flex-col gap-4"
-              >
-                <Card className="flex flex-col gap-4">
-                  <h3 className="text-fg text-sm font-semibold">
-                    {t('product.generalInfo')}
-                  </h3>
+            <div className="wide:grid-cols-[48rem_20rem] wide:justify-center grid gap-6">
+              {isEditing ? (
+                <form
+                  onSubmit={handleSave}
+                  className="flex max-w-3xl flex-col gap-4 xl:max-w-none"
+                >
+                  <Card className="flex flex-col gap-4">
+                    <h3 className="text-fg text-sm font-semibold">
+                      {t('product.generalInfo')}
+                    </h3>
 
-                  <FormInput
-                    name="name"
-                    control={control}
-                    label={t('product.name')}
-                    required
-                    rules={{ required: t('common.required') }}
-                  />
-                  <FormTextarea
-                    name="description"
-                    control={control}
-                    label={t('product.description')}
-                    rows={2}
-                  />
+                    <FormInput
+                      name="name"
+                      control={control}
+                      label={t('product.name')}
+                      required
+                      rules={{ required: t('common.required') }}
+                    />
+                    <FormTextarea
+                      name="description"
+                      control={control}
+                      label={t('product.description')}
+                      rows={2}
+                    />
 
-                  <div className="flex gap-4">
-                    <div className="flex flex-1 flex-col gap-1">
-                      <FormSelect
-                        name="typeOfNomenclatureId"
-                        control={control}
-                        options={typeOfNomenclature.options}
-                        label={t('product.typeOfNomenclature')}
-                        isClearable
-                        isSearchable
-                        isLoading={typeOfNomenclature.isFetching}
-                        onInputChange={typeOfNomenclature.onInputChange}
-                      />
-                      <AddMoreLink
-                        onClick={() =>
-                          setActiveReferenceModal('typeOfNomenclature')
-                        }
-                      />
+                    <div className="flex gap-4">
+                      <div className="flex flex-1 flex-col gap-1">
+                        <FormSelect
+                          name="typeOfNomenclatureId"
+                          control={control}
+                          options={typeOfNomenclature.options}
+                          label={t('product.typeOfNomenclature')}
+                          isClearable
+                          isSearchable
+                          isLoading={typeOfNomenclature.isFetching}
+                          onInputChange={typeOfNomenclature.onInputChange}
+                        />
+                        <AddMoreLink
+                          onClick={() =>
+                            setActiveReferenceModal('typeOfNomenclature')
+                          }
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-1">
+                        <FormSelect
+                          name="productGroupId"
+                          control={control}
+                          options={productGroup.options}
+                          label={t('product.productGroup')}
+                          isClearable
+                          isSearchable
+                          isLoading={productGroup.isFetching}
+                          onInputChange={productGroup.onInputChange}
+                        />
+                        <AddMoreLink
+                          onClick={() =>
+                            setActiveReferenceModal('productGroup')
+                          }
+                        />
+                      </div>
                     </div>
-                    <div className="flex flex-1 flex-col gap-1">
-                      <FormSelect
-                        name="productGroupId"
-                        control={control}
-                        options={productGroup.options}
-                        label={t('product.productGroup')}
-                        isClearable
-                        isSearchable
-                        isLoading={productGroup.isFetching}
-                        onInputChange={productGroup.onInputChange}
-                      />
-                      <AddMoreLink
-                        onClick={() => setActiveReferenceModal('productGroup')}
-                      />
-                    </div>
-                  </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex flex-1 flex-col gap-1">
-                      <FormSelect
-                        name="categoryId"
-                        control={control}
-                        options={productCategory.options}
-                        label={t('product.category')}
-                        isClearable
-                        isSearchable
-                        isLoading={productCategory.isFetching}
-                        onInputChange={productCategory.onInputChange}
-                      />
-                      <AddMoreLink
-                        onClick={() => setActiveReferenceModal('category')}
-                      />
+                    <div className="flex gap-4">
+                      <div className="flex flex-1 flex-col gap-1">
+                        <FormSelect
+                          name="categoryId"
+                          control={control}
+                          options={productCategory.options}
+                          label={t('product.category')}
+                          isClearable
+                          isSearchable
+                          isLoading={productCategory.isFetching}
+                          onInputChange={productCategory.onInputChange}
+                        />
+                        <AddMoreLink
+                          onClick={() => setActiveReferenceModal('category')}
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-1">
+                        <FormSelect
+                          name="segmentId"
+                          control={control}
+                          options={segment.options}
+                          label={t('product.segment')}
+                          isClearable
+                          isSearchable
+                          isLoading={segment.isFetching}
+                          onInputChange={segment.onInputChange}
+                        />
+                        <AddMoreLink
+                          onClick={() => setActiveReferenceModal('segment')}
+                        />
+                      </div>
                     </div>
-                    <div className="flex flex-1 flex-col gap-1">
-                      <FormSelect
-                        name="segmentId"
-                        control={control}
-                        options={segment.options}
-                        label={t('product.segment')}
-                        isClearable
-                        isSearchable
-                        isLoading={segment.isFetching}
-                        onInputChange={segment.onInputChange}
-                      />
-                      <AddMoreLink
-                        onClick={() => setActiveReferenceModal('segment')}
-                      />
-                    </div>
-                  </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <FormInput
-                        name="sapCode"
-                        control={control}
-                        label={t('product.sapCode')}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <FormInput
-                        name="sapText"
-                        control={control}
-                        label={t('product.sapText')}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <FormInput
-                        name="article"
-                        control={control}
-                        label={t('product.article')}
-                      />
-                    </div>
-                    <div className="flex flex-1 flex-col gap-1">
-                      <FormSelect
-                        name="baseUnitId"
-                        control={control}
-                        options={unit.options}
-                        label={t('product.baseUnit')}
-                        isClearable
-                        isSearchable
-                        isLoading={unit.isFetching}
-                        onInputChange={unit.onInputChange}
-                      />
-                      <AddMoreLink
-                        onClick={() => setActiveReferenceModal('unit')}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-end gap-4">
-                    <div className="flex-1">
-                      <FormSelect
-                        name="productStatus"
-                        control={control}
-                        options={productStatusOptions}
-                        label={t('product.productStatus')}
-                        isClearable
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <FormCheckbox
-                        name="isFree"
-                        control={control}
-                        label={t('product.isFree')}
-                      />
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="flex flex-col gap-4">
-                  <h3 className="text-fg text-sm font-semibold">
-                    {t('product.gtin')}
-                  </h3>
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <FormInput
-                        name="gtin"
-                        control={control}
-                        label={t('product.gtin')}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <FormInput
-                        name="additionalGtins"
-                        control={control}
-                        label={t('product.additionalGtins')}
-                      />
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="flex flex-col gap-4">
-                  <h3 className="text-fg text-sm font-semibold">
-                    {t('product.accountingInfo')}
-                  </h3>
-                  <FormSelect
-                    name="accountingProductId"
-                    control={control}
-                    options={accountingProduct.options}
-                    label={t('product.accountingProduct')}
-                    isClearable
-                    isSearchable
-                    isLoading={accountingProduct.isFetching}
-                    onInputChange={accountingProduct.onInputChange}
-                  />
-                  <div className="flex flex-col gap-3">
                     <div className="flex gap-4">
                       <div className="flex-1">
-                        <FormCheckbox
-                          name="isViewOnlySmap"
+                        <FormInput
+                          name="sapCode"
                           control={control}
-                          label={t('product.isViewOnlySmap')}
+                          label={t('product.sapCode')}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <FormInput
+                          name="sapText"
+                          control={control}
+                          label={t('product.sapText')}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <FormInput
+                          name="article"
+                          control={control}
+                          label={t('product.article')}
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-1">
+                        <FormSelect
+                          name="baseUnitId"
+                          control={control}
+                          options={unit.options}
+                          label={t('product.baseUnit')}
+                          isClearable
+                          isSearchable
+                          isLoading={unit.isFetching}
+                          onInputChange={unit.onInputChange}
+                        />
+                        <AddMoreLink
+                          onClick={() => setActiveReferenceModal('unit')}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-end gap-4">
+                      <div className="flex-1">
+                        <FormSelect
+                          name="productStatus"
+                          control={control}
+                          options={productStatusOptions}
+                          label={t('product.productStatus')}
+                          isClearable
                         />
                       </div>
                       <div className="flex-1">
                         <FormCheckbox
-                          name="isCalcAccAmountByPercent"
+                          name="isFree"
                           control={control}
-                          label={t('product.isCalcAccAmountByPercent')}
+                          label={t('product.isFree')}
                         />
                       </div>
                     </div>
-                    <FormCheckbox
-                      name="isAutoGenerateKM"
-                      control={control}
-                      label={t('product.isAutoGenerateKM')}
-                    />
-                  </div>
-                </Card>
+                  </Card>
 
-                <ProductReferenceModals
-                  activeModal={activeReferenceModal}
-                  onClose={() => setActiveReferenceModal(null)}
-                  onCreated={(type, referenceId) =>
-                    setValue(REFERENCE_FIELD_BY_TYPE[type], referenceId, {
-                      shouldDirty: true,
-                    })
-                  }
+                  <Card className="flex flex-col gap-4">
+                    <h3 className="text-fg text-sm font-semibold">
+                      {t('product.gtin')}
+                    </h3>
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <FormInput
+                          name="gtin"
+                          control={control}
+                          label={t('product.gtin')}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <FormInput
+                          name="additionalGtins"
+                          control={control}
+                          label={t('product.additionalGtins')}
+                        />
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="flex flex-col gap-4">
+                    <h3 className="text-fg text-sm font-semibold">
+                      {t('product.accountingInfo')}
+                    </h3>
+                    <FormSelect
+                      name="accountingProductId"
+                      control={control}
+                      options={accountingProduct.options}
+                      label={t('product.accountingProduct')}
+                      isClearable
+                      isSearchable
+                      isLoading={accountingProduct.isFetching}
+                      onInputChange={accountingProduct.onInputChange}
+                    />
+                    <div className="flex flex-col gap-3">
+                      <div className="flex gap-4">
+                        <div className="flex-1">
+                          <FormCheckbox
+                            name="isViewOnlySmap"
+                            control={control}
+                            label={t('product.isViewOnlySmap')}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <FormCheckbox
+                            name="isCalcAccAmountByPercent"
+                            control={control}
+                            label={t('product.isCalcAccAmountByPercent')}
+                          />
+                        </div>
+                      </div>
+                      <FormCheckbox
+                        name="isAutoGenerateKM"
+                        control={control}
+                        label={t('product.isAutoGenerateKM')}
+                      />
+                    </div>
+                  </Card>
+
+                  <ProductReferenceModals
+                    activeModal={activeReferenceModal}
+                    onClose={() => setActiveReferenceModal(null)}
+                    onCreated={(type, referenceId) =>
+                      setValue(REFERENCE_FIELD_BY_TYPE[type], referenceId, {
+                        shouldDirty: true,
+                      })
+                    }
+                  />
+                </form>
+              ) : (
+                <ProductGeneralReadOnly product={product} />
+              )}
+
+              <aside className="wide:flex hidden flex-col gap-4">
+                <ProductCompletenessCard
+                  percent={completionPercent}
+                  threshold={ACTIVATION_THRESHOLD}
+                  missingFields={missingFields}
+                  onFieldClick={() => setIsEditing(true)}
                 />
-              </form>
-            ) : (
-              <ProductGeneralReadOnly product={product} />
-            )
+                {externalSystems.length > 0 && (
+                  <ProductSystemsStatusCard
+                    systems={externalSystems}
+                    presentIds={product.externalSystemIds ?? []}
+                  />
+                )}
+                <ProductLastChangeCard product={product} />
+              </aside>
+            </div>
+          ) : tab === 'attributes' ? (
+            <ProductAttributesTab productId={productId} />
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
               <p className="text-fg-muted text-sm">
@@ -756,6 +861,41 @@ export function ProductDetailsPage() {
           </div>,
           document.body,
         )}
+
+      <Modal
+        isOpen={pendingTab !== null}
+        onClose={() => setPendingTab(null)}
+        title={t('product.unsavedChangesTitle')}
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-fg-muted text-sm">
+            {t('product.unsavedChangesHint')}
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setPendingTab(null)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleDiscardAndSwitchTab}
+            >
+              {t('product.discardChanges')}
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveAndSwitchTab}
+              isLoading={isSaving}
+            >
+              {t('common.save')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -764,7 +904,7 @@ function ProductGeneralReadOnly({ product }: { product: IProduct }) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex max-w-3xl flex-col gap-4">
+    <div className="flex max-w-3xl flex-col gap-4 xl:max-w-none">
       <Card className="flex flex-col gap-4">
         <h3 className="text-fg text-sm font-semibold">
           {t('product.generalInfo')}
@@ -901,5 +1041,219 @@ function ProductGeneralReadOnly({ product }: { product: IProduct }) {
         </div>
       </Card>
     </div>
+  );
+}
+
+function ProductCompletenessCard({
+  percent,
+  threshold,
+  missingFields,
+  onFieldClick,
+}: {
+  percent: number;
+  threshold: number;
+  missingFields: { key: string; label: string }[];
+  onFieldClick: () => void;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <Card>
+      <CardHeader
+        icon={
+          <ProgressRing
+            percent={percent}
+            size={44}
+            strokeWidth={5}
+            completeThreshold={threshold}
+          />
+        }
+        title={t('product.completeness')}
+        subtitle={
+          missingFields.length > 0
+            ? t('product.missingFieldsHint', {
+                count: missingFields.length,
+                threshold,
+              })
+            : t('product.missingFieldsEmpty')
+        }
+      />
+      {missingFields.length > 0 && (
+        <ul className="-mx-1.5 flex flex-col gap-0.5">
+          {missingFields.map((field) => (
+            <li key={field.key}>
+              <button
+                type="button"
+                onClick={onFieldClick}
+                className="hover:bg-surface-hover flex w-full items-center gap-2 rounded px-1.5 py-1.5 text-left transition-colors"
+              >
+                <span className="bg-warning size-1.5 shrink-0 rounded-full" />
+                <span className="text-fg truncate text-sm">{field.label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+function ProductSystemsStatusCard({
+  systems,
+  presentIds,
+}: {
+  systems: IExternalSystem[];
+  presentIds: number[];
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <Card>
+      <CardHeader
+        title={t('product.externalSystemsTitle')}
+        icon={<ShareIcon size={15} />}
+      />
+      <ul className="flex flex-col gap-2.5">
+        {systems.map((system) => {
+          const present = presentIds.includes(system.id);
+          return (
+            <li
+              key={system.id}
+              className="flex items-center justify-between gap-2 text-sm"
+            >
+              <span className="truncate font-medium">
+                <span className="text-fg">
+                  {system.name.slice(0, 2).toUpperCase()}
+                </span>
+                <span className="text-fg-muted">
+                  {system.name.slice(2).toLowerCase()}
+                </span>
+              </span>
+              {present ? (
+                <span className="text-success flex shrink-0 items-center gap-1 text-xs font-medium">
+                  <CheckCircleIcon size={13} />
+                  {t('analytics.coverage.legend.synced')}
+                </span>
+              ) : (
+                <span className="text-fg-muted flex shrink-0 items-center gap-1 text-xs">
+                  <ClockIcon size={13} />
+                  {t('analytics.coverage.legend.pending')}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
+  );
+}
+
+function auditPerformerName(
+  performer: AuditRecordPerformer | null,
+  fallback: string,
+): string {
+  if (!performer) return fallback;
+  const fullName =
+    `${performer.firstName ?? ''} ${performer.lastName ?? ''}`.trim();
+  return fullName || performer.username;
+}
+
+function ProductLastChangeCard({ product }: { product: IProduct }) {
+  const { t } = useTranslation();
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+  const { data, isFetching } = useGetAuditByRecordQuery({
+    tableName: 'product',
+    recordId: product.id,
+    page: 0,
+    size: 200,
+  });
+  const latest = useMemo(
+    () => groupAuditRecordEntries(data?.data?.content ?? [])[0],
+    [data],
+  );
+
+  return (
+    <Card>
+      <CardHeader
+        title={t('product.lastChange')}
+        icon={<ClockIcon size={15} />}
+        action={
+          <button
+            type="button"
+            onClick={() => setIsHistoryOpen(true)}
+            className="text-primary flex items-center gap-1 text-xs font-medium hover:underline"
+          >
+            {t('audit.viewAll')}
+            <ArrowRightIcon size={11} />
+          </button>
+        }
+      />
+
+      {isFetching ? (
+        <p className="text-fg-muted text-xs">{t('common.loading')}</p>
+      ) : !latest ? (
+        <p className="text-fg-muted text-xs">
+          {t('audit.recordHistory.empty')}
+        </p>
+      ) : (
+        <div>
+          <div className="flex items-center gap-2">
+            <Avatar
+              name={auditPerformerName(latest.performedBy, '?')}
+              size="sm"
+            />
+            <span className="text-fg min-w-0 flex-1 truncate text-sm font-medium">
+              {latest.performedBy
+                ? auditPerformerName(latest.performedBy, '?')
+                : t('audit.systemActor')}
+            </span>
+            <span className="text-fg-muted shrink-0 text-xs whitespace-nowrap">
+              {formatRelativeTime(latest.actionTime, t)}
+            </span>
+          </div>
+
+          {latest.actionType === 'INSERT' ? (
+            <p className="text-fg-muted mt-2 text-xs">
+              {t('audit.recordHistory.createdMessage')}
+            </p>
+          ) : (
+            <div className="mt-2 flex flex-col gap-1">
+              {latest.fieldChanges.slice(0, 2).map((change) => (
+                <p key={change.fieldName} className="truncate text-xs">
+                  <span className="text-fg-muted">
+                    {getAuditFieldLabel(change.fieldName, t)}:{' '}
+                  </span>
+                  <span className="text-fg-muted line-through">
+                    {formatAuditFieldValue(
+                      change.fieldName,
+                      change.oldValue,
+                      t,
+                    )}
+                  </span>
+                  {' → '}
+                  <span className="text-fg font-medium">
+                    {formatAuditFieldValue(
+                      change.fieldName,
+                      change.newValue,
+                      t,
+                    )}
+                  </span>
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <RecordHistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        tableName="product"
+        recordId={product.id}
+        recordTitle={product.name}
+        recordCode={product.sapCode}
+      />
+    </Card>
   );
 }

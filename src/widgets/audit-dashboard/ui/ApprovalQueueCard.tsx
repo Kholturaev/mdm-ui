@@ -9,7 +9,7 @@ import { CheckCircleIcon } from '@shared/ui/icons/CheckCircleIcon';
 import { formatRelativeTime } from '@shared/lib/formatDate';
 
 export function ApprovalQueueCard() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { approvals, approve, reject } = useApprovalQueue();
 
   return (
@@ -36,7 +36,7 @@ export function ApprovalQueueCard() {
                   </p>
                   <p className="text-fg-muted text-xs">
                     {t(`audit.approvals.kind.${item.kind}`)} ·{' '}
-                    {formatRelativeTime(item.createdAt, i18n.language)}
+                    {formatRelativeTime(item.createdAt, t)}
                   </p>
                 </div>
               </div>

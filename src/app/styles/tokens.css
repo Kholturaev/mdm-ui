@@ -6,6 +6,13 @@
 
 /* Brand tokens: static values, same in light and dark. */
 @theme {
+  /* Kicks in around 14" laptops and up (default logical width ~1512px on a
+     14" MacBook Pro) — the two-column layout with the info sidebar needs
+     this much room. 13"-class screens (~1280-1440px, Tailwind's `xl`) get
+     a full-width single column instead; anything smaller keeps the
+     original capped-width layout. */
+  --breakpoint-wide: 90rem;
+
   --color-danger: #ef4444;
   --color-danger-hover: #dc2626;
   --color-danger-foreground: #ffffff;

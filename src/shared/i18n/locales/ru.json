@@ -21,6 +21,8 @@
     "clear": "Очистить",
     "comingSoon": "Скоро",
     "addMore": "Добавить ещё",
+    "copy": "Скопировать",
+    "copied": "Скопировано",
     "previous": "Назад",
     "next": "Далее",
     "rowsPerPage": "На странице",
@@ -41,6 +43,12 @@
       "9": "Октябрь",
       "10": "Ноябрь",
       "11": "Декабрь"
+    },
+    "relativeTime": {
+      "justNow": "только что",
+      "minutesAgo": "{{count}} мин. назад",
+      "hoursAgo": "{{count}} ч. назад",
+      "daysAgo": "{{count}} дн. назад"
     }
   },
   "nav": {
@@ -261,7 +269,31 @@
     "logout": "Выйти",
     "username": "Логин",
     "password": "Пароль",
-    "loginFailed": "Неверный логин или пароль"
+    "loginFailed": "Неверный логин или пароль",
+    "welcomeTitle": "С возвращением",
+    "welcomeSubtitle": "Войдите в систему, используя свою учётную запись",
+    "helpText": "Нет учётной записи? Обратитесь к системному администратору",
+    "footerRights": "Все права защищены",
+    "brandHeadline": "Единая система управления мастер-данными",
+    "brandSubtitle": "Номенклатура, дилеры и доступ — в одном месте для всех подразделений AKFA Group",
+    "features": {
+      "analytics": {
+        "title": "Аналитика в реальном времени",
+        "desc": "Статус синхронизации по всем внешним системам"
+      },
+      "nomenclature": {
+        "title": "Единый справочник НСИ",
+        "desc": "Централизованное управление номенклатурой и атрибутами"
+      },
+      "dealers": {
+        "title": "Управление дилерами",
+        "desc": "Полная база партнёров и региональных структур"
+      },
+      "access": {
+        "title": "Контроль доступа и аудит",
+        "desc": "Роли, права и история изменений под контролем"
+      }
+    }
   },
   "header": {
     "systemHealth": {
@@ -308,8 +340,19 @@
     "tabHistory": "История",
     "tabPlaceholder": "Этот раздел скоро появится",
     "completionHint": "Заполните поля раздела «Общее» — процент в кольце будет расти. При {{threshold}}% кнопка «Активировать» станет доступна.",
+    "unsavedChangesTitle": "Несохранённые изменения",
+    "unsavedChangesHint": "Вы изменили данные, но не сохранили их. Сохранить перед переходом в другой раздел или отменить изменения?",
+    "discardChanges": "Отменить изменения",
     "generalInfo": "Общая информация",
     "accountingInfo": "Бухгалтерская информация",
+    "externalSystemsTitle": "Внешние системы",
+    "externalSystemsHint": "Выберите, в какие системы отправить товар (необязательно)",
+    "externalSystemsRequiredFields": "Нужно: {{fields}}",
+    "externalSystemsNoExtraFields": "Дополнительные поля не нужны",
+    "externalSystemsNoConfig": "Конфигурация не настроена",
+    "externalSystemsPreview": "Просмотреть пример JSON",
+    "externalSystemsPreviewHint": "В эту систему уйдёт этот формат (на основе конфигурации маппинга)",
+    "externalSystemsSelectedType": "Выбранный тип номенклатуры: {{name}}",
     "isFree": "Бесплатно",
     "isViewOnlySmap": "Только просмотр (SMAP)",
     "isCalcAccAmountByPercent": "Рассчитывать сумму учёта в процентах",
@@ -317,6 +360,8 @@
     "missingFieldsTitle": "Нужно заполнить",
     "missingFieldsHint": "Ещё {{count}} полей для {{threshold}}%",
     "missingFieldsEmpty": "Все поля заполнены",
+    "completeness": "Заполненность",
+    "lastChange": "Последнее изменение",
     "totalCount": "Всего: {{count}}",
     "id": "ID",
     "name": "Название",
@@ -362,6 +407,18 @@
     "historyField": {
       "isGolden": "Золотая запись",
       "isFree": "Бесплатно"
+    },
+    "attr": {
+      "title": "Атрибуты",
+      "desc": "Дополнительные атрибуты товара",
+      "add": "Добавить атрибут",
+      "createTitle": "Новый атрибут",
+      "editTitle": "Редактировать атрибут",
+      "name": "Название",
+      "key": "Ключ",
+      "value": "Значение",
+      "externalSystem": "Внешняя система",
+      "empty": "Атрибутов нет"
     }
   },
   "message": {

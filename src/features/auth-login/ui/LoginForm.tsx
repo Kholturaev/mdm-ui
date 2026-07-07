@@ -5,6 +5,8 @@ import { useAppDispatch } from '@app/store';
 import { login } from '@app/store/auth/authSlice';
 import { Button } from '@shared/ui/Button';
 import { FormInput, FormPasswordInput } from '@shared/ui/form';
+import { UserIcon } from '@shared/ui/icons/UserIcon';
+import { LockIcon } from '@shared/ui/icons/LockIcon';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
@@ -37,12 +39,15 @@ export function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex w-80 flex-col gap-4"
+      className="flex w-full flex-col gap-5"
     >
       <FormInput
         name="username"
         control={control}
         label={t('auth.username')}
+        size="lg"
+        leftIcon={<UserIcon />}
+        autoComplete="username"
         required
         rules={{ required: t('common.required') }}
       />
@@ -50,10 +55,19 @@ export function LoginForm() {
         name="password"
         control={control}
         label={t('auth.password')}
+        size="lg"
+        leftIcon={<LockIcon />}
+        autoComplete="current-password"
         required
         rules={{ required: t('common.required') }}
       />
-      <Button type="submit" isLoading={isLoading} fullWidth>
+      <Button
+        type="submit"
+        size="lg"
+        isLoading={isLoading}
+        fullWidth
+        className="mt-2"
+      >
         {t('auth.login')}
       </Button>
     </form>

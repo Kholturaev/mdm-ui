@@ -66,7 +66,7 @@ function Chip({
 }
 
 function ActivityRow({ entry }: { entry: AuditEntry }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const hasChanges = entry.fieldChanges.length > 0;
 
@@ -85,7 +85,7 @@ function ActivityRow({ entry }: { entry: AuditEntry }) {
           {t(`audit.feed.${entry.description}`, auditFeedParams(entry))}
         </p>
         <span className="text-fg-muted shrink-0 text-xs whitespace-nowrap">
-          {formatRelativeTime(entry.actionTime, i18n.language)}
+          {formatRelativeTime(entry.actionTime, t)}
         </span>
       </div>
 

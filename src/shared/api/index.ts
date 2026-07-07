@@ -5,6 +5,7 @@ import axios, {
   type AxiosResponse,
 } from 'axios';
 import { env } from '@shared/config/env';
+import i18n from '@shared/i18n/config';
 import type { ApiException, HttpResponseHeaders } from './type';
 import { extractFieldErrors } from './parseApiError';
 
@@ -28,6 +29,7 @@ async function performRefresh(): Promise<boolean> {
     refreshPromise = axiosInstance
       .post(`${env.authApiUrl}/auth/refresh-token`, undefined, {
         withCredentials: true,
+        headers: { 'Accept-Language': i18n.language },
       })
       .then((res) => res.status >= 200 && res.status < 300)
       .catch(() => false)
@@ -44,6 +46,7 @@ async function performRefresh(): Promise<boolean> {
 function buildHeaders(isFormData: boolean): Record<string, string> {
   const headers: Record<string, string> = {};
   if (!isFormData) headers['Content-Type'] = 'application/json';
+  headers['Accept-Language'] = i18n.language;
   return headers;
 }
 
@@ -132,6 +135,7 @@ export async function logout() {
   try {
     await axiosInstance.post(`${env.authApiUrl}/auth/logout`, undefined, {
       withCredentials: true,
+      headers: { 'Accept-Language': i18n.language },
     });
   } finally {
     window.location.href = '/login';

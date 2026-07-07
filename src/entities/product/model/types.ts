@@ -43,6 +43,7 @@ export interface IProduct {
   alternateUnitId?: number | null;
   createdAt?: string;
   createdBy?: string;
+  updatedAt?: string;
   updatedBy?: string;
   /** IDs of the external systems (SAP, 1C, etc.) this product has been sent to. */
   externalSystemIds?: number[];
@@ -77,4 +78,6 @@ export interface ProductFormValues {
   isViewOnlySmap?: boolean;
   isCalcAccAmountByPercent?: boolean;
   isAutoGenerateKM?: boolean;
+  /** IDs of the external systems to send this product to — set at create time so it doesn't wait on a distribute-after-the-fact step. */
+  externalSystemIds?: number[];
 }
