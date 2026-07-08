@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { IUser, UserFormValues } from '@entities/user/model/types';
+import type { IUser } from '@entities/user/model/types';
 import {
   useCreateUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
 } from '@entities/user/api/userApi';
 import { UserForm } from '@features/user-create-edit/ui/UserForm';
+import type { UserFormSubmitValues } from '@features/user-create-edit/ui/UserForm';
 import { UserTable } from '@widgets/user-table/ui/UserTable';
 import { Modal } from '@shared/ui/Modal';
 import { parseApiError } from '@shared/api/parseApiError';
@@ -27,10 +28,22 @@ export function UsersPage() {
 
   const closeModal = () => setModalState(null);
 
-  const handleSubmit = async (values: UserFormValues) => {
+  const handleSubmit = async (values: UserFormSubmitValues) => {
     try {
+      const { firstName, lastName, username, email, phone, telegramNickName } =
+        values;
       if (modalState?.mode === 'edit') {
-        await updateUser({ id: modalState.user.id, data: values }).unwrap();
+        await updateUser({
+          id: modalState.user.id,
+          data: {
+            firstName,
+            lastName,
+            username,
+            email,
+            phone,
+            telegramNickName,
+          },
+        }).unwrap();
       } else {
         await createUser(values).unwrap();
       }
@@ -51,12 +64,14 @@ export function UsersPage() {
   };
 
   return (
-    <div className="h-full">
-      <UserTable
-        onCreate={() => setModalState({ mode: 'create' })}
-        onEdit={(user) => setModalState({ mode: 'edit', user })}
-        onDelete={handleDelete}
-      />
+    <div className="h-full p-6">
+      <div className="border-border h-full overflow-hidden rounded-lg border">
+        <UserTable
+          onCreate={() => setModalState({ mode: 'create' })}
+          onEdit={(user) => setModalState({ mode: 'edit', user })}
+          onDelete={handleDelete}
+        />
+      </div>
 
       <Modal
         isOpen={modalState !== null}

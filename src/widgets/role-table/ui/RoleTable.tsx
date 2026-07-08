@@ -19,7 +19,6 @@ import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { PlusIcon } from '@shared/ui/icons/PlusIcon';
 import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
-import { RoleUserCountBadge } from './RoleUserCountBadge';
 
 type RoleTableProps = {
   onCreate: () => void;
@@ -106,11 +105,6 @@ export function RoleTable({ onCreate, onEdit, onDelete }: RoleTableProps) {
             {row.original.permissionKeys.length}/{PERMISSION_CATALOG.length}
           </Badge>
         ),
-      },
-      {
-        id: 'users',
-        header: t('role.users'),
-        cell: ({ row }) => <RoleUserCountBadge roleId={row.original.id} />,
       },
       {
         id: 'actions',

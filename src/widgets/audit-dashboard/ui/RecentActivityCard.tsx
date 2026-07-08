@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { USER_SEED } from '@entities/user/api/userMockData';
+import { AUDIT_ACTOR_SEED } from '@entities/audit/api/auditActors';
 import type { AuditActionType, AuditEntry } from '@entities/audit/model/types';
 import { useRecentAuditEntries } from '@entities/audit/api/auditApi';
 import {
@@ -128,7 +128,7 @@ export function RecentActivityCard() {
 
   const actorOptions = useMemo(
     () =>
-      USER_SEED.map((user) => ({
+      AUDIT_ACTOR_SEED.map((user) => ({
         username: user.username,
         fullName: `${user.firstName} ${user.lastName}`,
       })),

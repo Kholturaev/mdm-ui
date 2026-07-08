@@ -6,7 +6,7 @@ export function toUserFormValues(user?: IUser): UserFormValues {
     lastName: user?.lastName ?? '',
     username: user?.username ?? '',
     email: user?.email ?? '',
-    status: user?.status ?? 'ACTIVE',
-    roleIds: user?.roleIds ?? [],
+    phone: user?.phone ?? '',
+    telegramNickName: user?.telegramNickName ?? '',
   };
 }

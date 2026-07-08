@@ -1,23 +1,22 @@
-export type UserStatus = 'ACTIVE' | 'INACTIVE';
-
 export interface IUser {
-  id: number;
+  id: string;
+  username: string;
   firstName: string;
   lastName: string;
-  username: string;
   email: string;
-  status: UserStatus;
-  /** Permissions are never set directly on a user — they're the union of these roles' permissionKeys. */
-  roleIds: number[];
-  createdAt: string;
-  lastLoginAt?: string;
+  phone: string;
+  telegramNickName: string;
 }
 
-export interface UserFormValues {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  status: UserStatus;
-  roleIds: number[];
+export type UserFormValues = Omit<IUser, 'id'>;
+
+export type UserCreateFormValues = UserFormValues & {
+  password: string;
+};
+
+/** A Keycloak realm role, as returned by the auth-service — not `@entities/role`'s local numeric-id role. */
+export interface IUserRole {
+  id: string;
+  name: string;
+  description?: string;
 }

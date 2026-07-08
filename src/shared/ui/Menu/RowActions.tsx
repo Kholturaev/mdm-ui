@@ -27,7 +27,10 @@ export function RowActions({ items, maxVisible = 2 }: RowActionsProps) {
         <button
           key={item.label}
           type="button"
-          onClick={item.onClick}
+          onClick={(event) => {
+            event.stopPropagation();
+            item.onClick();
+          }}
           aria-label={item.label}
           title={item.label}
           className={cn(

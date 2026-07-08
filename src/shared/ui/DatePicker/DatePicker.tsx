@@ -12,6 +12,7 @@ type DatePickerProps = ReactDatePickerProps & {
   error?: string;
   helperText?: string;
   size?: InputProps['size'];
+  required?: boolean;
 };
 
 type CustomInputProps = {
@@ -19,10 +20,14 @@ type CustomInputProps = {
   error?: string;
   helperText?: string;
   size?: InputProps['size'];
+  required?: boolean;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
-  function CustomInput({ label, error, helperText, size, ...rest }, ref) {
+  function CustomInput(
+    { label, error, helperText, size, required, ...rest },
+    ref,
+  ) {
     return (
       <Input
         ref={ref}
@@ -30,6 +35,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         error={error}
         helperText={helperText}
         size={size}
+        required={required}
         readOnly
         {...rest}
       />
@@ -42,6 +48,7 @@ export function DatePicker({
   error,
   helperText,
   size,
+  required,
   dateFormat = 'dd.MM.yyyy',
   ...rest
 }: DatePickerProps) {
@@ -54,6 +61,7 @@ export function DatePicker({
           error={error}
           helperText={helperText}
           size={size}
+          required={required}
         />
       }
       {...rest}

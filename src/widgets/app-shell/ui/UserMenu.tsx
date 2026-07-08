@@ -1,21 +1,21 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useGetMeQuery } from '@entities/profile/api/profileApi';
-import {
-  getDisplayRoles,
-  getProfileDisplayName,
-} from '@entities/profile/lib/profileDisplay';
+import { getProfileDisplayName } from '@entities/profile/lib/profileDisplay';
 import { useAppDispatch } from '@app/store';
 import { sessionExpired } from '@app/store/auth/authSlice';
 import { apiService, logout } from '@shared/api';
 import { useClickOutside } from '@shared/lib/hooks/useClickOutside';
 import { Avatar } from '@shared/ui/Avatar';
-import { Badge } from '@shared/ui/Badge';
 import { Spinner } from '@shared/ui/Spinner';
 import { LogOutIcon } from '@shared/ui/icons/LogOutIcon';
+import { SettingsIcon } from '@shared/ui/icons/SettingsIcon';
+import { UserIcon } from '@shared/ui/icons/UserIcon';
 
 export function UserMenu() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data, isLoading } = useGetMeQuery();
   const profile = data?.data;
@@ -38,7 +38,6 @@ export function UserMenu() {
   if (!profile) return null;
 
   const displayName = getProfileDisplayName(profile, profile.username);
-  const displayRoles = getDisplayRoles(profile.roles);
 
   return (
     <div ref={containerRef} className="relative">
@@ -60,17 +59,30 @@ export function UserMenu() {
             {profile.email && (
               <p className="text-fg-muted truncate text-xs">{profile.email}</p>
             )}
-            {displayRoles.length > 0 && (
-              <div className="mt-1.5 flex flex-wrap gap-1">
-                {displayRoles.map((role) => (
-                  <Badge key={role} variant="neutral">
-                    {role}
-                  </Badge>
-                ))}
-              </div>
-            )}
           </div>
 
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(false);
+              navigate('/profile');
+            }}
+            className="text-fg hover:bg-surface-hover flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
+          >
+            <UserIcon size={14} />
+            {t('profile.myProfile')}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(false);
+              navigate('/settings');
+            }}
+            className="text-fg hover:bg-surface-hover flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
+          >
+            <SettingsIcon size={14} />
+            {t('settings.title')}
+          </button>
           <button
             type="button"
             onClick={handleLogout}

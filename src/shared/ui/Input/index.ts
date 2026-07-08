@@ -3,3 +3,4 @@ export type { InputProps } from './Input';
 export { PasswordInput } from './PasswordInput';
 export { NumberInput } from './NumberInput';
 export { PhoneField } from './PhoneField';
+export { PriceInput } from './PriceInput';

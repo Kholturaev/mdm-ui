@@ -1,5 +1,4 @@
-import { ROLE_SEED } from '@entities/role/api/roleMockData';
-import { USER_SEED } from '@entities/user/api/userMockData';
+import { AUDIT_ACTOR_SEED } from '../api/auditActors';
 import type {
   ActionTypeCount,
   ActivityTrendPoint,
@@ -78,12 +77,9 @@ export function computeTeamActivity(
   }
   return Array.from(counts.entries())
     .map(([username, actionCount]) => {
-      const user = USER_SEED.find(
+      const user = AUDIT_ACTOR_SEED.find(
         (candidate) => candidate.username === username,
       );
-      const role = user
-        ? ROLE_SEED.find((candidate) => candidate.id === user.roleIds[0])
-        : undefined;
       return {
         actor: user
           ? {
@@ -92,7 +88,7 @@ export function computeTeamActivity(
               fullName: `${user.firstName} ${user.lastName}`,
             }
           : { id: 0, username, fullName: username },
-        roleName: role?.name ?? '—',
+        roleName: user?.roleName ?? '—',
         actionCount,
       };
     })
@@ -141,8 +137,8 @@ export function computeDashboardStats(
   return {
     actionsToday,
     actionsYesterday,
-    totalUsers: USER_SEED.length,
-    activeUsers: USER_SEED.filter((user) => user.status === 'ACTIVE').length,
+    totalUsers: AUDIT_ACTOR_SEED.length,
+    activeUsers: AUDIT_ACTOR_SEED.length,
     pendingApprovals,
     syncSuccessRate,
   };

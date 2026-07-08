@@ -66,7 +66,10 @@ export function ActionsMenu({ items, triggerClassName }: ActionsMenuProps) {
       <button
         ref={buttonRef}
         type="button"
-        onClick={toggle}
+        onClick={(event) => {
+          event.stopPropagation();
+          toggle();
+        }}
         aria-label="Row actions"
         className={cn(
           'border-border bg-surface text-fg-muted hover:bg-surface-hover hover:text-fg flex size-7 shrink-0 items-center justify-center rounded-md border shadow-sm transition-colors',

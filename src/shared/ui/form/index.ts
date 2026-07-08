@@ -1,6 +1,7 @@
 export { FormInput } from './FormInput';
 export { FormPasswordInput } from './FormPasswordInput';
 export { FormNumberInput } from './FormNumberInput';
+export { FormPriceInput } from './FormPriceInput';
 export { FormPhoneField } from './FormPhoneField';
 export { FormTextarea } from './FormTextarea';
 export { FormSelect } from './FormSelect';

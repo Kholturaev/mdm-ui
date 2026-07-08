@@ -11,6 +11,7 @@ function resolveIsDark(theme: 'light' | 'dark' | 'system'): boolean {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const theme = useAppSelector((state) => state.ui.theme);
+  const colorTheme = useAppSelector((state) => state.ui.colorTheme);
 
   useEffect(() => {
     const apply = () =>
@@ -23,6 +24,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     media.addEventListener('change', apply);
     return () => media.removeEventListener('change', apply);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', colorTheme);
+  }, [colorTheme]);
 
   return children;
 }

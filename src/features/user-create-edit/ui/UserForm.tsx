@@ -1,19 +1,25 @@
-import { useEffect, useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import type { IUser, UserFormValues } from '@entities/user/model/types';
+import type { IUser } from '@entities/user/model/types';
 import { toUserFormValues } from '@entities/user/model/mapping';
-import { useGetRolesQuery } from '@entities/role/api/roleApi';
 import { Button } from '@shared/ui/Button';
-import { Checkbox } from '@shared/ui/Checkbox';
-import { Select } from '@shared/ui/Select';
-import type { SelectOption } from '@shared/ui/Select';
-import { FormInput } from '@shared/ui/form';
+import { FormInput, FormPasswordInput } from '@shared/ui/form';
+
+export type UserFormSubmitValues = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phone: string;
+  telegramNickName: string;
+  password: string;
+};
 
 type UserFormProps = {
   user?: IUser;
   isSubmitting: boolean;
-  onSubmit: (values: UserFormValues) => void;
+  onSubmit: (values: UserFormSubmitValues) => void;
   onCancel: () => void;
 };
 
@@ -24,23 +30,14 @@ export function UserForm({
   onCancel,
 }: UserFormProps) {
   const { t } = useTranslation();
-  const { control, handleSubmit, reset } = useForm<UserFormValues>({
-    defaultValues: toUserFormValues(user),
+  const isEdit = Boolean(user);
+  const { control, handleSubmit, reset } = useForm<UserFormSubmitValues>({
+    defaultValues: { ...toUserFormValues(user), password: '' },
   });
 
   useEffect(() => {
-    reset(toUserFormValues(user));
+    reset({ ...toUserFormValues(user), password: '' });
   }, [user, reset]);
-
-  const { data: rolesData } = useGetRolesQuery({ page: 0, size: 100 });
-  const roleOptions = useMemo<SelectOption[]>(
-    () =>
-      (rolesData?.data.data ?? []).map((role) => ({
-        label: role.name,
-        value: role.id,
-      })),
-    [rolesData],
-  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -67,6 +64,7 @@ export function UserForm({
           control={control}
           label={t('user.username')}
           required
+          disabled={isEdit}
           rules={{ required: t('common.required') }}
         />
         <FormInput
@@ -79,43 +77,24 @@ export function UserForm({
         />
       </div>
 
-      <Controller
-        name="roleIds"
-        control={control}
-        render={({ field }) => (
-          <Select
-            isMulti
-            label={t('user.roles')}
-            options={roleOptions}
-            value={roleOptions.filter((option) =>
-              field.value.includes(Number(option.value)),
-            )}
-            onChange={(selected) =>
-              field.onChange(
-                (selected as SelectOption[]).map((option) =>
-                  Number(option.value),
-                ),
-              )
-            }
-          />
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormInput name="phone" control={control} label={t('user.phone')} />
+        <FormInput
+          name="telegramNickName"
+          control={control}
+          label={t('user.telegram')}
+        />
+      </div>
 
-      <Controller
-        name="status"
-        control={control}
-        render={({ field: { value, onChange, onBlur, ref } }) => (
-          <Checkbox
-            label={t('user.active')}
-            checked={value === 'ACTIVE'}
-            onChange={(event) =>
-              onChange(event.target.checked ? 'ACTIVE' : 'INACTIVE')
-            }
-            onBlur={onBlur}
-            ref={ref}
-          />
-        )}
-      />
+      {!isEdit && (
+        <FormPasswordInput
+          name="password"
+          control={control}
+          label={t('user.password')}
+          required
+          rules={{ required: t('common.required') }}
+        />
+      )}
 
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>

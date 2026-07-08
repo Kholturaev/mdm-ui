@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm, useWatch } from 'react-hook-form';
@@ -29,9 +29,11 @@ import {
   getAuditFieldLabel,
   groupAuditRecordEntries,
 } from '@entities/audit/lib/auditRecordHistory';
-import { RecordHistoryModal } from '@widgets/audit-log/ui/RecordHistoryModal';
+import { RecordHistoryTimeline } from '@widgets/audit-log/ui/RecordHistoryTimeline';
 import { ProductAttributesTab } from '@widgets/product-attributes/ui/ProductAttributesTab';
 import { ProductCharacteristicsTab } from '@widgets/product-characteristics/ui/ProductCharacteristicsTab';
+import { ProductPricesTab } from '@widgets/product-prices/ui/ProductPricesTab';
+import { ProductUnitConversionTab } from '@widgets/product-unit-conversion/ui/ProductUnitConversionTab';
 import { ProductReferenceModals } from '@features/product-reference-quick-create/ui/ProductReferenceModals';
 import type { ProductReferenceType } from '@features/product-reference-quick-create/model/types';
 import { Avatar } from '@shared/ui/Avatar';
@@ -68,7 +70,6 @@ import { ChecklistIcon } from '@shared/ui/icons/ChecklistIcon';
 import { SlidersIcon } from '@shared/ui/icons/SlidersIcon';
 import { DollarIcon } from '@shared/ui/icons/DollarIcon';
 import { SwapIcon } from '@shared/ui/icons/SwapIcon';
-import { ImageIcon } from '@shared/ui/icons/ImageIcon';
 import { ShareIcon } from '@shared/ui/icons/ShareIcon';
 import { ClockIcon } from '@shared/ui/icons/ClockIcon';
 import { InfoIcon } from '@shared/ui/icons/InfoIcon';
@@ -79,8 +80,6 @@ type TabKey =
   | 'characteristics'
   | 'prices'
   | 'unitConversion'
-  | 'media'
-  | 'systems'
   | 'history';
 
 /**
@@ -354,16 +353,6 @@ export function ProductDetailsPage() {
       icon: <SwapIcon size={15} />,
     },
     {
-      key: 'media',
-      label: t('product.tabMedia'),
-      icon: <ImageIcon size={15} />,
-    },
-    {
-      key: 'systems',
-      label: t('product.tabSystems'),
-      icon: <ShareIcon size={15} />,
-    },
-    {
       key: 'history',
       label: t('product.tabHistory'),
       icon: <ClockIcon size={15} />,
@@ -524,25 +513,29 @@ export function ProductDetailsPage() {
         <div className="border-border w-56 shrink-0 overflow-y-auto border-r p-3">
           <nav className="flex flex-col gap-0.5">
             {sections.map((section) => (
-              <button
-                key={section.key}
-                type="button"
-                onClick={() => handleTabClick(section.key)}
-                className={cn(
-                  'flex items-center gap-2 rounded px-3 py-2 text-sm transition-colors',
-                  tab === section.key
-                    ? 'bg-surface-hover text-fg font-medium'
-                    : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
+              <Fragment key={section.key}>
+                {section.key === 'history' && (
+                  <div className="border-border my-1.5 border-t" />
                 )}
-              >
-                {section.icon}
-                <span className="flex-1 text-left">{section.label}</span>
-                {section.key === 'general' && (
-                  <span className="text-fg-muted text-xs">
-                    {filledCount}/{GENERAL_FIELDS.length}
-                  </span>
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleTabClick(section.key)}
+                  className={cn(
+                    'flex items-center gap-2 rounded px-3 py-2 text-sm transition-colors',
+                    tab === section.key
+                      ? 'bg-surface-hover text-fg font-medium'
+                      : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
+                  )}
+                >
+                  {section.icon}
+                  <span className="flex-1 text-left">{section.label}</span>
+                  {section.key === 'general' && (
+                    <span className="text-fg-muted text-xs">
+                      {filledCount}/{GENERAL_FIELDS.length}
+                    </span>
+                  )}
+                </button>
+              </Fragment>
             ))}
           </nav>
         </div>
@@ -743,22 +736,16 @@ export function ProductDetailsPage() {
                       onInputChange={accountingProduct.onInputChange}
                     />
                     <div className="flex flex-col gap-3">
-                      <div className="flex gap-4">
-                        <div className="flex-1">
-                          <FormCheckbox
-                            name="isViewOnlySmap"
-                            control={control}
-                            label={t('product.isViewOnlySmap')}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <FormCheckbox
-                            name="isCalcAccAmountByPercent"
-                            control={control}
-                            label={t('product.isCalcAccAmountByPercent')}
-                          />
-                        </div>
-                      </div>
+                      <FormCheckbox
+                        name="isViewOnlySmap"
+                        control={control}
+                        label={t('product.isViewOnlySmap')}
+                      />
+                      <FormCheckbox
+                        name="isCalcAccAmountByPercent"
+                        control={control}
+                        label={t('product.isCalcAccAmountByPercent')}
+                      />
                       <FormCheckbox
                         name="isAutoGenerateKM"
                         control={control}
@@ -794,7 +781,10 @@ export function ProductDetailsPage() {
                     presentIds={product.externalSystemIds ?? []}
                   />
                 )}
-                <ProductLastChangeCard product={product} />
+                <ProductLastChangeCard
+                  product={product}
+                  onViewAll={() => setTab('history')}
+                />
               </aside>
             </div>
           ) : tab === 'attributes' ? (
@@ -805,6 +795,28 @@ export function ProductDetailsPage() {
               typeOfNomenclatureId={product.typeOfNomenclature?.id ?? null}
               onGoToGeneral={() => setTab('general')}
             />
+          ) : tab === 'prices' ? (
+            <ProductPricesTab productId={productId} />
+          ) : tab === 'unitConversion' ? (
+            <ProductUnitConversionTab
+              productId={productId}
+              baseUnitId={product.baseUnitId ?? product.baseUnit?.id ?? null}
+              onGoToGeneral={() => setTab('general')}
+            />
+          ) : tab === 'history' ? (
+            <div className="wide:max-w-4xl wide:mx-auto flex w-full flex-col gap-4">
+              <Card>
+                <CardHeader
+                  icon={<ClockIcon size={15} />}
+                  title={t('product.tabHistory')}
+                  subtitle={t('audit.recordHistory.title')}
+                />
+                <RecordHistoryTimeline
+                  tableName="product"
+                  recordId={productId}
+                />
+              </Card>
+            </div>
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
               <p className="text-fg-muted text-sm">
@@ -1027,20 +1039,14 @@ function ProductGeneralReadOnly({ product }: { product: IProduct }) {
           value={product.accountingProduct?.name}
         />
         <div className="flex flex-col gap-3">
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <ReadOnlyBooleanField
-                label={t('product.isViewOnlySmap')}
-                value={Boolean(product.isViewOnlySmap)}
-              />
-            </div>
-            <div className="flex-1">
-              <ReadOnlyBooleanField
-                label={t('product.isCalcAccAmountByPercent')}
-                value={Boolean(product.isCalcAccAmountByPercent)}
-              />
-            </div>
-          </div>
+          <ReadOnlyBooleanField
+            label={t('product.isViewOnlySmap')}
+            value={Boolean(product.isViewOnlySmap)}
+          />
+          <ReadOnlyBooleanField
+            label={t('product.isCalcAccAmountByPercent')}
+            value={Boolean(product.isCalcAccAmountByPercent)}
+          />
           <ReadOnlyBooleanField
             label={t('product.isAutoGenerateKM')}
             value={Boolean(product.isAutoGenerateKM)}
@@ -1165,9 +1171,14 @@ function auditPerformerName(
   return fullName || performer.username;
 }
 
-function ProductLastChangeCard({ product }: { product: IProduct }) {
+function ProductLastChangeCard({
+  product,
+  onViewAll,
+}: {
+  product: IProduct;
+  onViewAll: () => void;
+}) {
   const { t } = useTranslation();
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const { data, isFetching } = useGetAuditByRecordQuery({
     tableName: 'product',
@@ -1188,7 +1199,7 @@ function ProductLastChangeCard({ product }: { product: IProduct }) {
         action={
           <button
             type="button"
-            onClick={() => setIsHistoryOpen(true)}
+            onClick={onViewAll}
             className="text-primary flex items-center gap-1 text-xs font-medium hover:underline"
           >
             {t('audit.viewAll')}
@@ -1252,15 +1263,6 @@ function ProductLastChangeCard({ product }: { product: IProduct }) {
           )}
         </div>
       )}
-
-      <RecordHistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        tableName="product"
-        recordId={product.id}
-        recordTitle={product.name}
-        recordCode={product.sapCode}
-      />
     </Card>
   );
 }

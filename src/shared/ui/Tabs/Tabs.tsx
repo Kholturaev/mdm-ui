@@ -3,7 +3,7 @@ import { cn } from '@shared/lib/cn';
 
 export type TabItem = {
   key: string;
-  label: string;
+  label: ReactNode;
   icon?: ReactNode;
 };
 

@@ -1,8 +1,13 @@
 import { apiService } from '@shared/api';
 import { buildCrudEndpoints } from '@shared/api/createCrudEndpoints';
+import type { IResponse } from '@shared/api/type';
 import type { IProduct, ProductFormValues } from '../model/types';
 
-export const addTagTypes = ['product'] as const;
+// `auditRecord` is also registered by `entities/audit/api/auditRecordApi.ts` — repeating
+// it here just lets this module's own `invalidatesTags` reference it too, so saving a
+// product refreshes any on-screen audit trail (e.g. the "last change" card, the History
+// tab) without them needing to poll or be manually refetched.
+export const addTagTypes = ['product', 'auditRecord'] as const;
 
 export const productApiHooks = apiService
   .enhanceEndpoints({ addTagTypes })
@@ -16,7 +21,17 @@ export const productApiHooks = apiService
         getProducts: crud.getList,
         getOneProduct: crud.getOne,
         createProduct: crud.create,
-        updateProduct: crud.update,
+        updateProduct: build.mutation<
+          IResponse<IProduct>,
+          { id: number; data: ProductFormValues }
+        >({
+          query: ({ id, data }) => ({
+            path: `/products/${id}`,
+            method: 'PUT',
+            body: data,
+          }),
+          invalidatesTags: ['product', 'auditRecord'],
+        }),
       };
     },
   });

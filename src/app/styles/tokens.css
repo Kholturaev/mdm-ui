@@ -71,6 +71,87 @@
   --color-primary-foreground: #052e14;
 }
 
+/* "Ocean" — a calm, muted blue palette for users who'd rather not have the
+   default's black/green combo. Same token set, same contrast approach. */
+[data-theme='ocean'] {
+  --color-bg: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-surface-hover: #eef2f6;
+  --color-border: #dde3ea;
+  --color-border-strong: #c2cbd6;
+
+  --color-fg: #1a2433;
+  --color-fg-muted: #64748b;
+  --color-fg-invert: #ffffff;
+
+  --color-disabled-bg: #eef1f4;
+  --color-disabled-fg: #b0b8c1;
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-foreground: #ffffff;
+}
+
+[data-theme='ocean'].dark {
+  --color-bg: #0b1220;
+  --color-surface: #121a2b;
+  --color-surface-hover: #1a2439;
+  --color-border: #263352;
+  --color-border-strong: #34456b;
+
+  --color-fg: #e6ecf5;
+  --color-fg-muted: #8fa0bd;
+  --color-fg-invert: #0b1220;
+
+  --color-disabled-bg: #172038;
+  --color-disabled-fg: #4a5875;
+
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-primary-foreground: #04101f;
+}
+
+/* "Akfa" — warm neutrals with the brand's red as the accent, toned down from
+   the raw logo red so it holds up as a UI color (buttons, focus rings, links)
+   rather than just a mark. */
+[data-theme='akfa'] {
+  --color-bg: #faf7f6;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5eeed;
+  --color-border: #ece1df;
+  --color-border-strong: #d9c5c2;
+
+  --color-fg: #221a19;
+  --color-fg-muted: #7a6b68;
+  --color-fg-invert: #ffffff;
+
+  --color-disabled-bg: #f2ecea;
+  --color-disabled-fg: #c2b3b0;
+
+  --color-primary: #d92d20;
+  --color-primary-hover: #b42318;
+  --color-primary-foreground: #ffffff;
+}
+
+[data-theme='akfa'].dark {
+  --color-bg: #17100f;
+  --color-surface: #221816;
+  --color-surface-hover: #2c201d;
+  --color-border: #3a2b28;
+  --color-border-strong: #4d3936;
+
+  --color-fg: #f5ece9;
+  --color-fg-muted: #b09a95;
+  --color-fg-invert: #17100f;
+
+  --color-disabled-bg: #2a1e1c;
+  --color-disabled-fg: #5c4744;
+
+  --color-primary: #f04438;
+  --color-primary-hover: #f97066;
+  --color-primary-foreground: #2c0805;
+}
+
 @theme inline {
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);

@@ -8,7 +8,6 @@ import {
   useSetRolePermissionsMutation,
   useUpdateRoleMutation,
 } from '@entities/role/api/roleApi';
-import { useCountUsersByRole } from '@entities/user/api/userApi';
 import { PERMISSION_CATALOG } from '@entities/permission/model/catalog';
 import { PermissionPicker } from '@widgets/permission-picker/ui/PermissionPicker';
 import { RoleForm } from '@features/role-create-edit/ui/RoleForm';
@@ -16,7 +15,6 @@ import { Card, CardHeader } from '@shared/ui/Card';
 import { Modal } from '@shared/ui/Modal';
 import { Button } from '@shared/ui/Button';
 import { Badge } from '@shared/ui/Badge';
-import { buildUsersLink } from '@shared/lib/accessLink';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
@@ -35,8 +33,6 @@ export function RoleDetailsPage() {
   const { data, isLoading } = useGetRoleQuery(roleId);
   const role = data?.data;
   usePageTitle(role?.name ?? t('role.title'));
-
-  const userCount = useCountUsersByRole(roleId);
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [updateRole, { isLoading: isSavingRole }] = useUpdateRoleMutation();
@@ -128,12 +124,6 @@ export function RoleDetailsPage() {
                   total: PERMISSION_CATALOG.length,
                 })}
               </Badge>
-              <Link
-                to={buildUsersLink({ roleId })}
-                className="text-primary text-xs font-medium hover:underline"
-              >
-                {t('role.userCount', { count: userCount })}
-              </Link>
             </div>
           </div>
           <div className="flex items-center gap-2">

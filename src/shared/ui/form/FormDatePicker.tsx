@@ -8,6 +8,7 @@ type FormDatePickerProps<TFieldValues extends FieldValues> =
   FormFieldBaseProps<TFieldValues> & {
     label?: string;
     placeholder?: string;
+    required?: boolean;
     size?: ControlSize;
     disabled?: boolean;
     dateFormat?: string;

@@ -1,4 +1,4 @@
-import { USER_SEED } from '@entities/user/api/userMockData';
+import { AUDIT_ACTOR_SEED } from './auditActors';
 import type { ApprovalRequest, AuditActor, AuditEntry } from '../model/types';
 
 function minutesAgo(minutes: number): string {
@@ -8,7 +8,9 @@ function minutesAgo(minutes: number): string {
 }
 
 function actorFor(username: string): AuditActor {
-  const user = USER_SEED.find((candidate) => candidate.username === username);
+  const user = AUDIT_ACTOR_SEED.find(
+    (candidate) => candidate.username === username,
+  );
   if (!user) throw new Error(`Unknown mock user: ${username}`);
   return {
     id: user.id,

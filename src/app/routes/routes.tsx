@@ -11,6 +11,8 @@ import { UsersPage } from '@pages/UsersPage';
 import { UserDetailsPage } from '@pages/UserDetailsPage';
 import { RolesPage } from '@pages/RolesPage';
 import { RoleDetailsPage } from '@pages/RoleDetailsPage';
+import { ProfilePage } from '@pages/ProfilePage';
+import { SettingsPage } from '@pages/SettingsPage';
 import { NotFoundPage } from '@pages/NotFoundPage';
 import { PrivateRoute } from './guards/PrivateRoute';
 import { PublicRoute } from './guards/PublicRoute';
@@ -37,6 +39,8 @@ export const router = createBrowserRouter([
           { path: 'access/users/:id', element: <UserDetailsPage /> },
           { path: 'access/roles', element: <RolesPage /> },
           { path: 'access/roles/:id', element: <RoleDetailsPage /> },
+          { path: 'profile', element: <ProfilePage /> },
+          { path: 'settings', element: <SettingsPage /> },
         ],
       },
     ],

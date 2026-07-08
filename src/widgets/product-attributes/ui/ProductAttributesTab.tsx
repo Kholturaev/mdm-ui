@@ -194,6 +194,8 @@ export function ProductAttributesTab({ productId }: { productId: number }) {
   const [modalState, setModalState] = useState<ModalState>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('grouped');
   const [search, setSearch] = useState('');
+  const [attributePendingDelete, setAttributePendingDelete] =
+    useState<IProductAttribute | null>(null);
 
   const { data, isFetching } = useGetProductAttributesQuery({
     page: 0,
@@ -231,17 +233,16 @@ export function ProductAttributesTab({ productId }: { productId: number }) {
     setModalState({ mode: 'edit', attribute });
   }, []);
 
-  const handleDelete = useCallback(
-    async (attribute: IProductAttribute) => {
-      try {
-        await deleteAttribute(attribute.id).unwrap();
-        notify.success(t('message.deleted'));
-      } catch (error) {
-        notify.error(parseApiError(error as ApiException));
-      }
-    },
-    [deleteAttribute, t],
-  );
+  const handleConfirmDelete = async () => {
+    if (!attributePendingDelete) return;
+    try {
+      await deleteAttribute(attributePendingDelete.id).unwrap();
+      notify.success(t('message.deleted'));
+      setAttributePendingDelete(null);
+    } catch (error) {
+      notify.error(parseApiError(error as ApiException));
+    }
+  };
 
   const searchTerm = search.trim().toLowerCase();
   const filteredAttributes = useMemo(
@@ -283,12 +284,12 @@ export function ProductAttributesTab({ productId }: { productId: number }) {
 
   const groupedColumns = useAttributeColumns({
     onEdit: handleEdit,
-    onDelete: handleDelete,
+    onDelete: setAttributePendingDelete,
     showSystems: false,
   });
   const flatColumns = useAttributeColumns({
     onEdit: handleEdit,
-    onDelete: handleDelete,
+    onDelete: setAttributePendingDelete,
     showSystems: true,
   });
 
@@ -433,6 +434,33 @@ export function ProductAttributesTab({ productId }: { productId: number }) {
           onSubmit={handleSubmit}
           onCancel={closeModal}
         />
+      </Modal>
+
+      <Modal
+        isOpen={attributePendingDelete !== null}
+        onClose={() => setAttributePendingDelete(null)}
+        title={t('product.attr.deleteTitle')}
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-fg text-sm">
+            {attributePendingDelete &&
+              t('product.attr.deleteConfirm', {
+                name: attributePendingDelete.name,
+              })}
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setAttributePendingDelete(null)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button size="sm" variant="danger" onClick={handleConfirmDelete}>
+              {t('common.delete')}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
