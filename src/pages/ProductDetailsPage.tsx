@@ -31,6 +31,7 @@ import {
 } from '@entities/audit/lib/auditRecordHistory';
 import { RecordHistoryModal } from '@widgets/audit-log/ui/RecordHistoryModal';
 import { ProductAttributesTab } from '@widgets/product-attributes/ui/ProductAttributesTab';
+import { ProductCharacteristicsTab } from '@widgets/product-characteristics/ui/ProductCharacteristicsTab';
 import { ProductReferenceModals } from '@features/product-reference-quick-create/ui/ProductReferenceModals';
 import type { ProductReferenceType } from '@features/product-reference-quick-create/model/types';
 import { Avatar } from '@shared/ui/Avatar';
@@ -798,6 +799,12 @@ export function ProductDetailsPage() {
             </div>
           ) : tab === 'attributes' ? (
             <ProductAttributesTab productId={productId} />
+          ) : tab === 'characteristics' ? (
+            <ProductCharacteristicsTab
+              productId={productId}
+              typeOfNomenclatureId={product.typeOfNomenclature?.id ?? null}
+              onGoToGeneral={() => setTab('general')}
+            />
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-1 text-center">
               <p className="text-fg-muted text-sm">

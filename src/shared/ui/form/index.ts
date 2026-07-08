@@ -4,5 +4,6 @@ export { FormNumberInput } from './FormNumberInput';
 export { FormPhoneField } from './FormPhoneField';
 export { FormTextarea } from './FormTextarea';
 export { FormSelect } from './FormSelect';
+export { FormMultiSelect } from './FormMultiSelect';
 export { FormDatePicker } from './FormDatePicker';
 export { FormCheckbox } from './FormCheckbox';

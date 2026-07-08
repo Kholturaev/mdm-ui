@@ -24,7 +24,8 @@ const AUTH_NO_REFRESH = ['/auth', '/auth/refresh-token', '/auth/logout'];
 // Shared refresh promise so concurrent 401s only trigger ONE refresh call.
 let refreshPromise: Promise<boolean> | null = null;
 
-async function performRefresh(): Promise<boolean> {
+/** Also used by `AuthGate` as the boot-time "is the session cookie still valid?" check. */
+export async function performRefresh(): Promise<boolean> {
   if (!refreshPromise) {
     refreshPromise = axiosInstance
       .post(`${env.authApiUrl}/auth/refresh-token`, undefined, {
@@ -131,13 +132,19 @@ export const apiService = createApi({
   keepUnusedDataFor: 5,
 });
 
-export async function logout() {
+/**
+ * `beforeRedirect` lets callers clear their own Redux/RTK-Query state (cache,
+ * auth slice) before the hard navigation — kept as a callback rather than a
+ * direct import so this shared module doesn't have to depend on `app/store`.
+ */
+export async function logout(beforeRedirect?: () => void) {
   try {
     await axiosInstance.post(`${env.authApiUrl}/auth/logout`, undefined, {
       withCredentials: true,
       headers: { 'Accept-Language': i18n.language },
     });
   } finally {
+    beforeRedirect?.();
     window.location.href = '/login';
   }
 }

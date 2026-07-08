@@ -6,9 +6,12 @@ import type {
   ProductAttributeFormValues,
 } from '@entities/product-attribute/model/types';
 import { useGetExternalSystemsQuery } from '@entities/external-system/api/externalSystemApi';
+import { getSystemColor } from '@entities/external-system/lib/systemColor';
 import { Button } from '@shared/ui/Button';
-import { FormInput, FormSelect } from '@shared/ui/form';
+import { FormInput, FormMultiSelect } from '@shared/ui/form';
 import type { SelectOption } from '@shared/ui/Select';
+import { cn } from '@shared/lib/cn';
+import { systemAbbr } from '@shared/lib/systemAbbr';
 
 type ProductAttributeFormProps = {
   productId: number;
@@ -27,8 +30,30 @@ function toFormValues(
     key: attribute?.key ?? '',
     value: attribute?.value ?? '',
     productId,
-    externalSystemId: attribute?.externalSystemId ?? null,
+    externalSystemIds:
+      attribute?.externalSystemIds ??
+      attribute?.externalSystems?.map((system) => system.id) ??
+      [],
   };
+}
+
+/** Renders each external-system option/pill as a colored initials badge + name, instead of plain text — same abbreviation + palette used by the attributes tab's grouped view, so a system reads the same way everywhere it appears. */
+function SystemOptionLabel({ option }: { option: SelectOption }) {
+  const color = getSystemColor(Number(option.value));
+  return (
+    <span className="flex min-w-0 items-center gap-2">
+      <span
+        className={cn(
+          'flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-bold',
+          color.bg,
+          color.text,
+        )}
+      >
+        {systemAbbr(option.label)}
+      </span>
+      <span className="truncate">{option.label}</span>
+    </span>
+  );
 }
 
 export function ProductAttributeForm({
@@ -83,13 +108,17 @@ export function ProductAttributeForm({
         required
         rules={{ required: t('common.required') }}
       />
-      <FormSelect
-        name="externalSystemId"
+      <FormMultiSelect
+        name="externalSystemIds"
         control={control}
         options={externalSystemOptions}
         label={t('product.attr.externalSystem')}
+        helperText={t('product.attr.externalSystemHint')}
         isClearable
         isSearchable
+        formatOptionLabel={(option: SelectOption) => (
+          <SystemOptionLabel option={option} />
+        )}
       />
 
       <div className="flex justify-end gap-2 pt-2">

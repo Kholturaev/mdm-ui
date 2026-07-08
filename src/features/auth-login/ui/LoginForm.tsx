@@ -26,7 +26,7 @@ export function LoginForm() {
   const onSubmit = async (values: SignInRequest) => {
     try {
       await signIn(values).unwrap();
-      dispatch(login({ username: values.username }));
+      dispatch(login());
       navigate('/analytics', { replace: true });
     } catch (error) {
       const message =

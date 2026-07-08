@@ -1,10 +1,15 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '@app/store';
+import { FullScreenLoader } from '@shared/ui/FullScreenLoader';
 
 export function PublicRoute() {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const status = useAppSelector((state) => state.auth.status);
 
-  if (isAuthenticated) {
+  if (status === 'checking') {
+    return <FullScreenLoader />;
+  }
+
+  if (status === 'authenticated') {
     return <Navigate to="/analytics" replace />;
   }
 
