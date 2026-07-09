@@ -148,6 +148,7 @@ export function UserTable({ onCreate, onEdit, onDelete }: UserTableProps) {
   return (
     <div className="flex h-full flex-col">
       <TableToolbar
+        title={t('user.title')}
         searchValue={search}
         onSearchChange={(value) => {
           setSearch(value);

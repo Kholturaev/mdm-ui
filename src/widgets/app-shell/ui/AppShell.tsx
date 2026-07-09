@@ -1,5 +1,5 @@
 import { Outlet, useMatch } from 'react-router-dom';
-import { PageTitleProvider } from '@shared/lib/pageTitle';
+import { BackLinkProvider } from '@shared/lib/backLink';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 
@@ -10,7 +10,7 @@ export function AppShell() {
   const isProductDetails = Boolean(useMatch('/nomenclature/:id'));
 
   return (
-    <PageTitleProvider>
+    <BackLinkProvider>
       <div className="bg-bg flex h-screen">
         <Sidebar forceCollapsed={isProductDetails} />
         <div className="flex flex-1 flex-col overflow-hidden">
@@ -20,6 +20,6 @@ export function AppShell() {
           </main>
         </div>
       </div>
-    </PageTitleProvider>
+    </BackLinkProvider>
   );
 }

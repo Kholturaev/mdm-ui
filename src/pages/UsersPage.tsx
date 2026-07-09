@@ -13,13 +13,11 @@ import { Modal } from '@shared/ui/Modal';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
-import { usePageTitle } from '@shared/lib/pageTitle';
 
 type ModalState = { mode: 'create' } | { mode: 'edit'; user: IUser } | null;
 
 export function UsersPage() {
   const { t } = useTranslation();
-  usePageTitle(t('user.title'));
   const [modalState, setModalState] = useState<ModalState>(null);
 
   const [createUser, { isLoading: isCreating }] = useCreateUserMutation();

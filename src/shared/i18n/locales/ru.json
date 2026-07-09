@@ -551,12 +551,10 @@
     "title": "Роли",
     "name": "Название",
     "description": "Описание",
-    "permissions": "Права",
     "addRole": "Добавить роль",
     "createTitle": "Новая роль",
     "editTitle": "Редактировать роль",
     "backToList": "Назад к списку ролей",
-    "permissionCount": "{{count}}/{{total}} прав",
     "permissionsTitle": "Права доступа",
     "permissionsSubtitle": "Права, закреплённые за этой ролью — изменения вступают в силу только после нажатия «Сохранить»",
     "permissionsAfterCreateHint": "Права назначаются на странице роли после её создания"
@@ -592,25 +590,7 @@
   },
   "permission": {
     "search": "Поиск права",
-    "selectedCount": "{{count}}/{{total}} выбрано",
-    "modules": {
-      "DEALER": "Дилеры",
-      "NOMENCLATURE": "Номенклатура",
-      "ANALYTICS": "Аналитика",
-      "USER": "Пользователи",
-      "ROLE": "Роли"
-    },
-    "actions": {
-      "CREATE": "Создание",
-      "READ": "Просмотр",
-      "UPDATE": "Редактирование",
-      "DELETE": "Удаление",
-      "EXPORT": "Экспорт",
-      "VIEW": "Просмотр",
-      "ASSIGN_ROLE": "Назначение роли",
-      "RESET_PASSWORD": "Сброс пароля",
-      "ASSIGN_PERMISSIONS": "Назначение прав"
-    }
+    "selectedCount": "{{count}}/{{total}} выбрано"
   },
   "typeOfNomenclature": {
     "name": "Название",

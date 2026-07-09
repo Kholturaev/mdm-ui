@@ -219,6 +219,7 @@ export function NomenclatureTable() {
   return (
     <div className="flex h-full flex-col">
       <TableToolbar
+        title={t('product.title')}
         leftContent={
           <span className="text-fg-muted text-xs font-medium whitespace-nowrap">
             {t('product.totalCount', { count: meta?.totalElements ?? 0 })}

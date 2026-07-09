@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useGetMeQuery } from '@entities/profile/api/profileApi';
 import {
   useDeleteUserMutation,
@@ -20,8 +20,7 @@ import { Tabs } from '@shared/ui/Tabs';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
-import { usePageTitle } from '@shared/lib/pageTitle';
-import { ArrowLeftIcon } from '@shared/ui/icons/ArrowLeftIcon';
+import { useBackLink } from '@shared/lib/backLink';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
@@ -38,7 +37,8 @@ export function UserDetailsPage() {
 
   const { data, isLoading } = useGetOneUserQuery(userId, { skip: !userId });
   const user = data?.data;
-  usePageTitle(user ? `${user.firstName} ${user.lastName}` : t('user.title'));
+
+  useBackLink({ label: t('user.backToList'), href: '/access/users' });
 
   const { data: meData } = useGetMeQuery();
   const me = meData?.data;
@@ -91,17 +91,9 @@ export function UserDetailsPage() {
   const canSeeCredentials = isAdmin || isOwnProfile;
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-6">
-      <Link
-        to="/access/users"
-        className="text-fg-muted hover:text-fg flex w-fit items-center gap-1.5 text-sm"
-      >
-        <ArrowLeftIcon size={14} />
-        {t('user.backToList')}
-      </Link>
-
-      <Card>
-        <div className="flex items-start justify-between gap-4">
+    <div className="flex h-full flex-col">
+      <Card className="flex items-start justify-between gap-4 rounded-none border-x-0 border-t-0">
+        <div>
           <div className="flex items-center gap-3">
             <Avatar name={user.firstName} size="lg" />
             <div>
@@ -109,111 +101,113 @@ export function UserDetailsPage() {
                 {user.firstName} {user.lastName}
               </h1>
               <p className="text-fg-muted text-sm">
-                {user.username} · {user.email}
+                {user.username} · {user.phone || '—'}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<EditIcon size={14} />}
-              onClick={() => setIsEditOpen(true)}
-            >
-              {t('common.edit')}
-            </Button>
-            <Button
-              variant="danger"
-              size="sm"
-              icon={<DeleteIcon size={14} />}
-              onClick={handleDelete}
-            >
-              {t('common.delete')}
-            </Button>
-          </div>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Button
+            variant="outline"
+            className="h-7 gap-1 px-2 text-[11px]"
+            icon={<EditIcon size={12} />}
+            onClick={() => setIsEditOpen(true)}
+          >
+            {t('common.edit')}
+          </Button>
+          <Button
+            variant="danger"
+            className="h-7 gap-1 px-2 text-[11px]"
+            icon={<DeleteIcon size={12} />}
+            onClick={handleDelete}
+          >
+            {t('common.delete')}
+          </Button>
         </div>
       </Card>
 
-      <Tabs
-        items={[
-          {
-            key: 'overview',
-            label: t('user.tabOverview'),
-            icon: <UserIcon size={14} />,
-          },
-          ...(canManageAuthorization
-            ? [
-                {
-                  key: 'authorization',
-                  label: t('user.tabAuthorization'),
-                  icon: <ShieldIcon size={14} />,
-                },
-              ]
-            : []),
-          ...(canSeeCredentials
-            ? [
-                {
-                  key: 'credentials',
-                  label: t('user.tabCredentials'),
-                  icon: <LockIcon size={14} />,
-                },
-              ]
-            : []),
-        ]}
-        value={tab}
-        onChange={(key) => setTab(key as TabKey)}
-      />
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
+        <Tabs
+          items={[
+            {
+              key: 'overview',
+              label: t('user.tabOverview'),
+              icon: <UserIcon size={14} />,
+            },
+            ...(canManageAuthorization
+              ? [
+                  {
+                    key: 'authorization',
+                    label: t('user.tabAuthorization'),
+                    icon: <ShieldIcon size={14} />,
+                  },
+                ]
+              : []),
+            ...(canSeeCredentials
+              ? [
+                  {
+                    key: 'credentials',
+                    label: t('user.tabCredentials'),
+                    icon: <LockIcon size={14} />,
+                  },
+                ]
+              : []),
+          ]}
+          value={tab}
+          onChange={(key) => setTab(key as TabKey)}
+        />
 
-      {tab === 'overview' && (
-        <Card className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <p className="text-fg-muted text-xs">{t('user.firstName')}</p>
-            <p className="text-fg mt-0.5 text-sm font-medium">
-              {user.firstName}
-            </p>
-          </div>
-          <div>
-            <p className="text-fg-muted text-xs">{t('user.lastName')}</p>
-            <p className="text-fg mt-0.5 text-sm font-medium">
-              {user.lastName}
-            </p>
-          </div>
-          <div>
-            <p className="text-fg-muted text-xs">{t('user.username')}</p>
-            <p className="text-fg mt-0.5 text-sm font-medium">
-              {user.username}
-            </p>
-          </div>
-          <div>
-            <p className="text-fg-muted text-xs">{t('user.email')}</p>
-            <p className="text-fg mt-0.5 text-sm font-medium">{user.email}</p>
-          </div>
-          <div>
-            <p className="text-fg-muted text-xs">{t('user.phone')}</p>
-            <p className="text-fg mt-0.5 text-sm font-medium">
-              {user.phone || '—'}
-            </p>
-          </div>
-          <div>
-            <p className="text-fg-muted text-xs">{t('user.telegram')}</p>
-            <p className="text-fg mt-0.5 text-sm font-medium">
-              {user.telegramNickName || '—'}
-            </p>
-          </div>
-        </Card>
-      )}
+        {tab === 'overview' && (
+          <Card className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <p className="text-fg-muted text-xs">{t('user.firstName')}</p>
+              <p className="text-fg mt-0.5 text-sm font-medium">
+                {user.firstName}
+              </p>
+            </div>
+            <div>
+              <p className="text-fg-muted text-xs">{t('user.lastName')}</p>
+              <p className="text-fg mt-0.5 text-sm font-medium">
+                {user.lastName}
+              </p>
+            </div>
+            <div>
+              <p className="text-fg-muted text-xs">{t('user.username')}</p>
+              <p className="text-fg mt-0.5 text-sm font-medium">
+                {user.username}
+              </p>
+            </div>
+            <div>
+              <p className="text-fg-muted text-xs">{t('user.email')}</p>
+              <p className="text-fg mt-0.5 text-sm font-medium">{user.email}</p>
+            </div>
+            <div>
+              <p className="text-fg-muted text-xs">{t('user.phone')}</p>
+              <p className="text-fg mt-0.5 text-sm font-medium">
+                {user.phone || '—'}
+              </p>
+            </div>
+            <div>
+              <p className="text-fg-muted text-xs">{t('user.telegram')}</p>
+              <p className="text-fg mt-0.5 text-sm font-medium">
+                {user.telegramNickName || '—'}
+              </p>
+            </div>
+          </Card>
+        )}
 
-      {tab === 'authorization' && canManageAuthorization && (
-        <Card className="flex min-h-0 flex-1 flex-col gap-3 p-4">
-          <UserRolesPanel userId={user.id} />
-          <div className="border-border border-t" />
-          <UserPermissionsPanel userId={user.id} />
-        </Card>
-      )}
+        {tab === 'authorization' && canManageAuthorization && (
+          <Card className="flex min-h-0 flex-1 flex-col gap-3 p-4">
+            <UserRolesPanel userId={user.id} />
+            <div className="border-border border-t" />
+            <UserPermissionsPanel userId={user.id} />
+          </Card>
+        )}
 
-      {tab === 'credentials' && canSeeCredentials && (
-        <UserCredentialsPanel userId={user.id} isOwnProfile={isOwnProfile} />
-      )}
+        {tab === 'credentials' && canSeeCredentials && (
+          <UserCredentialsPanel userId={user.id} isOwnProfile={isOwnProfile} />
+        )}
+      </div>
 
       <Modal
         isOpen={isEditOpen}

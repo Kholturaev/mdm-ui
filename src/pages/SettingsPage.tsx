@@ -9,7 +9,6 @@ import { MoonIcon, SunIcon } from '@shared/ui/icons/SunMoonIcon';
 import { SettingsIcon } from '@shared/ui/icons/SettingsIcon';
 import { SlidersIcon } from '@shared/ui/icons/SlidersIcon';
 import { cn } from '@shared/lib/cn';
-import { usePageTitle } from '@shared/lib/pageTitle';
 
 const THEME_MODES: { value: ThemeMode; labelKey: string; icon?: ReactNode }[] =
   [
@@ -46,7 +45,6 @@ const COLOR_THEMES: {
 
 export function SettingsPage() {
   const { t } = useTranslation();
-  usePageTitle(t('settings.title'));
 
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.ui.theme);
@@ -54,6 +52,8 @@ export function SettingsPage() {
 
   return (
     <div className="wide:max-w-3xl wide:mx-auto flex h-full w-full flex-col gap-4 overflow-y-auto p-6">
+      <h1 className="text-fg text-xl font-semibold">{t('settings.title')}</h1>
+
       <Card className="flex flex-col gap-3">
         <CardHeader
           icon={<SettingsIcon size={15} />}

@@ -1,77 +1,44 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { RoleFormValues } from '@entities/role/model/types';
 import {
   useDeleteRoleMutation,
-  useGetRoleQuery,
-  useSetRolePermissionsMutation,
+  useGetOneRoleQuery,
   useUpdateRoleMutation,
 } from '@entities/role/api/roleApi';
-import { PERMISSION_CATALOG } from '@entities/permission/model/catalog';
-import { PermissionPicker } from '@widgets/permission-picker/ui/PermissionPicker';
+import { RolePermissionsPanel } from '@entities/role/ui/RolePermissionsPanel';
 import { RoleForm } from '@features/role-create-edit/ui/RoleForm';
-import { Card, CardHeader } from '@shared/ui/Card';
+import { Card } from '@shared/ui/Card';
 import { Modal } from '@shared/ui/Modal';
 import { Button } from '@shared/ui/Button';
-import { Badge } from '@shared/ui/Badge';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
-import { usePageTitle } from '@shared/lib/pageTitle';
-import { ArrowLeftIcon } from '@shared/ui/icons/ArrowLeftIcon';
+import { useBackLink } from '@shared/lib/backLink';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
-import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
 
 export function RoleDetailsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const roleId = Number(id);
+  const roleName = id ?? '';
 
-  const { data, isLoading } = useGetRoleQuery(roleId);
+  const { data, isLoading } = useGetOneRoleQuery(roleName, {
+    skip: !roleName,
+  });
   const role = data?.data;
-  usePageTitle(role?.name ?? t('role.title'));
+
+  useBackLink({ label: t('role.backToList'), href: '/access/roles' });
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [updateRole, { isLoading: isSavingRole }] = useUpdateRoleMutation();
   const [deleteRole] = useDeleteRoleMutation();
-  const [setPermissions, { isLoading: isSavingPermissions }] =
-    useSetRolePermissionsMutation();
-
-  const [draftKeys, setDraftKeys] = useState<Set<string>>(new Set());
-  // Reset the draft only when navigating to a different role — adjusted
-  // during render instead of an effect, per
-  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-  const [loadedRoleId, setLoadedRoleId] = useState<number | null>(null);
-  if (role && role.id !== loadedRoleId) {
-    setLoadedRoleId(role.id);
-    setDraftKeys(new Set(role.permissionKeys));
-  }
-
-  const isDirty = useMemo(() => {
-    if (!role) return false;
-    const original = role.permissionKeys;
-    if (original.length !== draftKeys.size) return true;
-    return original.some((key) => !draftKeys.has(key));
-  }, [role, draftKeys]);
-
-  const handleSavePermissions = async () => {
-    try {
-      await setPermissions({
-        id: roleId,
-        permissionKeys: Array.from(draftKeys),
-      }).unwrap();
-      notify.success(t('message.saved'));
-    } catch (error) {
-      notify.error(parseApiError(error as ApiException));
-    }
-  };
 
   const handleEditSubmit = async (values: RoleFormValues) => {
     try {
-      await updateRole({ id: roleId, data: values }).unwrap();
+      await updateRole({ id: roleName, data: values }).unwrap();
       notify.success(t('message.saved'));
       setIsEditOpen(false);
     } catch (error) {
@@ -82,7 +49,7 @@ export function RoleDetailsPage() {
   const handleDelete = async () => {
     if (!role) return;
     try {
-      await deleteRole(role.id).unwrap();
+      await deleteRole(roleName).unwrap();
       notify.success(t('message.deleted'));
       navigate('/access/roles');
     } catch (error) {
@@ -100,14 +67,6 @@ export function RoleDetailsPage() {
 
   return (
     <div className="flex h-full flex-col gap-4 overflow-y-auto p-6">
-      <Link
-        to="/access/roles"
-        className="text-fg-muted hover:text-fg flex w-fit items-center gap-1.5 text-sm"
-      >
-        <ArrowLeftIcon size={14} />
-        {t('role.backToList')}
-      </Link>
-
       <Card>
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -115,30 +74,20 @@ export function RoleDetailsPage() {
             {role.description && (
               <p className="text-fg-muted mt-1 text-sm">{role.description}</p>
             )}
-            <div className="mt-3 flex items-center gap-3">
-              <Badge
-                variant={role.permissionKeys.length > 0 ? 'success' : 'neutral'}
-              >
-                {t('role.permissionCount', {
-                  count: role.permissionKeys.length,
-                  total: PERMISSION_CATALOG.length,
-                })}
-              </Badge>
-            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
-              size="sm"
-              icon={<EditIcon size={14} />}
+              className="h-7 gap-1 px-2 text-[11px]"
+              icon={<EditIcon size={12} />}
               onClick={() => setIsEditOpen(true)}
             >
               {t('common.edit')}
             </Button>
             <Button
               variant="danger"
-              size="sm"
-              icon={<DeleteIcon size={14} />}
+              className="h-7 gap-1 px-2 text-[11px]"
+              icon={<DeleteIcon size={12} />}
               onClick={handleDelete}
             >
               {t('common.delete')}
@@ -148,38 +97,7 @@ export function RoleDetailsPage() {
       </Card>
 
       <Card className="flex min-h-0 flex-1 flex-col">
-        <CardHeader
-          title={t('role.permissionsTitle')}
-          subtitle={t('role.permissionsSubtitle')}
-          icon={<ShieldIcon size={16} />}
-          action={
-            isDirty && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setDraftKeys(new Set(role.permissionKeys))}
-                >
-                  {t('common.cancel')}
-                </Button>
-                <Button
-                  size="sm"
-                  isLoading={isSavingPermissions}
-                  onClick={handleSavePermissions}
-                >
-                  {t('common.save')}
-                </Button>
-              </div>
-            )
-          }
-        />
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          <PermissionPicker
-            catalog={PERMISSION_CATALOG}
-            selectedKeys={draftKeys}
-            onChange={setDraftKeys}
-          />
-        </div>
+        <RolePermissionsPanel roleName={roleName} />
       </Card>
 
       <Modal

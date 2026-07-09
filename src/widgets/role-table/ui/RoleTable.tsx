@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { IRole } from '@entities/role/model/types';
 import { useGetRolesQuery } from '@entities/role/api/roleApi';
-import { PERMISSION_CATALOG } from '@entities/permission/model/catalog';
 import {
   DataTable,
   Pagination,
@@ -14,7 +13,6 @@ import {
 import type { SortDirection } from '@shared/ui/Table';
 import { RowActions } from '@shared/ui/Menu';
 import { Button } from '@shared/ui/Button';
-import { Badge } from '@shared/ui/Badge';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { PlusIcon } from '@shared/ui/icons/PlusIcon';
@@ -94,19 +92,6 @@ export function RoleTable({ onCreate, onEdit, onDelete }: RoleTableProps) {
         ),
       },
       {
-        id: 'permissions',
-        header: t('role.permissions'),
-        cell: ({ row }) => (
-          <Badge
-            variant={
-              row.original.permissionKeys.length > 0 ? 'success' : 'neutral'
-            }
-          >
-            {row.original.permissionKeys.length}/{PERMISSION_CATALOG.length}
-          </Badge>
-        ),
-      },
-      {
         id: 'actions',
         header: '',
         meta: { pin: 'right' },
@@ -135,6 +120,7 @@ export function RoleTable({ onCreate, onEdit, onDelete }: RoleTableProps) {
   return (
     <div className="flex h-full flex-col">
       <TableToolbar
+        title={t('role.title')}
         searchValue={search}
         onSearchChange={(value) => {
           setSearch(value);
@@ -154,7 +140,9 @@ export function RoleTable({ onCreate, onEdit, onDelete }: RoleTableProps) {
           isLoading={isFetching}
           emptyMessage={t('common.noData')}
           sortedColumnId={sortField ?? undefined}
-          onRowClick={(role) => navigate(`/access/roles/${role.id}`)}
+          onRowClick={(role) =>
+            navigate(`/access/roles/${encodeURIComponent(role.name)}`)
+          }
         />
       </div>
 

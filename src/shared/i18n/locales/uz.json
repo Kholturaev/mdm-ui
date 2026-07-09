@@ -552,12 +552,10 @@
     "title": "Rollar",
     "name": "Nomi",
     "description": "Tavsif",
-    "permissions": "Ruxsatlar",
     "addRole": "Rol qo'shish",
     "createTitle": "Yangi rol",
     "editTitle": "Rolni tahrirlash",
     "backToList": "Rollar ro'yxatiga qaytish",
-    "permissionCount": "{{count}}/{{total}} ruxsat",
     "permissionsTitle": "Ruxsatlar",
     "permissionsSubtitle": "Ushbu rolga biriktirilgan ruxsatlar — o'zgartirish darhol saqlanmaydi, \"Saqlash\" bosilgach kuchga kiradi",
     "permissionsAfterCreateHint": "Ruxsatlarni rol yaratilgach, uning sahifasida biriktirasiz"
@@ -593,25 +591,7 @@
   },
   "permission": {
     "search": "Ruxsatni qidirish",
-    "selectedCount": "{{count}}/{{total}} tanlangan",
-    "modules": {
-      "DEALER": "Dilerlar",
-      "NOMENCLATURE": "Nomenklatura",
-      "ANALYTICS": "Analitika",
-      "USER": "Foydalanuvchilar",
-      "ROLE": "Rollar"
-    },
-    "actions": {
-      "CREATE": "Yaratish",
-      "READ": "Ko'rish",
-      "UPDATE": "Tahrirlash",
-      "DELETE": "O'chirish",
-      "EXPORT": "Eksport qilish",
-      "VIEW": "Ko'rish",
-      "ASSIGN_ROLE": "Rol biriktirish",
-      "RESET_PASSWORD": "Parolni tiklash",
-      "ASSIGN_PERMISSIONS": "Ruxsatlarni biriktirish"
-    }
+    "selectedCount": "{{count}}/{{total}} tanlangan"
   },
   "typeOfNomenclature": {
     "name": "Nomi",

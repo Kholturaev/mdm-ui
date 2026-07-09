@@ -83,6 +83,7 @@ export function AuditLogTable() {
   return (
     <div className="flex h-full flex-col">
       <TableToolbar
+        title={t('audit.logTitle')}
         searchValue={search}
         onSearchChange={(value) => {
           setSearch(value);

@@ -58,7 +58,6 @@ import { formatDateTime, formatRelativeTime } from '@shared/lib/formatDate';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
-import { usePageTitle } from '@shared/lib/pageTitle';
 import { ArrowLeftIcon } from '@shared/ui/icons/ArrowLeftIcon';
 import { ArrowRightIcon } from '@shared/ui/icons/ArrowRightIcon';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
@@ -203,7 +202,6 @@ export function ProductDetailsPage() {
 
   const { data, isLoading } = useGetOneProductQuery(productId);
   const product = data?.data;
-  usePageTitle(product?.name ?? t('product.title'));
 
   const [tab, setTab] = useState<TabKey>('general');
   const [isEditing, setIsEditing] = useState(false);

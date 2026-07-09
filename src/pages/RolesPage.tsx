@@ -12,13 +12,11 @@ import { Modal } from '@shared/ui/Modal';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
-import { usePageTitle } from '@shared/lib/pageTitle';
 
 type ModalState = { mode: 'create' } | { mode: 'edit'; role: IRole } | null;
 
 export function RolesPage() {
   const { t } = useTranslation();
-  usePageTitle(t('role.title'));
   const [modalState, setModalState] = useState<ModalState>(null);
 
   const [createRole, { isLoading: isCreating }] = useCreateRoleMutation();
@@ -30,7 +28,7 @@ export function RolesPage() {
   const handleSubmit = async (values: RoleFormValues) => {
     try {
       if (modalState?.mode === 'edit') {
-        await updateRole({ id: modalState.role.id, data: values }).unwrap();
+        await updateRole({ id: modalState.role.name, data: values }).unwrap();
       } else {
         await createRole(values).unwrap();
       }
@@ -43,7 +41,7 @@ export function RolesPage() {
 
   const handleDelete = async (role: IRole) => {
     try {
-      await deleteRole(role.id).unwrap();
+      await deleteRole(role.name).unwrap();
       notify.success(t('message.deleted'));
     } catch (error) {
       notify.error(parseApiError(error as ApiException));
