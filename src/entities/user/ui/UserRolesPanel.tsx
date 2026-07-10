@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAssignRolesToUserMutation,
-  useGetAllRolesQuery,
   useGetUserRolesQuery,
 } from '@entities/user/api/userApi';
+import { useGetRolesQuery } from '@entities/role/api/roleApi';
 import { Button } from '@shared/ui/Button';
 import { Select } from '@shared/ui/Select';
 import type { SelectOption } from '@shared/ui/Select';
@@ -21,14 +21,20 @@ export function UserRolesPanel({ userId }: UserRolesPanelProps) {
   const { t } = useTranslation();
 
   const { data: userRolesData } = useGetUserRolesQuery(userId);
-  const { data: allRolesData } = useGetAllRolesQuery();
+  // Same `/role` catalog the Roles page reads from — the auth-service's
+  // Keycloak client-roles endpoint (previously used here) lists a different,
+  // unrelated set of roles.
+  const { data: allRolesData } = useGetRolesQuery({ page: 0, size: 200 });
   const [assignRoles, { isLoading: isSaving }] = useAssignRolesToUserMutation();
 
   const assignedRoles = useMemo(
     () => userRolesData?.data ?? [],
     [userRolesData],
   );
-  const allRoles = useMemo(() => allRolesData?.data ?? [], [allRolesData]);
+  const allRoles = useMemo(
+    () => allRolesData?.data?.data ?? [],
+    [allRolesData],
+  );
 
   const roleOptions = useMemo<SelectOption[]>(
     () => allRoles.map((role) => ({ label: role.name, value: role.name })),

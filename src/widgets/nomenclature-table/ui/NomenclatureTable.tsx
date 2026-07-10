@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   useCreateProductMutation,
+  useDeleteProductMutation,
   useGetProductsQuery,
 } from '@entities/product/api/productApi';
 import type {
@@ -25,6 +26,8 @@ import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
 import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
+import { useConfirm } from '@shared/lib/confirm';
+import { ProductImportModal } from '@features/product-import';
 import type { SyncStatusFilter } from '@shared/lib/nomenclatureLink';
 import { FILTER_KEY_BY_COLUMN } from '../lib/constants';
 import { AddProductButton } from './AddProductButton';
@@ -77,8 +80,11 @@ export function NomenclatureTable() {
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [historyProduct, setHistoryProduct] = useState<IProduct | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [createProduct, { isLoading: isCreatingProduct }] =
     useCreateProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
+  const confirm = useConfirm();
 
   const handleSort = useCallback(
     (field: string) => {
@@ -122,6 +128,23 @@ export function NomenclatureTable() {
       notify.error(parseApiError(error as ApiException));
     }
   };
+
+  const handleDelete = useCallback(
+    async (product: IProduct) => {
+      const confirmed = await confirm({
+        title: t('product.deleteTitle'),
+        description: t('product.deleteConfirm', { name: product.name }),
+      });
+      if (!confirmed) return;
+      try {
+        await deleteProduct(product.id).unwrap();
+        notify.success(t('message.deleted'));
+      } catch (error) {
+        notify.error(parseApiError(error as ApiException));
+      }
+    },
+    [confirm, deleteProduct, t],
+  );
 
   const filters = useMemo(() => {
     const entries: [string, unknown][] = Object.entries(debouncedColumnFilters)
@@ -200,6 +223,7 @@ export function NomenclatureTable() {
     onSystemFilterChange: handleSystemFilterChange,
     onShowHistory: setHistoryProduct,
     onEdit: (product) => navigate(`/nomenclature/${product.id}`),
+    onDelete: handleDelete,
   });
 
   const [visibleColumnKeys, setVisibleColumnKeys] = useState<string[]>(() =>
@@ -244,19 +268,22 @@ export function NomenclatureTable() {
           />
         )}
 
-        <ExportCsvButton
-          filename="nomenclature"
-          rows={visibleRows}
-          columns={exportColumns}
-        />
-
         <ColumnVisibilityButton
           columns={toggleableColumns}
           visible={visibleColumnKeys}
           onChange={setVisibleColumnKeys}
         />
 
-        <AddProductButton onCreateOneByOne={() => setIsCreateOpen(true)} />
+        <ExportCsvButton
+          filename="nomenclature"
+          rows={visibleRows}
+          columns={exportColumns}
+        />
+
+        <AddProductButton
+          onCreateOneByOne={() => setIsCreateOpen(true)}
+          onImportExcel={() => setIsImportOpen(true)}
+        />
       </TableToolbar>
 
       <div className="min-h-0 flex-1">
@@ -309,6 +336,11 @@ export function NomenclatureTable() {
           onCancel={() => setIsCreateOpen(false)}
         />
       </Modal>
+
+      <ProductImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+      />
     </div>
   );
 }

@@ -14,9 +14,18 @@ export const unitApiHooks = apiService
       });
       return {
         getUnits: crud.getList,
+        getOneUnit: crud.getOne,
         createUnit: crud.create,
+        updateUnit: crud.update,
+        deleteUnit: crud.remove,
       };
     },
   });
 
-export const { useGetUnitsQuery, useCreateUnitMutation } = unitApiHooks;
+export const {
+  useGetUnitsQuery,
+  useGetOneUnitQuery,
+  useCreateUnitMutation,
+  useUpdateUnitMutation,
+  useDeleteUnitMutation,
+} = unitApiHooks;

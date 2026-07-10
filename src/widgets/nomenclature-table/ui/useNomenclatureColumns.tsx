@@ -31,6 +31,7 @@ type UseNomenclatureColumnsParams = {
   onSystemFilterChange: (ids: number[]) => void;
   onShowHistory: (product: IProduct) => void;
   onEdit: (product: IProduct) => void;
+  onDelete: (product: IProduct) => void;
 };
 
 /** Builds the product table's column definitions, the "show/hide columns" manifest, and the CSV export field list — all derived from the same field set so they stay in sync. */
@@ -45,6 +46,7 @@ export function useNomenclatureColumns({
   onSystemFilterChange,
   onShowHistory,
   onEdit,
+  onDelete,
 }: UseNomenclatureColumnsParams) {
   const { t } = useTranslation();
 
@@ -409,7 +411,7 @@ export function useNomenclatureColumns({
               {
                 label: t('common.delete'),
                 icon: <DeleteIcon size={14} />,
-                onClick: () => {},
+                onClick: () => onDelete(row.original),
                 danger: true,
               },
               {
@@ -439,6 +441,7 @@ export function useNomenclatureColumns({
       onSystemFilterChange,
       onShowHistory,
       onEdit,
+      onDelete,
     ],
   );
 

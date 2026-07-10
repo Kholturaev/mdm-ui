@@ -188,7 +188,7 @@ export function DataTable<TData>({
                     className={cn(
                       'border-border bg-surface relative border-r border-b px-3 py-1 text-xs font-semibold last:border-r-0',
                       sortedColumnId === header.column.id && 'bg-surface-hover',
-                      pinned && 'sticky z-10',
+                      pinned && 'bg-surface-pinned sticky z-10',
                       pinnedEdgeClass(column, pinned),
                       hasSize &&
                         'overflow-hidden text-ellipsis whitespace-nowrap',
@@ -235,7 +235,7 @@ export function DataTable<TData>({
                     className={cn(
                       'border-border bg-surface border-r border-b p-1',
                       'last:border-r-0',
-                      pinned && 'sticky z-10',
+                      pinned && 'bg-surface-pinned sticky z-10',
                       pinnedEdgeClass(column, pinned),
                     )}
                   >
@@ -318,7 +318,7 @@ export function DataTable<TData>({
                       'border-border text-fg border-r border-b px-3 py-0.5 last:border-r-0',
                       sortedColumnId === cell.column.id && 'bg-surface-hover',
                       pinned &&
-                        'bg-surface group-hover:bg-surface-hover sticky z-10',
+                        'bg-surface-pinned group-hover:bg-surface-hover sticky z-10',
                       pinnedEdgeClass(column, pinned),
                     )}
                   >

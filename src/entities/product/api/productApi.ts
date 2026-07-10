@@ -32,6 +32,7 @@ export const productApiHooks = apiService
           }),
           invalidatesTags: ['product', 'auditRecord'],
         }),
+        deleteProduct: crud.remove,
       };
     },
   });
@@ -41,4 +42,5 @@ export const {
   useGetOneProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useDeleteProductMutation,
 } = productApiHooks;

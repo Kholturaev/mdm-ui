@@ -12,11 +12,13 @@ import { Modal } from '@shared/ui/Modal';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
+import { useConfirm } from '@shared/lib/confirm';
 
 type ModalState = { mode: 'create' } | { mode: 'edit'; dealer: IDealer } | null;
 
 export function DealersPage() {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [modalState, setModalState] = useState<ModalState>(null);
 
   const [createDealer, { isLoading: isCreating }] = useCreateDealerMutation();
@@ -40,6 +42,12 @@ export function DealersPage() {
   };
 
   const handleDelete = async (dealer: IDealer) => {
+    const confirmed = await confirm({
+      title: t('dealer.deleteTitle'),
+      description: t('dealer.deleteConfirm', { name: dealer.name }),
+    });
+    if (!confirmed) return;
+
     try {
       await deleteDealer(dealer.id).unwrap();
       notify.success(t('message.deleted'));

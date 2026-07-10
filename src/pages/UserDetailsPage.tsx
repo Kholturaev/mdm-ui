@@ -21,6 +21,7 @@ import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
 import { useBackLink } from '@shared/lib/backLink';
+import { useConfirm } from '@shared/lib/confirm';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
@@ -39,6 +40,7 @@ export function UserDetailsPage() {
   const user = data?.data;
 
   useBackLink({ label: t('user.backToList'), href: '/access/users' });
+  const confirm = useConfirm();
 
   const { data: meData } = useGetMeQuery();
   const me = meData?.data;
@@ -70,6 +72,14 @@ export function UserDetailsPage() {
 
   const handleDelete = async () => {
     if (!user) return;
+    const confirmed = await confirm({
+      title: t('user.deleteTitle'),
+      description: t('user.deleteConfirm', {
+        name: `${user.firstName} ${user.lastName}`,
+      }),
+    });
+    if (!confirmed) return;
+
     try {
       await deleteUser(user.id).unwrap();
       notify.success(t('message.deleted'));

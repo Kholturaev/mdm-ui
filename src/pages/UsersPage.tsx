@@ -13,11 +13,13 @@ import { Modal } from '@shared/ui/Modal';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
+import { useConfirm } from '@shared/lib/confirm';
 
 type ModalState = { mode: 'create' } | { mode: 'edit'; user: IUser } | null;
 
 export function UsersPage() {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [modalState, setModalState] = useState<ModalState>(null);
 
   const [createUser, { isLoading: isCreating }] = useCreateUserMutation();
@@ -53,6 +55,14 @@ export function UsersPage() {
   };
 
   const handleDelete = async (user: IUser) => {
+    const confirmed = await confirm({
+      title: t('user.deleteTitle'),
+      description: t('user.deleteConfirm', {
+        name: `${user.firstName} ${user.lastName}`,
+      }),
+    });
+    if (!confirmed) return;
+
     try {
       await deleteUser(user.id).unwrap();
       notify.success(t('message.deleted'));
@@ -62,14 +72,12 @@ export function UsersPage() {
   };
 
   return (
-    <div className="h-full p-6">
-      <div className="border-border h-full overflow-hidden rounded-lg border">
-        <UserTable
-          onCreate={() => setModalState({ mode: 'create' })}
-          onEdit={(user) => setModalState({ mode: 'edit', user })}
-          onDelete={handleDelete}
-        />
-      </div>
+    <div className="h-full">
+      <UserTable
+        onCreate={() => setModalState({ mode: 'create' })}
+        onEdit={(user) => setModalState({ mode: 'edit', user })}
+        onDelete={handleDelete}
+      />
 
       <Modal
         isOpen={modalState !== null}

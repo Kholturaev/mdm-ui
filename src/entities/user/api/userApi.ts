@@ -50,13 +50,6 @@ export const userApiHooks = apiService
           }),
           providesTags: ['user-roles'],
         }),
-        getAllRoles: build.query<IResponse<IUserRole[]>, void>({
-          query: () => ({
-            path: `/auth/realm/client/roles`,
-            method: 'GET',
-            baseURL: env.authApiUrl,
-          }),
-        }),
         assignRolesToUser: build.mutation<
           IResponse<IUser>,
           { userId: string; roleNames: string[] }
@@ -144,7 +137,6 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetUserRolesQuery,
-  useGetAllRolesQuery,
   useAssignRolesToUserMutation,
   useGetUserPermissionsQuery,
   useGetAllPermissionsQuery,

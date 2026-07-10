@@ -69,7 +69,7 @@ export function UnitForm({
           {t('common.cancel')}
         </Button>
         <Button type="submit" isLoading={isSubmitting}>
-          {t('common.create')}
+          {entity ? t('common.update') : t('common.create')}
         </Button>
       </div>
     </form>

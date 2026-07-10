@@ -176,6 +176,11 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
         }}
         searchPlaceholder={t('common.search')}
       >
+        <ColumnVisibilityButton
+          columns={toggleableColumns}
+          visible={visibleColumnKeys}
+          onChange={setVisibleColumnKeys}
+        />
         <ExportCsvButton
           filename="dealers"
           rows={rows}
@@ -192,11 +197,6 @@ export function DealerTable({ onCreate, onEdit, onDelete }: DealerTableProps) {
             },
             { label: t('dealer.active'), getValue: (r) => r.active },
           ]}
-        />
-        <ColumnVisibilityButton
-          columns={toggleableColumns}
-          visible={visibleColumnKeys}
-          onChange={setVisibleColumnKeys}
         />
         <Button size="sm" icon={<PlusIcon size={15} />} onClick={onCreate}>
           {t('dealer.addDealer')}

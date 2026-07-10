@@ -15,3 +15,11 @@ export interface ICharacteristic {
   values: ICharacteristicValue[];
   characteristicsGroupId?: number;
 }
+
+export type CharacteristicFormValues = {
+  name: string;
+  key: string;
+  description?: string | null;
+  type: CharacteristicType;
+  characteristicsGroupId: number;
+};

@@ -20,12 +20,18 @@ export const typeOfNomenclatureApiHooks = apiService
       });
       return {
         getTypeOfNomenclatures: crud.getList,
+        getOneTypeOfNomenclature: crud.getOne,
         createTypeOfNomenclature: crud.create,
+        updateTypeOfNomenclature: crud.update,
+        deleteTypeOfNomenclature: crud.remove,
       };
     },
   });
 
 export const {
   useGetTypeOfNomenclaturesQuery,
+  useGetOneTypeOfNomenclatureQuery,
   useCreateTypeOfNomenclatureMutation,
+  useUpdateTypeOfNomenclatureMutation,
+  useDeleteTypeOfNomenclatureMutation,
 } = typeOfNomenclatureApiHooks;

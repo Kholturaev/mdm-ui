@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -10,8 +10,10 @@ import { BarChartIcon } from '@shared/ui/icons/BarChartIcon';
 import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
 import { ActivityIcon } from '@shared/ui/icons/ActivityIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
+import { usePermission } from '@shared/lib/hooks/usePermission';
+import { Permissions } from '@shared/constants/permissions';
 
-type NavChild = { to: string; labelKey: string };
+type NavChild = { to: string; labelKey: string; permission?: string };
 type TooltipState = { key: string; top: number; left: number };
 type NavGroup = {
   kind: 'group';
@@ -58,7 +60,29 @@ const NAV_ITEMS: NavEntry[] = [
     key: 'nsi',
     labelKey: 'nav.nsi',
     icon: <LayersIcon size={18} />,
-    children: [{ to: '/nomenclature', labelKey: 'nav.nomenclature' }],
+    children: [
+      { to: '/nomenclature', labelKey: 'nav.nomenclature' },
+      {
+        to: '/product-groups',
+        labelKey: 'nav.productGroups',
+        permission: Permissions.PRODUCT_GROUP.READ,
+      },
+      {
+        to: '/type-of-nomenclature',
+        labelKey: 'nav.typeOfNomenclature',
+        permission: Permissions.TYPE_OF_NOMENCLATURE.READ,
+      },
+      {
+        to: '/characteristics',
+        labelKey: 'nav.characteristics',
+        permission: Permissions.CHARACTERISTICS_GROUP.READ,
+      },
+      {
+        to: '/units',
+        labelKey: 'nav.units',
+        permission: Permissions.UNIT.READ,
+      },
+    ],
   },
   {
     kind: 'group',
@@ -91,6 +115,25 @@ type SidebarProps = {
 export function Sidebar({ forceCollapsed = false }: SidebarProps) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const { can } = usePermission();
+
+  // A child with no `permission` is always visible; a group that ends up
+  // with zero visible children (everything in it gated) is dropped entirely
+  // rather than rendered empty.
+  const navItems = useMemo<NavEntry[]>(() => {
+    const result: NavEntry[] = [];
+    for (const entry of NAV_ITEMS) {
+      if (entry.kind === 'link') {
+        result.push(entry);
+        continue;
+      }
+      const children = entry.children.filter(
+        (child) => !child.permission || can(child.permission),
+      );
+      if (children.length > 0) result.push({ ...entry, children });
+    }
+    return result;
+  }, [can]);
 
   const [collapsed, setCollapsed] = useState(
     () => localStorage.getItem(COLLAPSE_STORAGE_KEY) === '1',
@@ -98,7 +141,7 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
   const effectiveCollapsed = collapsed || forceCollapsed;
 
   const activeGroupKey =
-    NAV_ITEMS.find(
+    navItems.find(
       (entry) => entry.kind === 'group' && isEntryActive(entry, pathname),
     )?.key ?? null;
 
@@ -158,7 +201,7 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
       </button>
 
       <nav className="flex flex-col gap-1 overflow-y-auto p-2">
-        {NAV_ITEMS.map((entry) => {
+        {navItems.map((entry) => {
           const active = isEntryActive(entry, pathname);
 
           if (effectiveCollapsed) {
@@ -261,7 +304,7 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
             style={{ top: tooltip.top, left: tooltip.left }}
             className="bg-fg text-fg-invert pointer-events-none fixed z-100 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-medium whitespace-nowrap shadow-lg"
           >
-            {t(NAV_ITEMS.find((entry) => entry.key === tooltip.key)!.labelKey)}
+            {t(navItems.find((entry) => entry.key === tooltip.key)!.labelKey)}
           </div>,
           document.body,
         )}

@@ -12,3 +12,9 @@ export interface ICharacteristicsGroupWithItems extends ICharacteristicsGroup {
   characteristics: ICharacteristic[];
   dynamicTables: IDynamicCharacteristicTable[];
 }
+
+export type CharacteristicsGroupFormValues = {
+  name: string;
+  description?: string | null;
+  typeOfNomenclatureId: number;
+};

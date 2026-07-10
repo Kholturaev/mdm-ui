@@ -37,6 +37,7 @@
   --color-bg: #f7f7f8;
   --color-surface: #ffffff;
   --color-surface-hover: #f2f2f3;
+  --color-surface-pinned: #ffffff;
   --color-border: #e4e4e7;
   --color-border-strong: #c9c9ce;
 
@@ -56,6 +57,7 @@
   --color-bg: #0d1210;
   --color-surface: #151b19;
   --color-surface-hover: #1d2624;
+  --color-surface-pinned: #1b2320;
   --color-border: #2a332f;
   --color-border-strong: #3a453f;
 
@@ -96,6 +98,7 @@
   --color-bg: #0b1220;
   --color-surface: #121a2b;
   --color-surface-hover: #1a2439;
+  --color-surface-pinned: #182233;
   --color-border: #263352;
   --color-border-strong: #34456b;
 
@@ -137,6 +140,7 @@
   --color-bg: #17100f;
   --color-surface: #221816;
   --color-surface-hover: #2c201d;
+  --color-surface-pinned: #27201e;
   --color-border: #3a2b28;
   --color-border-strong: #4d3936;
 
@@ -156,6 +160,7 @@
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);
   --color-surface-hover: var(--color-surface-hover);
+  --color-surface-pinned: var(--color-surface-pinned);
   --color-border: var(--color-border);
   --color-border-strong: var(--color-border-strong);
   --color-fg: var(--color-fg);

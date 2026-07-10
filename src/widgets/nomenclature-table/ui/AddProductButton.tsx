@@ -2,20 +2,22 @@ import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useClickOutside } from '@shared/lib/hooks/useClickOutside';
-import { cn } from '@shared/lib/cn';
 import { PlusIcon } from '@shared/ui/icons/PlusIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
-import { DocumentIcon } from '@shared/ui/icons/DocumentIcon';
-import { DownloadIcon } from '@shared/ui/icons/DownloadIcon';
+import { ExcelImportIcon } from '@shared/ui/icons/ExcelImportIcon';
 
 type AddProductButtonProps = {
   onCreateOneByOne: () => void;
+  onImportExcel: () => void;
 };
 
 type MenuPosition = { top: number; right: number };
 
-/** Primary "add product" action with an attached dropdown for alternate creation methods (currently just one-by-one; Excel import is a placeholder until that endpoint is wired up). Clicking the main segment goes straight to one-by-one create. */
-export function AddProductButton({ onCreateOneByOne }: AddProductButtonProps) {
+/** Primary "add product" action with an attached dropdown for the Excel-import flow. Clicking the main segment goes straight to one-by-one create. */
+export function AddProductButton({
+  onCreateOneByOne,
+  onImportExcel,
+}: AddProductButtonProps) {
   const { t } = useTranslation();
   const [position, setPosition] = useState<MenuPosition | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,29 +70,19 @@ export function AddProductButton({ onCreateOneByOne }: AddProductButtonProps) {
           <div
             ref={menuRef}
             style={{ top: position.top, right: position.right }}
-            className="border-border bg-surface fixed z-100 w-60 rounded border py-1 shadow-lg"
+            className="border-border bg-surface fixed z-100 w-72 rounded border py-1 shadow-lg"
           >
             <button
               type="button"
               onClick={() => {
                 setPosition(null);
-                onCreateOneByOne();
+                onImportExcel();
               }}
-              className={cn(
-                'hover:bg-surface-hover text-fg flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors',
-              )}
+              className="hover:bg-surface-hover text-fg flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
             >
-              <DocumentIcon size={14} />
-              {t('product.addOneByOne')}
+              <ExcelImportIcon size={14} />
+              {t('product.importExcel')}
             </button>
-            <div
-              className="text-fg-muted flex w-full cursor-not-allowed items-center gap-2 px-3 py-2 text-left text-sm opacity-50"
-              title={t('common.comingSoon')}
-            >
-              <DownloadIcon size={14} />
-              <span className="flex-1">{t('product.importExcel')}</span>
-              <span className="text-[10px]">{t('common.comingSoon')}</span>
-            </div>
           </div>,
           document.body,
         )}

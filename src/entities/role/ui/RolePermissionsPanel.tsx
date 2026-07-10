@@ -48,6 +48,25 @@ export function RolePermissionsPanel({ roleName }: RolePermissionsPanelProps) {
   const [draftValues, setDraftValues] = useState<Set<string> | null>(null);
   const selectedValues = draftValues ?? currentValues;
 
+  const totalCount = useMemo(
+    () =>
+      catalogGroups.reduce((sum, group) => sum + group.permissions.length, 0),
+    [catalogGroups],
+  );
+  const allSelected = totalCount > 0 && selectedValues.size === totalCount;
+
+  const handleToggleAll = () => {
+    if (allSelected) {
+      setDraftValues(new Set());
+      return;
+    }
+    const next = new Set<string>();
+    catalogGroups.forEach((group) => {
+      group.permissions.forEach((permission) => next.add(permission.value));
+    });
+    setDraftValues(next);
+  };
+
   const isDirty = useMemo(() => {
     if (!draftValues) return false;
     if (draftValues.size !== currentValues.size) return true;
@@ -138,15 +157,17 @@ export function RolePermissionsPanel({ roleName }: RolePermissionsPanelProps) {
           leftIcon={<SearchIcon size={14} />}
           containerClassName="max-w-xs"
         />
-        <span className="text-fg-muted text-xs font-medium whitespace-nowrap">
-          {t('permission.selectedCount', {
-            count: selectedValues.size,
-            total: catalogGroups.reduce(
-              (sum, group) => sum + group.permissions.length,
-              0,
-            ),
-          })}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-fg-muted text-xs font-medium whitespace-nowrap">
+            {t('permission.selectedCount', {
+              count: selectedValues.size,
+              total: totalCount,
+            })}
+          </span>
+          <Button variant="outline" size="sm" onClick={handleToggleAll}>
+            {allSelected ? t('common.deselectAll') : t('common.selectAll')}
+          </Button>
+        </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">

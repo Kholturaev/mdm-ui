@@ -12,11 +12,13 @@ import { Modal } from '@shared/ui/Modal';
 import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
+import { useConfirm } from '@shared/lib/confirm';
 
 type ModalState = { mode: 'create' } | { mode: 'edit'; role: IRole } | null;
 
 export function RolesPage() {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [modalState, setModalState] = useState<ModalState>(null);
 
   const [createRole, { isLoading: isCreating }] = useCreateRoleMutation();
@@ -40,6 +42,12 @@ export function RolesPage() {
   };
 
   const handleDelete = async (role: IRole) => {
+    const confirmed = await confirm({
+      title: t('role.deleteTitle'),
+      description: t('role.deleteConfirm', { name: role.name }),
+    });
+    if (!confirmed) return;
+
     try {
       await deleteRole(role.name).unwrap();
       notify.success(t('message.deleted'));

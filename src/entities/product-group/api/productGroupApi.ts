@@ -17,10 +17,18 @@ export const productGroupApiHooks = apiService
       );
       return {
         getProductGroups: crud.getList,
+        getOneProductGroup: crud.getOne,
         createProductGroup: crud.create,
+        updateProductGroup: crud.update,
+        deleteProductGroup: crud.remove,
       };
     },
   });
 
-export const { useGetProductGroupsQuery, useCreateProductGroupMutation } =
-  productGroupApiHooks;
+export const {
+  useGetProductGroupsQuery,
+  useGetOneProductGroupQuery,
+  useCreateProductGroupMutation,
+  useUpdateProductGroupMutation,
+  useDeleteProductGroupMutation,
+} = productGroupApiHooks;

@@ -17,7 +17,8 @@ export function useBackLink(item: BackLinkItem) {
   useEffect(() => {
     setItem(item);
     return () => setItem(null);
-  }, [item, setItem]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.label, item.href, setItem]);
 }
 
 export function useBackLinkValue() {

@@ -14,9 +14,13 @@ import type { SortDirection } from '@shared/ui/Table';
 import { RowActions } from '@shared/ui/Menu';
 import { Button } from '@shared/ui/Button';
 import { Avatar } from '@shared/ui/Avatar';
+import { ContactLink } from '@shared/ui/ContactLink';
 import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { PlusIcon } from '@shared/ui/icons/PlusIcon';
+import { MailIcon } from '@shared/ui/icons/MailIcon';
+import { PhoneIcon } from '@shared/ui/icons/PhoneIcon';
+import { TelegramIcon } from '@shared/ui/icons/TelegramIcon';
 import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
 
 type UserTableProps = {
@@ -102,20 +106,47 @@ export function UserTable({ onCreate, onEdit, onDelete }: UserTableProps) {
         accessorKey: 'email',
         id: 'email',
         header: t('user.email'),
+        cell: ({ row }) =>
+          row.original.email ? (
+            <ContactLink
+              href={`mailto:${row.original.email}`}
+              icon={<MailIcon size={13} />}
+            >
+              {row.original.email}
+            </ContactLink>
+          ) : (
+            <span className="text-fg-muted">—</span>
+          ),
       },
       {
         accessorKey: 'phone',
         id: 'phone',
         header: t('user.phone'),
         cell: ({ row }) =>
-          row.original.phone || <span className="text-fg-muted">—</span>,
+          row.original.phone ? (
+            <ContactLink
+              href={`tel:${row.original.phone.replace(/\s+/g, '')}`}
+              icon={<PhoneIcon size={13} />}
+            >
+              {row.original.phone}
+            </ContactLink>
+          ) : (
+            <span className="text-fg-muted">—</span>
+          ),
       },
       {
         accessorKey: 'telegramNickName',
         id: 'telegramNickName',
         header: t('user.telegram'),
         cell: ({ row }) =>
-          row.original.telegramNickName || (
+          row.original.telegramNickName ? (
+            <ContactLink
+              href={`https://t.me/${row.original.telegramNickName.replace(/^@/, '')}`}
+              icon={<TelegramIcon size={13} />}
+            >
+              {row.original.telegramNickName}
+            </ContactLink>
+          ) : (
             <span className="text-fg-muted">—</span>
           ),
       },
