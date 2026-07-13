@@ -1,6 +1,7 @@
 {
   "common": {
     "save": "Saqlash",
+    "back": "Orqaga",
     "cancel": "Bekor qilish",
     "create": "Yaratish",
     "update": "Yangilash",
@@ -702,13 +703,14 @@
   "characteristicsGroup": {
     "name": "Nomi",
     "description": "Tavsif",
-    "addGroup": "Guruh qo'shish",
+    "addGroup": "Xususiyat guruhi qo'shish",
     "createTitle": "Yangi xususiyatlar guruhi",
     "editTitle": "Guruhni tahrirlash",
     "deleteTitle": "Guruhni o'chirish",
     "deleteConfirm": "«{{name}}»ni o'chirasizmi? Ichidagi xususiyatlar ham o'chiriladi."
   },
   "characteristic": {
+    "tabLabel": "Xususiyatlar",
     "name": "Nomi",
     "key": "Kalit",
     "description": "Tavsif",
@@ -722,8 +724,43 @@
     "valuesTitle": "Qiymatlar — {{name}}",
     "addValuePlaceholder": "Yangi qiymat",
     "noValues": "Qiymatlar qo'shilmagan",
+    "deleteValueTitle": "Qiymatni o'chirish",
+    "deleteValueConfirm": "«{{value}}» qiymatini o'chirasizmi? Bu amalni ortga qaytarib bo'lmaydi.",
     "selectGroupHint": "Jadvalni ko'rish uchun chapdan xususiyatlar guruhini tanlang",
     "panelTitle": "Xususiyatlar — {{name}}",
     "groupEmpty": "Bu guruhda xususiyatlar yo'q"
+  },
+  "dynamicCharacteristic": {
+    "tabLabel": "Dinamik jadvallar",
+    "tableName": "Jadval nomi",
+    "columnName": "Ustun nomi",
+    "columnKey": "Ustun kaliti",
+    "columnDataType": "Ma'lumot turi",
+    "columnRequired": "Majburiy ustun",
+    "dataType": {
+      "STRING": "Matn",
+      "NUMBER": "Son",
+      "BOOLEAN": "Ha/Yo'q",
+      "DATE": "Sana"
+    },
+    "addTable": "Jadval qo'shish",
+    "addColumn": "Ustun qo'shish",
+    "addRow": "Qator qo'shish",
+    "createTableTitle": "Yangi dinamik jadval",
+    "createColumnTitle": "Yangi ustun",
+    "editColumnTitle": "Ustunni tahrirlash",
+    "deleteTableTitle": "Jadvalni o'chirish",
+    "deleteTableConfirm": "«{{name}}»ni o'chirasizmi? Ichidagi ustun va qatorlar ham o'chiriladi.",
+    "deleteColumnTitle": "Ustunni o'chirish",
+    "deleteColumnConfirm": "«{{name}}» ustunini o'chirasizmi? Bu ustundagi qiymatlar yo'qoladi.",
+    "deleteRowTitle": "Qatorni o'chirish",
+    "deleteRowConfirm": "Bu qatorni o'chirasizmi? Bu amalni ortga qaytarib bo'lmaydi.",
+    "requiredColumnMissing": "«{{name}}» majburiy ustunini to'ldiring",
+    "columnsCountLabel": "Ustunlar",
+    "rowsCountLabel": "Qatorlar",
+    "noColumnsHint": "Jadvalni to'ldirishni boshlash uchun birinchi ustunni qo'shing",
+    "noRowsHint": "Bu jadvalda qatorlar yo'q",
+    "selectGroupHint": "Jadvallarni ko'rish uchun chapdan xususiyatlar guruhini tanlang",
+    "groupEmpty": "Bu guruhda dinamik jadvallar yo'q"
   }
 }

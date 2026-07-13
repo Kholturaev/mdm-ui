@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { useGetTypeOfNomenclaturesQuery } from '@entities/type-of-nomenclature/api/typeOfNomenclatureApi';
+import { useTranslation } from 'react-i18next';
 import { CharacteristicsTree } from '@widgets/characteristics-tree/ui/CharacteristicsTree';
 import { CharacteristicsPanel } from '@widgets/characteristics-panel/ui/CharacteristicsPanel';
+import { DynamicCharacteristicsPanel } from '@widgets/dynamic-characteristics-panel/ui/DynamicCharacteristicsPanel';
+import { Tabs } from '@shared/ui/Tabs';
+
+type CharacteristicsTab = 'characteristics' | 'dynamicTables';
 
 export function CharacteristicsPage() {
+  const { t } = useTranslation();
   const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
-
-  const { data } = useGetTypeOfNomenclaturesQuery({ page: 0, size: 200 });
-  const selectedType = data?.data?.data.find((t) => t.id === selectedTypeId);
+  const [activeTab, setActiveTab] =
+    useState<CharacteristicsTab>('characteristics');
 
   return (
     <div className="flex h-full">
@@ -22,12 +26,32 @@ export function CharacteristicsPage() {
           }}
         />
       </div>
-      <div className="min-w-0 flex-1">
-        <CharacteristicsPanel
-          typeId={selectedTypeId}
-          typeName={selectedType?.name}
-          groupId={selectedGroupId}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Tabs
+          items={[
+            { key: 'characteristics', label: t('characteristic.tabLabel') },
+            {
+              key: 'dynamicTables',
+              label: t('dynamicCharacteristic.tabLabel'),
+            },
+          ]}
+          value={activeTab}
+          onChange={(key) => setActiveTab(key as CharacteristicsTab)}
+          className="px-4"
         />
+        <div className="min-h-0 flex-1">
+          {activeTab === 'characteristics' ? (
+            <CharacteristicsPanel
+              typeId={selectedTypeId}
+              groupId={selectedGroupId}
+            />
+          ) : (
+            <DynamicCharacteristicsPanel
+              typeId={selectedTypeId}
+              groupId={selectedGroupId}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

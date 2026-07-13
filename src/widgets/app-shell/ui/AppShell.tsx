@@ -12,8 +12,11 @@ export function AppShell() {
   // width back for their permission lists, so only the sidebar collapses.
   const isRoleDetails = Boolean(useMatch('/access/roles/:id'));
   const isUserDetails = Boolean(useMatch('/access/users/:id'));
+  // The characteristics page has its own internal nomenclature-type tree, so
+  // the global sidebar collapses out of its way too.
+  const isCharacteristics = Boolean(useMatch('/characteristics'));
   const forceSidebarCollapsed =
-    isProductDetails || isRoleDetails || isUserDetails;
+    isProductDetails || isRoleDetails || isUserDetails || isCharacteristics;
 
   return (
     <BackLinkProvider>

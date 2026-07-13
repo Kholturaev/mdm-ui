@@ -4,6 +4,15 @@ import type { CharacteristicFormValues, ICharacteristic } from '../model/types';
 
 export const addTagTypes = ['characteristic', 'characteristic-group'] as const;
 
+/** The backend rejects a blank `description` (`""`), so omit it entirely rather than sending an empty string. */
+function buildCharacteristicBody(data: CharacteristicFormValues) {
+  const { description, ...rest } = data;
+  return {
+    ...rest,
+    ...(description?.trim() ? { description: description.trim() } : {}),
+  };
+}
+
 /**
  * A characteristic's own list is never fetched standalone in this app — the
  * tree/panel UI (and the product details tab) always reads the embedded
@@ -23,7 +32,7 @@ export const characteristicApiHooks = apiService
         query: (data) => ({
           path: '/characteristics',
           method: 'POST',
-          body: { ...data, values: [] },
+          body: { ...buildCharacteristicBody(data), values: [] },
         }),
         invalidatesTags: ['characteristic', 'characteristic-group'],
       }),
@@ -35,7 +44,7 @@ export const characteristicApiHooks = apiService
         query: ({ id, data }) => ({
           path: `/characteristics/${id}`,
           method: 'PUT',
-          body: { ...data, values: [] },
+          body: { ...buildCharacteristicBody(data), values: [] },
         }),
         invalidatesTags: ['characteristic', 'characteristic-group'],
       }),

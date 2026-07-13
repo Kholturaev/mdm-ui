@@ -1,6 +1,7 @@
 {
   "common": {
     "save": "Сохранить",
+    "back": "Назад",
     "cancel": "Отмена",
     "create": "Создать",
     "update": "Обновить",
@@ -701,13 +702,14 @@
   "characteristicsGroup": {
     "name": "Название",
     "description": "Описание",
-    "addGroup": "Добавить группу",
+    "addGroup": "Добавить группу характеристик",
     "createTitle": "Новая группа характеристик",
     "editTitle": "Редактировать группу",
     "deleteTitle": "Удалить группу",
     "deleteConfirm": "Удалить «{{name}}»? Характеристики внутри также будут удалены."
   },
   "characteristic": {
+    "tabLabel": "Характеристики",
     "name": "Название",
     "key": "Ключ",
     "description": "Описание",
@@ -721,8 +723,43 @@
     "valuesTitle": "Значения — {{name}}",
     "addValuePlaceholder": "Новое значение",
     "noValues": "Значения не добавлены",
+    "deleteValueTitle": "Удалить значение",
+    "deleteValueConfirm": "Удалить значение «{{value}}»? Это действие нельзя отменить.",
     "selectGroupHint": "Выберите группу характеристик слева, чтобы увидеть таблицу",
     "panelTitle": "Характеристики — {{name}}",
     "groupEmpty": "В этой группе нет характеристик"
+  },
+  "dynamicCharacteristic": {
+    "tabLabel": "Динамические таблицы",
+    "tableName": "Название таблицы",
+    "columnName": "Название столбца",
+    "columnKey": "Ключ столбца",
+    "columnDataType": "Тип данных",
+    "columnRequired": "Обязательный столбец",
+    "dataType": {
+      "STRING": "Текст",
+      "NUMBER": "Число",
+      "BOOLEAN": "Да/Нет",
+      "DATE": "Дата"
+    },
+    "addTable": "Добавить таблицу",
+    "addColumn": "Добавить столбец",
+    "addRow": "Добавить строку",
+    "createTableTitle": "Новая динамическая таблица",
+    "createColumnTitle": "Новый столбец",
+    "editColumnTitle": "Редактировать столбец",
+    "deleteTableTitle": "Удалить таблицу",
+    "deleteTableConfirm": "Удалить «{{name}}»? Столбцы и строки внутри также будут удалены.",
+    "deleteColumnTitle": "Удалить столбец",
+    "deleteColumnConfirm": "Удалить столбец «{{name}}»? Значения в этом столбце будут потеряны.",
+    "deleteRowTitle": "Удалить строку",
+    "deleteRowConfirm": "Удалить эту строку? Это действие нельзя отменить.",
+    "requiredColumnMissing": "Заполните обязательный столбец «{{name}}»",
+    "columnsCountLabel": "Столбцы",
+    "rowsCountLabel": "Строки",
+    "noColumnsHint": "Добавьте первый столбец, чтобы начать заполнять таблицу",
+    "noRowsHint": "В этой таблице нет строк",
+    "selectGroupHint": "Выберите группу характеристик слева, чтобы увидеть таблицы",
+    "groupEmpty": "В этой группе нет динамических таблиц"
   }
 }

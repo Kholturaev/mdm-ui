@@ -200,7 +200,8 @@ function TypeNode({
                 key={group.id}
                 group={{
                   ...group,
-                  characteristicsCount: group.characteristics.length,
+                  characteristicsCount:
+                    group.characteristics.length + group.dynamicTables.length,
                 }}
                 isSelected={group.id === selectedGroupId}
                 onSelect={() => onSelectGroup(group.id)}

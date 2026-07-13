@@ -1,5 +1,31 @@
 export type DynamicColumnDataType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'DATE';
 
+export type CreateDynamicCharacteristicTablePayload = {
+  characteristicGroupId: number;
+  name: string;
+};
+
+export type CreateOrUpdateDynamicCharacteristicColumnPayload = {
+  id?: number;
+  tableId: number;
+  name: string;
+  key: string;
+  dataType: DynamicColumnDataType;
+  position: number;
+  required: boolean;
+};
+
+export type CreateOrUpdateDynamicCharacteristicRowPayload = {
+  id?: number;
+  tableId: number;
+  values: { columnId: number; value: string; id?: number; rowId?: number }[];
+};
+
+export type ReorderDynamicCharacteristicColumnsPayload = {
+  tableId: number;
+  columns: { id: number; position: number }[];
+};
+
 export interface IDynamicCharacteristicColumn {
   id: number;
   tableId?: number;

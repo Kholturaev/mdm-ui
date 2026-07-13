@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import {
   flexRender,
@@ -9,6 +9,7 @@ import type { Column, ColumnDef, RowData } from '@tanstack/react-table';
 import { cn } from '@shared/lib/cn';
 import { LoadingBar } from '../LoadingBar';
 import { DatePicker } from '../DatePicker';
+import { ChevronDownIcon } from '../icons/ChevronDownIcon';
 
 export type ColumnFilterConfig =
   | { type: 'text' }
@@ -41,6 +42,13 @@ type DataTableProps<TData> = {
   /** Current value per column id — pass with `onColumnFiltersChange` to turn on the per-column filter row. */
   columnFilters?: Record<string, string>;
   onColumnFiltersChange?: (filters: Record<string, string>) => void;
+  /** Identifies a row for expand/collapse — required alongside `onToggleExpand`/`renderExpandedRow` to turn on the expandable-row toggle in the first column. */
+  getRowId?: (row: TData) => string | number;
+  /** Row id currently expanded, or `null`/`undefined` when none is. */
+  expandedRowId?: string | number | null;
+  onToggleExpand?: (row: TData) => void;
+  /** Renders a full-width row directly below the toggled row's own `<tr>`. */
+  renderExpandedRow?: (row: TData) => ReactNode;
 };
 
 function pinnedCellStyle(
@@ -120,6 +128,10 @@ export function DataTable<TData>({
   enableColumnResizing = false,
   columnFilters,
   onColumnFiltersChange,
+  getRowId,
+  expandedRowId,
+  onToggleExpand,
+  renderExpandedRow,
 }: DataTableProps<TData>) {
   const columnPinning = useMemo(() => {
     const left: string[] = [];
@@ -292,46 +304,97 @@ export function DataTable<TData>({
               </td>
             </tr>
           )}
-          {rows.map((row) => (
-            <tr
-              key={row.id}
-              onClick={() => onRowClick?.(row.original)}
-              className={cn(
-                'group bg-surface hover:bg-surface-hover',
-                onRowClick && 'cursor-pointer',
-              )}
-            >
-              {row.getVisibleCells().map((cell) => {
-                const column = cell.column as Column<unknown, unknown>;
-                const pinned = column.getIsPinned();
-                const width = cellWidth(column);
-                const hasSize = cell.column.columnDef.size !== undefined;
-                const content = flexRender(
-                  cell.column.columnDef.cell,
-                  cell.getContext(),
-                );
-                return (
-                  <td
-                    key={cell.id}
-                    style={{ width, ...pinnedCellStyle(column, pinned) }}
-                    className={cn(
-                      'border-border text-fg border-r border-b px-3 py-0.5 last:border-r-0',
-                      sortedColumnId === cell.column.id && 'bg-surface-hover',
-                      pinned &&
-                        'bg-surface-pinned group-hover:bg-surface-hover sticky z-10',
-                      pinnedEdgeClass(column, pinned),
-                    )}
-                  >
-                    {hasSize ? (
-                      <TruncatedCell>{content}</TruncatedCell>
-                    ) : (
-                      content
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+          {rows.map((row) => {
+            const rowId = getRowId?.(row.original);
+            const canExpand =
+              Boolean(renderExpandedRow) &&
+              Boolean(onToggleExpand) &&
+              rowId !== undefined;
+            const isExpanded = canExpand && expandedRowId === rowId;
+            const visibleCells = row.getVisibleCells();
+
+            return (
+              <Fragment key={row.id}>
+                <tr
+                  onClick={() => onRowClick?.(row.original)}
+                  className={cn(
+                    'group hover:bg-surface-hover',
+                    isExpanded ? 'bg-surface-hover' : 'bg-surface',
+                    onRowClick && 'cursor-pointer',
+                  )}
+                >
+                  {visibleCells.map((cell, cellIndex) => {
+                    const column = cell.column as Column<unknown, unknown>;
+                    const pinned = column.getIsPinned();
+                    const width = cellWidth(column);
+                    const hasSize = cell.column.columnDef.size !== undefined;
+                    const content = flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext(),
+                    );
+                    return (
+                      <td
+                        key={cell.id}
+                        style={{ width, ...pinnedCellStyle(column, pinned) }}
+                        className={cn(
+                          'border-border text-fg border-r border-b px-3 py-0.5 last:border-r-0',
+                          sortedColumnId === cell.column.id &&
+                            'bg-surface-hover',
+                          pinned && 'sticky z-10',
+                          pinned &&
+                            (isExpanded
+                              ? 'bg-surface-hover'
+                              : 'bg-surface-pinned group-hover:bg-surface-hover'),
+                          pinnedEdgeClass(column, pinned),
+                        )}
+                      >
+                        {cellIndex === 0 && canExpand ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                onToggleExpand?.(row.original);
+                              }}
+                              aria-label="toggle-row"
+                              className={cn(
+                                'inline-flex size-5 shrink-0 items-center justify-center rounded border transition-transform',
+                                isExpanded
+                                  ? 'border-primary bg-primary/10 text-primary'
+                                  : 'border-border text-fg-muted hover:bg-surface-hover hover:text-fg',
+                                !isExpanded && '-rotate-90',
+                              )}
+                            >
+                              <ChevronDownIcon size={11} />
+                            </button>
+                            {hasSize ? (
+                              <TruncatedCell>{content}</TruncatedCell>
+                            ) : (
+                              content
+                            )}
+                          </div>
+                        ) : hasSize ? (
+                          <TruncatedCell>{content}</TruncatedCell>
+                        ) : (
+                          content
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+                {isExpanded && (
+                  <tr className="bg-bg">
+                    <td
+                      colSpan={visibleCells.length}
+                      className="border-border border-l-primary/50 border-b border-l-2 px-5 py-4"
+                    >
+                      {renderExpandedRow?.(row.original)}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
         </tbody>
       </table>
     </div>

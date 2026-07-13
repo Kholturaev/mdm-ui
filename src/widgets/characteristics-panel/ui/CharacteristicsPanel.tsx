@@ -13,7 +13,7 @@ import {
 } from '@entities/characteristic/api/characteristicApi';
 import { useGetCharacteristicGroupsByNomenclatureQuery } from '@entities/characteristic-group/api/characteristicGroupApi';
 import { CharacteristicForm } from '@features/characteristic-create-edit/ui/CharacteristicForm';
-import { CharacteristicValuesModal } from '@features/characteristic-value-manage/ui/CharacteristicValuesModal';
+import { CharacteristicValuesEditor } from '@features/characteristic-value-manage/ui/CharacteristicValuesEditor';
 import { DataTable, TableToolbar } from '@shared/ui/Table';
 import { RowActions } from '@shared/ui/Menu';
 import { Button } from '@shared/ui/Button';
@@ -26,7 +26,6 @@ import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { ChecklistIcon } from '@shared/ui/icons/ChecklistIcon';
 import { LockIcon } from '@shared/ui/icons/LockIcon';
 import { PlusIcon } from '@shared/ui/icons/PlusIcon';
-import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 import { Permissions } from '@shared/constants/permissions';
 import { usePermission } from '@shared/lib/hooks/usePermission';
 import { useConfirm } from '@shared/lib/confirm';
@@ -39,20 +38,20 @@ type CharacteristicModalState =
 
 type CharacteristicsPanelProps = {
   typeId: number | null;
-  typeName?: string;
   groupId: number | null;
 };
 
 export function CharacteristicsPanel({
   typeId,
-  typeName,
   groupId,
 }: CharacteristicsPanelProps) {
   const { t } = useTranslation();
   const { can } = usePermission();
   const confirm = useConfirm();
   const [modalState, setModalState] = useState<CharacteristicModalState>(null);
-  const [valuesForId, setValuesForId] = useState<number | null>(null);
+  const [expandedCharacteristicId, setExpandedCharacteristicId] = useState<
+    number | null
+  >(null);
 
   const { data, isFetching } = useGetCharacteristicGroupsByNomenclatureQuery(
     typeId ?? 0,
@@ -63,10 +62,6 @@ export function CharacteristicsPanel({
     [data, groupId],
   );
   const rows = group?.characteristics ?? [];
-  // Re-derived from `rows` every render (not a snapshot) so the values modal
-  // stays in sync after add/delete mutations refetch this same query.
-  const valuesForCharacteristic =
-    rows.find((row) => row.id === valuesForId) ?? null;
 
   const [createCharacteristic, { isLoading: isCreating }] =
     useCreateCharacteristicMutation();
@@ -141,13 +136,9 @@ export function CharacteristicsPanel({
         header: t('characteristic.valuesCount'),
         cell: ({ row }) =>
           canHaveValues(row.original.type) ? (
-            <button
-              type="button"
-              onClick={() => setValuesForId(row.original.id)}
-              className="text-primary text-sm font-medium hover:underline"
-            >
+            <span className="text-fg text-sm">
               {row.original.values.length}
-            </button>
+            </span>
           ) : (
             <span className="text-fg-muted">—</span>
           ),
@@ -241,17 +232,6 @@ export function CharacteristicsPanel({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-border border-b px-4 py-3">
-        <div className="text-fg-muted flex items-center gap-1.5 text-xs">
-          <span>{typeName}</span>
-          <ChevronDownIcon size={11} className="-rotate-90" />
-          <span>{group.name}</span>
-        </div>
-        <h2 className="text-fg mt-0.5 text-base font-semibold">
-          {t('characteristic.panelTitle', { name: group.name })}
-        </h2>
-      </div>
-
       <TableToolbar>
         <PermissionGuard permission={Permissions.CHARACTERISTICS.CREATE}>
           <Button
@@ -270,6 +250,16 @@ export function CharacteristicsPanel({
           data={rows}
           isLoading={isFetching}
           emptyMessage={t('characteristic.groupEmpty')}
+          getRowId={(row) => row.id}
+          expandedRowId={expandedCharacteristicId}
+          onToggleExpand={(row) =>
+            setExpandedCharacteristicId((current) =>
+              current === row.id ? null : row.id,
+            )
+          }
+          renderExpandedRow={(row) => (
+            <CharacteristicValuesEditor characteristic={row} />
+          )}
         />
       </div>
 
@@ -292,11 +282,6 @@ export function CharacteristicsPanel({
           onCancel={closeModal}
         />
       </Modal>
-
-      <CharacteristicValuesModal
-        characteristic={valuesForCharacteristic}
-        onClose={() => setValuesForId(null)}
-      />
     </div>
   );
 }
