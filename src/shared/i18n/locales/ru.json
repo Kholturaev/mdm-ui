@@ -62,9 +62,9 @@
     "nsi": "НСИ",
     "nomenclature": "Номенклатура",
     "productGroups": "Группы номенклатуры",
-    "typeOfNomenclature": "Типы номенклатуры",
     "characteristics": "Характеристики",
     "units": "Единицы измерения",
+    "accountingProducts": "Бухгалтерские продукты",
     "access": "Контроль доступа",
     "users": "Пользователи",
     "roles": "Роли",
@@ -327,10 +327,10 @@
     "colorThemeHint": "Выберите палитру, с которой вам удобнее работать",
     "themeDefault": "Стандартная",
     "themeDefaultDesc": "Нейтральная чёрно-белая палитра",
-    "themeOcean": "Океан",
-    "themeOceanDesc": "Спокойные синие тона",
-    "themeAkfa": "AKFA",
-    "themeAkfaDesc": "Тёплые тона с фирменным красным"
+    "themeAmethyst": "Аметист",
+    "themeAmethystDesc": "Насыщенные фиолетовые тона",
+    "themeSunset": "Закат",
+    "themeSunsetDesc": "Тёплые янтарные и коралловые тона"
   },
   "header": {
     "systemHealth": {
@@ -659,13 +659,9 @@
   },
   "typeOfNomenclature": {
     "title": "Типы номенклатуры",
-    "addTypeOfNomenclature": "Добавить тип",
     "name": "Название",
     "description": "Описание",
-    "createTitle": "Новый тип номенклатуры",
-    "editTitle": "Редактировать тип",
-    "deleteTitle": "Удалить тип",
-    "deleteConfirm": "Удалить «{{name}}»? Это действие нельзя отменить."
+    "createTitle": "Новый тип номенклатуры"
   },
   "productCategory": {
     "name": "Название",
@@ -675,6 +671,16 @@
   "segment": {
     "name": "Название",
     "createTitle": "Новый сегмент"
+  },
+  "accountingProduct": {
+    "title": "Бухгалтерские продукты",
+    "addAccountingProduct": "Добавить продукт",
+    "name": "Название",
+    "description": "Описание",
+    "createTitle": "Новый бухгалтерский продукт",
+    "editTitle": "Редактировать бухгалтерский продукт",
+    "deleteTitle": "Удалить бухгалтерский продукт",
+    "deleteConfirm": "Удалить «{{name}}»? Это действие нельзя отменить."
   },
   "unit": {
     "title": "Единицы измерения",

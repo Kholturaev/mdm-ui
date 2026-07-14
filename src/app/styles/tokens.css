@@ -73,87 +73,86 @@
   --color-primary-foreground: #052e14;
 }
 
-/* "Ocean" — a calm, muted blue palette for users who'd rather not have the
+/* "Amethyst" — a rich violet/plum palette for users who'd rather not have the
    default's black/green combo. Same token set, same contrast approach. */
-[data-theme='ocean'] {
-  --color-bg: #f5f7fa;
+[data-theme='amethyst'] {
+  --color-bg: #faf8fc;
   --color-surface: #ffffff;
-  --color-surface-hover: #eef2f6;
-  --color-border: #dde3ea;
-  --color-border-strong: #c2cbd6;
+  --color-surface-hover: #f1ecf8;
+  --color-border: #e5dcf0;
+  --color-border-strong: #cbb8e0;
 
-  --color-fg: #1a2433;
-  --color-fg-muted: #64748b;
+  --color-fg: #241b2e;
+  --color-fg-muted: #746385;
   --color-fg-invert: #ffffff;
 
-  --color-disabled-bg: #eef1f4;
-  --color-disabled-fg: #b0b8c1;
+  --color-disabled-bg: #f0eaf6;
+  --color-disabled-fg: #bcabc9;
 
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
   --color-primary-foreground: #ffffff;
 }
 
-[data-theme='ocean'].dark {
-  --color-bg: #0b1220;
-  --color-surface: #121a2b;
-  --color-surface-hover: #1a2439;
-  --color-surface-pinned: #182233;
-  --color-border: #263352;
-  --color-border-strong: #34456b;
+[data-theme='amethyst'].dark {
+  --color-bg: #150f1c;
+  --color-surface: #1e1528;
+  --color-surface-hover: #291c38;
+  --color-surface-pinned: #251a33;
+  --color-border: #3a2a4d;
+  --color-border-strong: #4e3a68;
 
-  --color-fg: #e6ecf5;
-  --color-fg-muted: #8fa0bd;
-  --color-fg-invert: #0b1220;
+  --color-fg: #f1e9f7;
+  --color-fg-muted: #a793bf;
+  --color-fg-invert: #150f1c;
 
-  --color-disabled-bg: #172038;
-  --color-disabled-fg: #4a5875;
+  --color-disabled-bg: #241a30;
+  --color-disabled-fg: #5c4d70;
 
-  --color-primary: #3b82f6;
-  --color-primary-hover: #60a5fa;
-  --color-primary-foreground: #04101f;
+  --color-primary: #a855f7;
+  --color-primary-hover: #c084fc;
+  --color-primary-foreground: #2e1065;
 }
 
-/* "Akfa" — warm neutrals with the brand's red as the accent, toned down from
-   the raw logo red so it holds up as a UI color (buttons, focus rings, links)
-   rather than just a mark. */
-[data-theme='akfa'] {
-  --color-bg: #faf7f6;
+/* "Sunset" — a warm, energetic amber/coral palette. Same token set, same
+   contrast approach. */
+[data-theme='sunset'] {
+  --color-bg: #fdf6ee;
   --color-surface: #ffffff;
-  --color-surface-hover: #f5eeed;
-  --color-border: #ece1df;
-  --color-border-strong: #d9c5c2;
+  --color-surface-hover: #f8ead9;
+  --color-border: #f0d9bd;
+  --color-border-strong: #ddb37f;
 
-  --color-fg: #221a19;
-  --color-fg-muted: #7a6b68;
+  --color-fg: #2e1f14;
+  --color-fg-muted: #8a7059;
   --color-fg-invert: #ffffff;
 
-  --color-disabled-bg: #f2ecea;
-  --color-disabled-fg: #c2b3b0;
+  --color-disabled-bg: #f5e9d8;
+  --color-disabled-fg: #cbb096;
 
-  --color-primary: #d92d20;
-  --color-primary-hover: #b42318;
-  --color-primary-foreground: #ffffff;
+  --color-primary: #e2661c;
+  --color-primary-hover: #bd5416;
+  --color-primary-foreground: #1a0d00;
 }
 
-[data-theme='akfa'].dark {
-  --color-bg: #17100f;
-  --color-surface: #221816;
-  --color-surface-hover: #2c201d;
-  --color-surface-pinned: #27201e;
-  --color-border: #3a2b28;
-  --color-border-strong: #4d3936;
+[data-theme='sunset'].dark {
+  --color-bg: #1c120a;
+  --color-surface: #271a11;
+  --color-surface-hover: #33230f;
+  --color-surface-pinned: #2e2010;
+  --color-border: #4a3420;
+  --color-border-strong: #614529;
 
-  --color-fg: #f5ece9;
-  --color-fg-muted: #b09a95;
-  --color-fg-invert: #17100f;
+  --color-fg: #f9ecdd;
+  --color-fg-muted: #c2a17e;
+  --color-fg-invert: #1c120a;
 
-  --color-disabled-bg: #2a1e1c;
-  --color-disabled-fg: #5c4744;
+  --color-disabled-bg: #241708;
+  --color-disabled-fg: #5c4530;
 
-  --color-primary: #f04438;
-  --color-primary-hover: #f97066;
-  --color-primary-foreground: #2c0805;
+  --color-primary: #ff6b35;
+  --color-primary-hover: #ff9760;
+  --color-primary-foreground: #2c0f02;
 }
 
 @theme inline {

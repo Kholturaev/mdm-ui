@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { ITypeOfNomenclature } from '@entities/type-of-nomenclature/model/types';
-import { useGetTypeOfNomenclaturesQuery } from '@entities/type-of-nomenclature/api/typeOfNomenclatureApi';
+import type { IAccountingProduct } from '@entities/accounting-product/model/types';
+import { useGetAccountingProductsQuery } from '@entities/accounting-product/api/accountingProductApi';
 import {
   ColumnVisibilityButton,
   DataTable,
@@ -22,17 +22,17 @@ import { useDebouncedValue } from '@shared/lib/hooks/useDebouncedValue';
 import { usePermission } from '@shared/lib/hooks/usePermission';
 import { Permissions } from '@shared/constants/permissions';
 
-type TypeOfNomenclatureTableProps = {
+type AccountingProductTableProps = {
   onCreate: () => void;
-  onEdit: (typeOfNomenclature: ITypeOfNomenclature) => void;
-  onDelete: (typeOfNomenclature: ITypeOfNomenclature) => void;
+  onEdit: (accountingProduct: IAccountingProduct) => void;
+  onDelete: (accountingProduct: IAccountingProduct) => void;
 };
 
-export function TypeOfNomenclatureTable({
+export function AccountingProductTable({
   onCreate,
   onEdit,
   onDelete,
-}: TypeOfNomenclatureTableProps) {
+}: AccountingProductTableProps) {
   const { t } = useTranslation();
   const { can } = usePermission();
   const [page, setPage] = useState(0);
@@ -62,7 +62,7 @@ export function TypeOfNomenclatureTable({
     [sortField, sortDirection],
   );
 
-  const { data, isFetching, refetch } = useGetTypeOfNomenclaturesQuery({
+  const { data, isFetching, refetch } = useGetAccountingProductsQuery({
     page,
     size: pageSize,
     sortField: sortField ?? undefined,
@@ -72,13 +72,13 @@ export function TypeOfNomenclatureTable({
   const meta = data?.data;
   const rows = meta?.data ?? [];
 
-  const canUpdate = can(Permissions.TYPE_OF_NOMENCLATURE.UPDATE);
-  const canDelete = can(Permissions.TYPE_OF_NOMENCLATURE.DELETE);
+  const canUpdate = can(Permissions.ACCOUNTING_PRODUCT.UPDATE);
+  const canDelete = can(Permissions.ACCOUNTING_PRODUCT.DELETE);
 
   const toggleableColumns = useMemo<ToggleableColumn[]>(
     () => [
-      { id: 'name', label: t('typeOfNomenclature.name') },
-      { id: 'description', label: t('typeOfNomenclature.description') },
+      { id: 'name', label: t('accountingProduct.name') },
+      { id: 'description', label: t('accountingProduct.description') },
     ],
     [t],
   );
@@ -86,14 +86,14 @@ export function TypeOfNomenclatureTable({
     toggleableColumns.map((column) => column.id),
   );
 
-  const columns = useMemo<ColumnDef<ITypeOfNomenclature>[]>(() => {
-    const base: ColumnDef<ITypeOfNomenclature>[] = [
+  const columns = useMemo<ColumnDef<IAccountingProduct>[]>(() => {
+    const base: ColumnDef<IAccountingProduct>[] = [
       {
         accessorKey: 'name',
         id: 'name',
         header: () => (
           <SortableHeader
-            label={t('typeOfNomenclature.name')}
+            label={t('accountingProduct.name')}
             field="name"
             activeField={sortField}
             direction={sortDirection}
@@ -104,8 +104,7 @@ export function TypeOfNomenclatureTable({
       {
         accessorKey: 'description',
         id: 'description',
-        header: t('typeOfNomenclature.description'),
-        cell: ({ row }) => row.original.description || '—',
+        header: t('accountingProduct.description'),
       },
     ];
 
@@ -168,7 +167,7 @@ export function TypeOfNomenclatureTable({
   return (
     <div className="flex h-full flex-col">
       <TableToolbar
-        title={t('typeOfNomenclature.title')}
+        title={t('accountingProduct.title')}
         searchValue={nameFilter}
         onSearchChange={(value) => {
           setNameFilter(value);
@@ -182,19 +181,19 @@ export function TypeOfNomenclatureTable({
           onChange={setVisibleColumnKeys}
         />
         <ExportCsvButton
-          filename="type-of-nomenclature"
+          filename="accounting-products"
           rows={rows}
           columns={[
-            { label: t('typeOfNomenclature.name'), getValue: (r) => r.name },
+            { label: t('accountingProduct.name'), getValue: (r) => r.name },
             {
-              label: t('typeOfNomenclature.description'),
+              label: t('accountingProduct.description'),
               getValue: (r) => r.description ?? '',
             },
           ]}
         />
-        <PermissionGuard permission={Permissions.TYPE_OF_NOMENCLATURE.CREATE}>
+        <PermissionGuard permission={Permissions.ACCOUNTING_PRODUCT.CREATE}>
           <Button size="sm" icon={<PlusIcon size={15} />} onClick={onCreate}>
-            {t('typeOfNomenclature.addTypeOfNomenclature')}
+            {t('accountingProduct.addAccountingProduct')}
           </Button>
         </PermissionGuard>
       </TableToolbar>

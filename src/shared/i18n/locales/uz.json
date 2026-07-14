@@ -62,9 +62,9 @@
     "nsi": "NSI",
     "nomenclature": "Nomenklatura",
     "productGroups": "Nomenklatura guruhlari",
-    "typeOfNomenclature": "Nomenklatura turlari",
     "characteristics": "Xususiyatlar",
     "units": "O'lchov birliklari",
+    "accountingProducts": "Buxgalteriya mahsulotlari",
     "access": "Kirish nazorati",
     "users": "Foydalanuvchilar",
     "roles": "Rollar",
@@ -327,10 +327,10 @@
     "colorThemeHint": "Sizga qulay bo'lgan palitrani tanlang",
     "themeDefault": "Standart",
     "themeDefaultDesc": "Neytral qora-oq palitra",
-    "themeOcean": "Okean",
-    "themeOceanDesc": "Sokin ko'k ranglar",
-    "themeAkfa": "AKFA",
-    "themeAkfaDesc": "Firma qizil rangi bilan issiq ranglar"
+    "themeAmethyst": "Ametist",
+    "themeAmethystDesc": "Boy binafsha ranglar",
+    "themeSunset": "Quyosh botishi",
+    "themeSunsetDesc": "Issiq amber va coral ranglar"
   },
   "header": {
     "systemHealth": {
@@ -660,13 +660,9 @@
   },
   "typeOfNomenclature": {
     "title": "Nomenklatura turlari",
-    "addTypeOfNomenclature": "Tur qo'shish",
     "name": "Nomi",
     "description": "Tavsif",
-    "createTitle": "Yangi nomenklatura turi",
-    "editTitle": "Turni tahrirlash",
-    "deleteTitle": "Turni o'chirish",
-    "deleteConfirm": "«{{name}}»ni o'chirasizmi? Bu amalni ortga qaytarib bo'lmaydi."
+    "createTitle": "Yangi nomenklatura turi"
   },
   "productCategory": {
     "name": "Nomi",
@@ -676,6 +672,16 @@
   "segment": {
     "name": "Nomi",
     "createTitle": "Yangi segment"
+  },
+  "accountingProduct": {
+    "title": "Buxgalteriya mahsulotlari",
+    "addAccountingProduct": "Mahsulot qo'shish",
+    "name": "Nomi",
+    "description": "Tavsif",
+    "createTitle": "Yangi buxgalteriya mahsuloti",
+    "editTitle": "Buxgalteriya mahsulotini tahrirlash",
+    "deleteTitle": "Buxgalteriya mahsulotini o'chirish",
+    "deleteConfirm": "«{{name}}»ni o'chirasizmi? Bu amalni ortga qaytarib bo'lmaydi."
   },
   "unit": {
     "title": "O'lchov birliklari",

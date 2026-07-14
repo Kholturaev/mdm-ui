@@ -7,8 +7,8 @@ import { AuditLogPage } from '@pages/AuditLogPage';
 import { DealersPage } from '@pages/DealersPage';
 import { NomenclaturePage } from '@pages/NomenclaturePage';
 import { UnitsPage } from '@pages/UnitsPage';
+import { AccountingProductsPage } from '@pages/AccountingProductsPage';
 import { ProductGroupsPage } from '@pages/ProductGroupsPage';
-import { TypeOfNomenclaturesPage } from '@pages/TypeOfNomenclaturesPage';
 import { CharacteristicsPage } from '@pages/CharacteristicsPage';
 import { ProductDetailsPage } from '@pages/ProductDetailsPage';
 import { UsersPage } from '@pages/UsersPage';
@@ -40,12 +40,12 @@ export const router = createBrowserRouter([
           { path: 'nomenclature', element: <NomenclaturePage /> },
           { path: 'nomenclature/:id', element: <ProductDetailsPage /> },
           { path: 'product-groups', element: <ProductGroupsPage /> },
-          {
-            path: 'type-of-nomenclature',
-            element: <TypeOfNomenclaturesPage />,
-          },
           { path: 'characteristics', element: <CharacteristicsPage /> },
           { path: 'units', element: <UnitsPage /> },
+          {
+            path: 'accounting-products',
+            element: <AccountingProductsPage />,
+          },
           { path: 'access/users', element: <UsersPage /> },
           { path: 'access/users/:id', element: <UserDetailsPage /> },
           { path: 'access/roles', element: <RolesPage /> },

@@ -68,11 +68,6 @@ const NAV_ITEMS: NavEntry[] = [
         permission: Permissions.PRODUCT_GROUP.READ,
       },
       {
-        to: '/type-of-nomenclature',
-        labelKey: 'nav.typeOfNomenclature',
-        permission: Permissions.TYPE_OF_NOMENCLATURE.READ,
-      },
-      {
         to: '/characteristics',
         labelKey: 'nav.characteristics',
         permission: Permissions.CHARACTERISTICS_GROUP.READ,
@@ -81,6 +76,11 @@ const NAV_ITEMS: NavEntry[] = [
         to: '/units',
         labelKey: 'nav.units',
         permission: Permissions.UNIT.READ,
+      },
+      {
+        to: '/accounting-products',
+        labelKey: 'nav.accountingProducts',
+        permission: Permissions.ACCOUNTING_PRODUCT.READ,
       },
     ],
   },
@@ -222,7 +222,7 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
                 className={cn(
                   'flex h-9 items-center justify-center rounded-md transition-colors',
                   active
-                    ? 'bg-primary/10 text-primary'
+                    ? 'bg-primary/10 text-primary dark:text-white'
                     : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
                 )}
               >
@@ -239,7 +239,7 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
                 className={cn(
                   'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   active
-                    ? 'text-primary'
+                    ? 'text-primary dark:text-white'
                     : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
                 )}
               >
@@ -263,7 +263,7 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
                 className={cn(
                   'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   active
-                    ? 'text-primary'
+                    ? 'text-primary dark:text-white'
                     : 'text-fg-muted hover:bg-surface-hover hover:text-fg',
                 )}
               >
@@ -284,7 +284,8 @@ export function Sidebar({ forceCollapsed = false }: SidebarProps) {
                       className={({ isActive }) =>
                         cn(
                           'text-fg-muted hover:bg-surface-hover hover:text-fg rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                          isActive && 'bg-primary/10 text-primary',
+                          isActive &&
+                            'bg-primary/10 text-primary dark:text-white',
                         )
                       }
                     >
