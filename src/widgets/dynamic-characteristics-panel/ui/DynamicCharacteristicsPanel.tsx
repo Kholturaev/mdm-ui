@@ -11,8 +11,9 @@ import {
 } from '@entities/dynamic-characteristic/api/dynamicCharacteristicApi';
 import { useGetCharacteristicGroupsByNomenclatureQuery } from '@entities/characteristic-group/api/characteristicGroupApi';
 import { DynamicCharacteristicTableForm } from '@features/dynamic-characteristic-table-create-edit/ui/DynamicCharacteristicTableForm';
+import { DynamicTableRowImportModal } from '@features/dynamic-table-row-import';
+import { ProductDynamicRowLinkImportModal } from '@features/product-dynamic-row-link-import';
 import { DataTable, TableToolbar } from '@shared/ui/Table';
-import { RowActions } from '@shared/ui/Menu';
 import { Button } from '@shared/ui/Button';
 import { Modal } from '@shared/ui/Modal';
 import { Spinner } from '@shared/ui/Spinner';
@@ -28,6 +29,7 @@ import { parseApiError } from '@shared/api/parseApiError';
 import type { ApiException } from '@shared/api/type';
 import { notify } from '@shared/lib/toast';
 import { DynamicCharacteristicTableDetail } from './DynamicCharacteristicTableDetail';
+import { DynamicTableImportMenu } from './DynamicTableImportMenu';
 
 type DynamicCharacteristicsPanelProps = {
   typeId: number | null;
@@ -43,6 +45,10 @@ export function DynamicCharacteristicsPanel({
   const confirm = useConfirm();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [expandedTableId, setExpandedTableId] = useState<number | null>(null);
+  const [rowImportTable, setRowImportTable] =
+    useState<IDynamicCharacteristicTable | null>(null);
+  const [linkImportTable, setLinkImportTable] =
+    useState<IDynamicCharacteristicTable | null>(null);
 
   const { data, isFetching } = useGetCharacteristicGroupsByNomenclatureQuery(
     typeId ?? 0,
@@ -94,6 +100,7 @@ export function DynamicCharacteristicsPanel({
   );
 
   const canDelete = can(Permissions.CHARACTERISTIC_TABLE.DELETE);
+  const canImport = can(Permissions.CHARACTERISTIC_ROW.CREATE);
 
   const columns = useMemo<ColumnDef<IDynamicCharacteristicTable>[]>(
     () => [
@@ -112,7 +119,7 @@ export function DynamicCharacteristicsPanel({
         header: t('dynamicCharacteristic.rowsCountLabel'),
         cell: ({ row }) => row.original.rows.length,
       },
-      ...(canDelete
+      ...(canDelete || canImport
         ? [
             {
               id: 'actions',
@@ -123,22 +130,34 @@ export function DynamicCharacteristicsPanel({
               }: {
                 row: { original: IDynamicCharacteristicTable };
               }) => (
-                <RowActions
-                  items={[
-                    {
-                      label: t('common.delete'),
-                      icon: <DeleteIcon size={14} />,
-                      onClick: () => handleDelete(row.original),
-                      danger: true,
-                    },
-                  ]}
-                />
+                <div className="border-border bg-surface divide-border ml-auto flex w-fit shrink-0 items-center divide-x overflow-hidden rounded border">
+                  {canImport && (
+                    <DynamicTableImportMenu
+                      onImportRows={() => setRowImportTable(row.original)}
+                      onLinkProducts={() => setLinkImportTable(row.original)}
+                    />
+                  )}
+                  {canDelete && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleDelete(row.original);
+                      }}
+                      aria-label={t('common.delete')}
+                      title={t('common.delete')}
+                      className="text-danger hover:bg-danger/10 flex size-7 shrink-0 items-center justify-center transition-colors"
+                    >
+                      <DeleteIcon size={14} />
+                    </button>
+                  )}
+                </div>
               ),
             },
           ]
         : []),
     ],
-    [t, canDelete, handleDelete],
+    [t, canDelete, canImport, handleDelete],
   );
 
   if (!can(Permissions.CHARACTERISTIC_TABLE.READ)) {
@@ -231,6 +250,20 @@ export function DynamicCharacteristicsPanel({
           onCancel={() => setIsCreateOpen(false)}
         />
       </Modal>
+
+      <DynamicTableRowImportModal
+        isOpen={rowImportTable !== null}
+        onClose={() => setRowImportTable(null)}
+        tableId={rowImportTable?.tableId ?? 0}
+        tableName={rowImportTable?.tableName ?? ''}
+      />
+
+      <ProductDynamicRowLinkImportModal
+        isOpen={linkImportTable !== null}
+        onClose={() => setLinkImportTable(null)}
+        tableId={linkImportTable?.tableId ?? 0}
+        tableName={linkImportTable?.tableName ?? ''}
+      />
     </div>
   );
 }

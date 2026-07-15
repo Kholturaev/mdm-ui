@@ -43,6 +43,20 @@ const SYNC_STATUS_VALUES: SyncStatusFilter[] = [
   'none',
 ];
 
+// The full toggleable set (~24 columns, ~3,900px) always forces a horizontal
+// scrollbar. Default to a compact core set that fits typical viewports —
+// everything else stays one click away via the "Columns" button.
+const DEFAULT_VISIBLE_COLUMN_IDS = [
+  'id',
+  'name',
+  'code',
+  'article',
+  'productGroup',
+  'baseUnit',
+  'productStatus',
+  'externalSystems',
+];
+
 export function NomenclatureTable() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -227,7 +241,9 @@ export function NomenclatureTable() {
   });
 
   const [visibleColumnKeys, setVisibleColumnKeys] = useState<string[]>(() =>
-    toggleableColumns.map((column) => column.id),
+    toggleableColumns
+      .map((column) => column.id)
+      .filter((id) => DEFAULT_VISIBLE_COLUMN_IDS.includes(id)),
   );
 
   const visibleColumns = useMemo(

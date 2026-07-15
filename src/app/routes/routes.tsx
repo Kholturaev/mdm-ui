@@ -8,7 +8,12 @@ import { DealersPage } from '@pages/DealersPage';
 import { NomenclaturePage } from '@pages/NomenclaturePage';
 import { UnitsPage } from '@pages/UnitsPage';
 import { AccountingProductsPage } from '@pages/AccountingProductsPage';
+import { CurrenciesPage } from '@pages/CurrenciesPage';
+import { IntegrationConfigsPage } from '@pages/IntegrationConfigsPage';
+import { ExternalSystemsPage } from '@pages/ExternalSystemsPage';
+import { ExternalSystemConfigPage } from '@pages/ExternalSystemConfigPage';
 import { ProductGroupsPage } from '@pages/ProductGroupsPage';
+import { ProductCategoriesPage } from '@pages/ProductCategoriesPage';
 import { CharacteristicsPage } from '@pages/CharacteristicsPage';
 import { ProductDetailsPage } from '@pages/ProductDetailsPage';
 import { UsersPage } from '@pages/UsersPage';
@@ -40,11 +45,25 @@ export const router = createBrowserRouter([
           { path: 'nomenclature', element: <NomenclaturePage /> },
           { path: 'nomenclature/:id', element: <ProductDetailsPage /> },
           { path: 'product-groups', element: <ProductGroupsPage /> },
+          {
+            path: 'product-categories',
+            element: <ProductCategoriesPage />,
+          },
           { path: 'characteristics', element: <CharacteristicsPage /> },
           { path: 'units', element: <UnitsPage /> },
+          { path: 'currencies', element: <CurrenciesPage /> },
           {
             path: 'accounting-products',
             element: <AccountingProductsPage />,
+          },
+          { path: 'external-systems', element: <ExternalSystemsPage /> },
+          {
+            path: 'external-systems/:id',
+            element: <ExternalSystemConfigPage />,
+          },
+          {
+            path: 'integration-configs',
+            element: <IntegrationConfigsPage />,
           },
           { path: 'access/users', element: <UsersPage /> },
           { path: 'access/users/:id', element: <UserDetailsPage /> },

@@ -55,3 +55,53 @@ export function flattenMappings(
     ...flattenMappings(item.children ?? []),
   ]);
 }
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/** Sanitizes a `targetPath` segment into a valid XML tag name — element names can't contain dots/spaces/etc. */
+function toXmlTagName(name: string): string {
+  const cleaned = name.replace(/[^a-zA-Z0-9_-]/g, '_');
+  return /^[a-zA-Z_]/.test(cleaned) ? cleaned : `_${cleaned}`;
+}
+
+function mappingsToXmlLines(
+  mappings: IIntegrationMapping[],
+  indent: string,
+): string[] {
+  return mappings.flatMap((item) => {
+    if (!item.targetPath) return [];
+    const tag = toXmlTagName(item.targetPath);
+
+    if (item.mappingType === 'SCALAR') {
+      const value = escapeXml(item.defaultValue || `{{${item.sourcePath}}}`);
+      return [`${indent}<${tag}>${value}</${tag}>`];
+    }
+
+    const childLines = mappingsToXmlLines(item.children ?? [], `${indent}  `);
+    if (item.mappingType === 'ARRAY') {
+      return [
+        `${indent}<${tag}>`,
+        ...mappingsToXmlLines(item.children ?? [], `${indent}  `),
+        `${indent}</${tag}>`,
+      ];
+    }
+    return [`${indent}<${tag}>`, ...childLines, `${indent}</${tag}>`];
+  });
+}
+
+/** Renders a mapping tree as an indented XML string under `rootName` — the XML-format counterpart to `mappingsToPreviewObject`, same placeholder-token behavior for unset `SCALAR` values. */
+export function mappingsToXmlString(
+  mappings: IIntegrationMapping[],
+  rootName: string,
+): string {
+  const rootTag = toXmlTagName(rootName || 'root');
+  const body = mappingsToXmlLines(mappings, '  ');
+  return [`<${rootTag}>`, ...body, `</${rootTag}>`].join('\n');
+}

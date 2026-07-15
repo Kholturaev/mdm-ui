@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import type { ITypeOfNomenclature } from '@entities/type-of-nomenclature/model/types';
 import {
   useCreateTypeOfNomenclatureMutation,
+  useDeleteTypeOfNomenclatureMutation,
   useGetTypeOfNomenclaturesQuery,
+  useUpdateTypeOfNomenclatureMutation,
 } from '@entities/type-of-nomenclature/api/typeOfNomenclatureApi';
 import type { ICharacteristicsGroup } from '@entities/characteristic-group/model/types';
 import {
@@ -20,6 +22,7 @@ import { Button } from '@shared/ui/Button';
 import { Spinner } from '@shared/ui/Spinner';
 import { Badge } from '@shared/ui/Badge';
 import { PermissionGuard } from '@shared/ui/PermissionGuard';
+import { InfoTooltip } from '@shared/ui/InfoTooltip';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 import { PackageIcon } from '@shared/ui/icons/PackageIcon';
 import { ChecklistIcon } from '@shared/ui/icons/ChecklistIcon';
@@ -39,10 +42,13 @@ type GroupModalState =
   | { mode: 'edit'; typeOfNomenclatureId: number; group: ICharacteristicsGroup }
   | null;
 
+type TypeModalState =
+  { mode: 'create' } | { mode: 'edit'; type: ITypeOfNomenclature } | null;
+
 type CharacteristicsTreeProps = {
   selectedTypeId: number | null;
   selectedGroupId: number | null;
-  onSelect: (typeId: number, groupId: number | null) => void;
+  onSelect: (typeId: number | null, groupId: number | null) => void;
 };
 
 function GroupRow({
@@ -63,7 +69,7 @@ function GroupRow({
   return (
     <div
       className={cn(
-        'group hover:bg-surface-hover flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors',
+        'group hover:bg-surface-hover flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors',
         isSelected && 'bg-primary/10',
       )}
     >
@@ -95,6 +101,8 @@ function GroupRow({
           {group.characteristicsCount}
         </Badge>
       </button>
+
+      <InfoTooltip content={group.description} />
 
       <div className="hidden shrink-0 items-center gap-0.5 group-hover:flex">
         <PermissionGuard permission={Permissions.CHARACTERISTICS_GROUP.UPDATE}>
@@ -130,6 +138,8 @@ function TypeNode({
   onSelectGroup,
   onAddGroup,
   onEditGroup,
+  onEditType,
+  onDeleteType,
 }: {
   type: ITypeOfNomenclature;
   isExpanded: boolean;
@@ -138,6 +148,8 @@ function TypeNode({
   onSelectGroup: (groupId: number | null) => void;
   onAddGroup: () => void;
   onEditGroup: (group: ICharacteristicsGroup) => void;
+  onEditType: () => void;
+  onDeleteType: () => void;
 }) {
   const { t } = useTranslation();
   const confirm = useConfirm();
@@ -167,29 +179,56 @@ function TypeNode({
   };
 
   return (
-    <div className="flex flex-col gap-0.5">
-      <button
-        type="button"
-        onClick={onToggleExpand}
-        className="hover:bg-surface-hover flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors"
-      >
-        <ChevronDownIcon
-          size={12}
-          className={cn(
-            'text-fg-muted shrink-0 transition-transform',
-            !isExpanded && '-rotate-90',
-          )}
-        />
-        <span className="text-fg-muted shrink-0">
-          <PackageIcon size={14} />
-        </span>
-        <span className="text-fg truncate text-sm font-medium">
-          {type.name}
-        </span>
-      </button>
+    <div className="group/type flex flex-col gap-1 pb-1">
+      <div className="hover:bg-surface-hover flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors">
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          className="flex flex-1 items-center gap-2 overflow-hidden text-left"
+        >
+          <ChevronDownIcon
+            size={12}
+            className={cn(
+              'text-fg-muted shrink-0 transition-transform',
+              !isExpanded && '-rotate-90',
+            )}
+          />
+          <span className="text-fg-muted shrink-0">
+            <PackageIcon size={14} />
+          </span>
+          <span className="text-fg truncate text-sm font-semibold">
+            {type.name}
+          </span>
+        </button>
+
+        <InfoTooltip content={type.description} />
+
+        <div className="hidden shrink-0 items-center gap-0.5 group-hover/type:flex">
+          <PermissionGuard permission={Permissions.TYPE_OF_NOMENCLATURE.UPDATE}>
+            <button
+              type="button"
+              onClick={onEditType}
+              aria-label={t('common.edit')}
+              className="text-fg-muted hover:bg-surface hover:text-fg inline-flex size-6 items-center justify-center rounded transition-colors"
+            >
+              <EditIcon size={12} />
+            </button>
+          </PermissionGuard>
+          <PermissionGuard permission={Permissions.TYPE_OF_NOMENCLATURE.DELETE}>
+            <button
+              type="button"
+              onClick={onDeleteType}
+              aria-label={t('common.delete')}
+              className="text-fg-muted hover:bg-danger/10 hover:text-danger inline-flex size-6 items-center justify-center rounded transition-colors"
+            >
+              <DeleteIcon size={12} />
+            </button>
+          </PermissionGuard>
+        </div>
+      </div>
 
       {isExpanded && (
-        <div className="border-border ml-3.5 flex flex-col gap-0.5 border-l pl-3">
+        <div className="border-border ml-4 flex flex-col gap-1 border-l pl-3.5">
           {isFetching ? (
             <div className="flex justify-center py-2">
               <Spinner className="text-fg-muted size-4" />
@@ -217,7 +256,7 @@ function TypeNode({
             <button
               type="button"
               onClick={onAddGroup}
-              className="text-primary hover:bg-surface-hover flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm font-medium transition-colors"
+              className="text-primary hover:bg-surface-hover flex items-center gap-1.5 rounded-md px-2.5 py-2 text-left text-sm font-medium transition-colors"
             >
               <PlusIcon size={13} />
               {t('characteristicsGroup.addGroup')}
@@ -235,11 +274,12 @@ export function CharacteristicsTree({
   onSelect,
 }: CharacteristicsTreeProps) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [search, setSearch] = useState('');
   const [expandedTypeIds, setExpandedTypeIds] = useState<Set<number>>(
     new Set(),
   );
-  const [isCreateTypeOpen, setIsCreateTypeOpen] = useState(false);
+  const [typeModalState, setTypeModalState] = useState<TypeModalState>(null);
   const [groupModalState, setGroupModalState] = useState<GroupModalState>(null);
 
   const { data, isFetching } = useGetTypeOfNomenclaturesQuery({
@@ -255,6 +295,9 @@ export function CharacteristicsTree({
 
   const [createType, { isLoading: isCreatingType }] =
     useCreateTypeOfNomenclatureMutation();
+  const [updateType, { isLoading: isUpdatingType }] =
+    useUpdateTypeOfNomenclatureMutation();
+  const [deleteType] = useDeleteTypeOfNomenclatureMutation();
   const [createGroup, { isLoading: isCreatingGroup }] =
     useCreateCharacteristicsGroupMutation();
   const [updateGroup, { isLoading: isUpdatingGroup }] =
@@ -269,15 +312,45 @@ export function CharacteristicsTree({
     });
   };
 
-  const handleCreateType = async (values: {
+  const handleTypeSubmit = async (values: {
     name: string;
     description?: string;
   }) => {
     try {
-      const created = await createType(values).unwrap();
+      if (typeModalState?.mode === 'edit') {
+        await updateType({
+          id: typeModalState.type.id,
+          data: values,
+        }).unwrap();
+      } else {
+        const created = await createType(values).unwrap();
+        setExpandedTypeIds((prev) => new Set(prev).add(created.data.id));
+      }
       notify.success(t('message.saved'));
-      setIsCreateTypeOpen(false);
-      setExpandedTypeIds((prev) => new Set(prev).add(created.data.id));
+      setTypeModalState(null);
+    } catch (error) {
+      notify.error(parseApiError(error as ApiException));
+    }
+  };
+
+  const handleDeleteType = async (type: ITypeOfNomenclature) => {
+    const confirmed = await confirm({
+      title: t('typeOfNomenclature.deleteTitle'),
+      description: t('typeOfNomenclature.deleteConfirm', {
+        name: type.name,
+      }),
+    });
+    if (!confirmed) return;
+
+    try {
+      await deleteType(type.id).unwrap();
+      notify.success(t('message.deleted'));
+      setExpandedTypeIds((prev) => {
+        const next = new Set(prev);
+        next.delete(type.id);
+        return next;
+      });
+      if (type.id === selectedTypeId) onSelect(null, null);
     } catch (error) {
       notify.error(parseApiError(error as ApiException));
     }
@@ -314,7 +387,7 @@ export function CharacteristicsTree({
           <Button
             size="sm"
             icon={<PlusIcon size={13} />}
-            onClick={() => setIsCreateTypeOpen(true)}
+            onClick={() => setTypeModalState({ mode: 'create' })}
           >
             {t('common.create')}
           </Button>
@@ -341,7 +414,7 @@ export function CharacteristicsTree({
             {t('common.noData')}
           </p>
         ) : (
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-col gap-2">
             {filteredTypes.map((type) => (
               <TypeNode
                 key={type.id}
@@ -365,6 +438,8 @@ export function CharacteristicsTree({
                     group,
                   })
                 }
+                onEditType={() => setTypeModalState({ mode: 'edit', type })}
+                onDeleteType={() => handleDeleteType(type)}
               />
             ))}
           </div>
@@ -372,14 +447,21 @@ export function CharacteristicsTree({
       </div>
 
       <Modal
-        isOpen={isCreateTypeOpen}
-        onClose={() => setIsCreateTypeOpen(false)}
-        title={t('typeOfNomenclature.createTitle')}
+        isOpen={typeModalState !== null}
+        onClose={() => setTypeModalState(null)}
+        title={
+          typeModalState?.mode === 'edit'
+            ? t('typeOfNomenclature.editTitle')
+            : t('typeOfNomenclature.createTitle')
+        }
       >
         <TypeOfNomenclatureForm
-          isSubmitting={isCreatingType}
-          onSubmit={handleCreateType}
-          onCancel={() => setIsCreateTypeOpen(false)}
+          entity={
+            typeModalState?.mode === 'edit' ? typeModalState.type : undefined
+          }
+          isSubmitting={isCreatingType || isUpdatingType}
+          onSubmit={handleTypeSubmit}
+          onCancel={() => setTypeModalState(null)}
         />
       </Modal>
 

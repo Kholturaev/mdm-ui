@@ -16,7 +16,7 @@ export function CharacteristicsPage() {
 
   return (
     <div className="flex h-full">
-      <div className="border-border w-72 shrink-0 border-r">
+      <div className="bg-surface border-border w-88 shrink-0 border-r">
         <CharacteristicsTree
           selectedTypeId={selectedTypeId}
           selectedGroupId={selectedGroupId}
@@ -37,7 +37,7 @@ export function CharacteristicsPage() {
           ]}
           value={activeTab}
           onChange={(key) => setActiveTab(key as CharacteristicsTab)}
-          className="px-4"
+          className="bg-surface px-4"
         />
         <div className="min-h-0 flex-1">
           {activeTab === 'characteristics' ? (

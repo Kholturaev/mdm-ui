@@ -14,9 +14,9 @@ import {
 import { useGetCharacteristicGroupsByNomenclatureQuery } from '@entities/characteristic-group/api/characteristicGroupApi';
 import { CharacteristicForm } from '@features/characteristic-create-edit/ui/CharacteristicForm';
 import { CharacteristicValuesEditor } from '@features/characteristic-value-manage/ui/CharacteristicValuesEditor';
+import { CharacteristicImportModal } from '@features/characteristic-import';
 import { DataTable, TableToolbar } from '@shared/ui/Table';
 import { RowActions } from '@shared/ui/Menu';
-import { Button } from '@shared/ui/Button';
 import { Badge } from '@shared/ui/Badge';
 import { Modal } from '@shared/ui/Modal';
 import { Spinner } from '@shared/ui/Spinner';
@@ -25,8 +25,8 @@ import { EditIcon } from '@shared/ui/icons/EditIcon';
 import { DeleteIcon } from '@shared/ui/icons/DeleteIcon';
 import { ChecklistIcon } from '@shared/ui/icons/ChecklistIcon';
 import { LockIcon } from '@shared/ui/icons/LockIcon';
-import { PlusIcon } from '@shared/ui/icons/PlusIcon';
 import { Permissions } from '@shared/constants/permissions';
+import { AddCharacteristicButton } from './AddCharacteristicButton';
 import { usePermission } from '@shared/lib/hooks/usePermission';
 import { useConfirm } from '@shared/lib/confirm';
 import { parseApiError } from '@shared/api/parseApiError';
@@ -49,6 +49,7 @@ export function CharacteristicsPanel({
   const { can } = usePermission();
   const confirm = useConfirm();
   const [modalState, setModalState] = useState<CharacteristicModalState>(null);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [expandedCharacteristicId, setExpandedCharacteristicId] = useState<
     number | null
   >(null);
@@ -234,13 +235,10 @@ export function CharacteristicsPanel({
     <div className="flex h-full flex-col">
       <TableToolbar>
         <PermissionGuard permission={Permissions.CHARACTERISTICS.CREATE}>
-          <Button
-            size="sm"
-            icon={<PlusIcon size={15} />}
-            onClick={() => setModalState({ mode: 'create' })}
-          >
-            {t('characteristic.addCharacteristic')}
-          </Button>
+          <AddCharacteristicButton
+            onCreateOneByOne={() => setModalState({ mode: 'create' })}
+            onImportExcel={() => setIsImportOpen(true)}
+          />
         </PermissionGuard>
       </TableToolbar>
 
@@ -282,6 +280,11 @@ export function CharacteristicsPanel({
           onCancel={closeModal}
         />
       </Modal>
+
+      <CharacteristicImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+      />
     </div>
   );
 }

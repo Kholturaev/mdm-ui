@@ -30,16 +30,16 @@ const COLOR_THEMES: {
     swatches: { bg: '#f7f7f8', surface: '#ffffff', primary: '#18181b' },
   },
   {
-    value: 'amethyst',
-    labelKey: 'settings.themeAmethyst',
-    descKey: 'settings.themeAmethystDesc',
-    swatches: { bg: '#faf8fc', surface: '#ffffff', primary: '#7c3aed' },
+    value: 'burgundy',
+    labelKey: 'settings.themeBurgundy',
+    descKey: 'settings.themeBurgundyDesc',
+    swatches: { bg: '#fcf6f7', surface: '#ffffff', primary: '#9d2449' },
   },
   {
-    value: 'sunset',
-    labelKey: 'settings.themeSunset',
-    descKey: 'settings.themeSunsetDesc',
-    swatches: { bg: '#fdf6ee', surface: '#ffffff', primary: '#e2661c' },
+    value: 'navy',
+    labelKey: 'settings.themeNavy',
+    descKey: 'settings.themeNavyDesc',
+    swatches: { bg: '#f6f8fb', surface: '#ffffff', primary: '#1e4fa3' },
   },
 ];
 

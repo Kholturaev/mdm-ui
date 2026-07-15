@@ -155,6 +155,88 @@
   --color-primary-foreground: #2c0f02;
 }
 
+/* "Navy" — a cool, professional blue palette. Same token set, same
+   contrast approach. */
+[data-theme='navy'] {
+  --color-bg: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-surface-hover: #eef2f9;
+  --color-border: #dae3f0;
+  --color-border-strong: #b3c6e0;
+
+  --color-fg: #141c2b;
+  --color-fg-muted: #5f6f87;
+  --color-fg-invert: #ffffff;
+
+  --color-disabled-bg: #eaf0f7;
+  --color-disabled-fg: #a9b6c9;
+
+  --color-primary: #1e4fa3;
+  --color-primary-hover: #173e82;
+  --color-primary-foreground: #ffffff;
+}
+
+[data-theme='navy'].dark {
+  --color-bg: #0a0f18;
+  --color-surface: #111926;
+  --color-surface-hover: #182335;
+  --color-surface-pinned: #152032;
+  --color-border: #24344c;
+  --color-border-strong: #344766;
+
+  --color-fg: #e7edf6;
+  --color-fg-muted: #8695ac;
+  --color-fg-invert: #0a0f18;
+
+  --color-disabled-bg: #131c2b;
+  --color-disabled-fg: #4a5871;
+
+  --color-primary: #4f8be6;
+  --color-primary-hover: #7aa8ee;
+  --color-primary-foreground: #04203f;
+}
+
+/* "Burgundy" — a deep, rich wine-red palette. Same token set, same
+   contrast approach. */
+[data-theme='burgundy'] {
+  --color-bg: #fcf6f7;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f7e9ec;
+  --color-border: #efd6db;
+  --color-border-strong: #dcaeb7;
+
+  --color-fg: #2a141a;
+  --color-fg-muted: #8a6069;
+  --color-fg-invert: #ffffff;
+
+  --color-disabled-bg: #f4e6e9;
+  --color-disabled-fg: #cbaab1;
+
+  --color-primary: #9d2449;
+  --color-primary-hover: #7e1c3a;
+  --color-primary-foreground: #ffffff;
+}
+
+[data-theme='burgundy'].dark {
+  --color-bg: #170b0e;
+  --color-surface: #221216;
+  --color-surface-hover: #2f181e;
+  --color-surface-pinned: #2a151b;
+  --color-border: #45252e;
+  --color-border-strong: #5e343f;
+
+  --color-fg: #f6e7eb;
+  --color-fg-muted: #bf9099;
+  --color-fg-invert: #170b0e;
+
+  --color-disabled-bg: #1f1013;
+  --color-disabled-fg: #6a4149;
+
+  --color-primary: #e05a7e;
+  --color-primary-hover: #ea85a0;
+  --color-primary-foreground: #3a0f1e;
+}
+
 @theme inline {
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);

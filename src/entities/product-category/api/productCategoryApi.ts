@@ -20,12 +20,18 @@ export const productCategoryApiHooks = apiService
       });
       return {
         getProductCategories: crud.getList,
+        getOneProductCategory: crud.getOne,
         createProductCategory: crud.create,
+        updateProductCategory: crud.update,
+        deleteProductCategory: crud.remove,
       };
     },
   });
 
 export const {
   useGetProductCategoriesQuery,
+  useGetOneProductCategoryQuery,
   useCreateProductCategoryMutation,
+  useUpdateProductCategoryMutation,
+  useDeleteProductCategoryMutation,
 } = productCategoryApiHooks;

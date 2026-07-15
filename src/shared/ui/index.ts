@@ -14,6 +14,7 @@ export * from './Progress';
 export * from './Tabs';
 export * from './Avatar';
 export * from './ContactLink';
+export * from './InfoTooltip';
 export { Spinner } from './Spinner';
 export { LoadingBar } from './LoadingBar';
 export { HighlightMatch } from './HighlightMatch';

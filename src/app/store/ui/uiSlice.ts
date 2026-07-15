@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 /** Accent/surface palette — independent of light/dark mode, each supports both (see `app/styles/tokens.css`). */
-export type ColorTheme = 'default' | 'amethyst' | 'sunset';
+export type ColorTheme = 'default' | 'burgundy' | 'navy';
 
 const THEME_STORAGE_KEY = 'mdm-theme';
 const COLOR_THEME_STORAGE_KEY = 'mdm-color-theme';
@@ -24,7 +24,7 @@ function readStoredTheme(): ThemeMode {
 
 function readStoredColorTheme(): ColorTheme {
   const stored = localStorage.getItem(COLOR_THEME_STORAGE_KEY);
-  return stored === 'default' || stored === 'amethyst' || stored === 'sunset'
+  return stored === 'default' || stored === 'burgundy' || stored === 'navy'
     ? stored
     : 'default';
 }

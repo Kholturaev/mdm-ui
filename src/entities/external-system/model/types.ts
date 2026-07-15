@@ -1,12 +1,26 @@
+export type AuthType = 'NONE' | 'API_KEY' | 'BASIC_AUTH' | 'BEARER';
+
 export interface IExternalSystem {
   id: number;
   name: string;
   description?: string;
-  url?: string;
+  url: string;
+  notificationUrl?: string;
+  authType: AuthType;
+  /** Masked (e.g. `****ab12`) on GET once a value is set — see `isMaskedCredential` in `./mapping`. */
+  authCredentials?: string;
+  /** Only ever returned once, at creation — never re-sent by the edit form. */
+  apiKey?: string;
+  inboundCallbackUrl?: string;
+  inboundCallbackAuthType?: AuthType;
+  inboundCallbackAuthCredentials?: string;
 }
 
+export type ExternalSystemFormValues = Omit<IExternalSystem, 'id' | 'apiKey'>;
+
 export interface IIntegrationMapping {
-  id: number;
+  /** Locally-generated (e.g. `map-<nodeKey>`) for mappings built fresh in the config builder — stripped before saving. */
+  id?: number | string;
   mappingType: 'SCALAR' | 'OBJECT' | 'ARRAY';
   sourcePath: string;
   targetPath: string;
@@ -15,6 +29,22 @@ export interface IIntegrationMapping {
   defaultValue: string;
   position: number;
   children: IIntegrationMapping[];
+}
+
+/** One node of a source field tree returned by `/integration-configs/source-tree/*` — the field picker the config builder's checkbox-tree renders. */
+export interface ISourceSchemaNode {
+  key: string;
+  label: string;
+  type: string;
+  sourcePath?: string | null;
+  selectable: boolean;
+  isLeaf?: boolean;
+  icon?: string;
+  /** Stable key of the underlying characteristic/dynamic-table column — preferred as the default `targetPath` since, unlike `label`, it survives renames. */
+  fieldKey?: string;
+  /** DB id of the underlying characteristic-group/characteristic/dynamic-table — feeds `IIntegrationConfigSelectedItem.itemId`. */
+  itemId?: number;
+  children: ISourceSchemaNode[];
 }
 
 export interface IIntegrationConfigSelectedItem {
@@ -67,3 +97,8 @@ export interface IIntegrationConfigListResponse {
   totalElements: number;
   totalPages: number;
 }
+
+export type IntegrationConfigMutationPayload = Omit<
+  IIntegrationConfig,
+  'id' | 'externalSystemName'
+>;

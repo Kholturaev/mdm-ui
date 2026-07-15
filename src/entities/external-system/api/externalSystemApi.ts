@@ -3,22 +3,43 @@ import { buildCrudEndpoints } from '@shared/api/createCrudEndpoints';
 import type { IResponse } from '@shared/api/type';
 import type {
   IExternalSystem,
+  ExternalSystemFormValues,
+  IIntegrationConfig,
   IIntegrationConfigListResponse,
+  IntegrationConfigMutationPayload,
+  ISourceSchemaNode,
 } from '../model/types';
 
-export const addTagTypes = ['external-system'] as const;
+/** The backend sometimes wraps a source-tree response in the usual `IResponse` envelope and sometimes returns the bare node — read it via `extractSourceNode` in `../lib/sourceTree` rather than assuming either shape. */
+type SourceTreeResponse = IResponse<ISourceSchemaNode> | ISourceSchemaNode;
+
+export const addTagTypes = ['external-system', 'integration-config'] as const;
 
 export const externalSystemApiHooks = apiService
   .enhanceEndpoints({ addTagTypes })
   .injectEndpoints({
     endpoints: (build) => {
-      const crud = buildCrudEndpoints<IExternalSystem, never>(build, {
+      const crud = buildCrudEndpoints<
+        IExternalSystem,
+        ExternalSystemFormValues
+      >(build, {
         basePath: '/external-systems',
         tagType: 'external-system',
       });
+      const integrationConfigCrud = buildCrudEndpoints<
+        IIntegrationConfig,
+        IntegrationConfigMutationPayload
+      >(build, {
+        basePath: '/integration-configs',
+        tagType: 'integration-config',
+      });
       return {
         getExternalSystems: crud.getList,
-        /** Saved export config(s) for one external system — used to preview the JSON shape a product would be sent in before creating it. */
+        getOneExternalSystem: crud.getOne,
+        createExternalSystem: crud.create,
+        updateExternalSystem: crud.update,
+        deleteExternalSystem: crud.remove,
+        /** Saved export config(s) for one external system — used both for the product-create preview and as the config builder page's single source of truth (it always takes the first config, matching akfa-data-frontend's own "one config per system" behavior). */
         getIntegrationConfigsBySystem: build.query<
           IResponse<IIntegrationConfigListResponse>,
           { externalSystemId: number }
@@ -28,6 +49,48 @@ export const externalSystemApiHooks = apiService
             method: 'POST',
             body: { page: 0, size: 50 },
           }),
+          providesTags: ['integration-config'],
+        }),
+        /** The standalone "Integration Configurations" admin list — every config across all external systems, not scoped to one. */
+        getIntegrationConfigs: integrationConfigCrud.getList,
+        getOneIntegrationConfig: integrationConfigCrud.getOne,
+        createIntegrationConfig: integrationConfigCrud.create,
+        updateIntegrationConfig: integrationConfigCrud.update,
+        deleteIntegrationConfig: integrationConfigCrud.remove,
+
+        // Source field trees for the config builder's checkbox-tree — none of
+        // these take query params (the nomenclature one takes the type id as
+        // a path segment), and none are tag-cached (they're static schema,
+        // not data that mutations here would ever invalidate).
+        getProductSourceTree: build.query<SourceTreeResponse, void>({
+          query: () => ({
+            path: '/integration-configs/source-tree/product',
+            method: 'GET',
+          }),
+        }),
+        getProductGroupSourceTree: build.query<SourceTreeResponse, void>({
+          query: () => ({
+            path: '/integration-configs/source-tree/product-groups',
+            method: 'GET',
+          }),
+        }),
+        getProductRateSourceTree: build.query<SourceTreeResponse, void>({
+          query: () => ({
+            path: '/integration-configs/source-tree/product-rates',
+            method: 'GET',
+          }),
+        }),
+        getDealerSourceTree: build.query<SourceTreeResponse, void>({
+          query: () => ({
+            path: '/integration-configs/source-tree/dealers',
+            method: 'GET',
+          }),
+        }),
+        getNomenclatureSourceTreeById: build.query<SourceTreeResponse, number>({
+          query: (id) => ({
+            path: `/integration-configs/source-tree/nomenclatures/${id}`,
+            method: 'GET',
+          }),
         }),
       };
     },
@@ -35,5 +98,19 @@ export const externalSystemApiHooks = apiService
 
 export const {
   useGetExternalSystemsQuery,
+  useGetOneExternalSystemQuery,
+  useCreateExternalSystemMutation,
+  useUpdateExternalSystemMutation,
+  useDeleteExternalSystemMutation,
   useGetIntegrationConfigsBySystemQuery,
+  useGetIntegrationConfigsQuery,
+  useGetOneIntegrationConfigQuery,
+  useCreateIntegrationConfigMutation,
+  useUpdateIntegrationConfigMutation,
+  useDeleteIntegrationConfigMutation,
+  useGetProductSourceTreeQuery,
+  useGetProductGroupSourceTreeQuery,
+  useGetProductRateSourceTreeQuery,
+  useGetDealerSourceTreeQuery,
+  useLazyGetNomenclatureSourceTreeByIdQuery,
 } = externalSystemApiHooks;

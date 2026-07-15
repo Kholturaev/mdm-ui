@@ -9,6 +9,7 @@ import { LayersIcon } from '@shared/ui/icons/LayersIcon';
 import { BarChartIcon } from '@shared/ui/icons/BarChartIcon';
 import { ShieldIcon } from '@shared/ui/icons/ShieldIcon';
 import { ActivityIcon } from '@shared/ui/icons/ActivityIcon';
+import { ShareIcon } from '@shared/ui/icons/ShareIcon';
 import { ChevronDownIcon } from '@shared/ui/icons/ChevronDownIcon';
 import { usePermission } from '@shared/lib/hooks/usePermission';
 import { Permissions } from '@shared/constants/permissions';
@@ -68,6 +69,11 @@ const NAV_ITEMS: NavEntry[] = [
         permission: Permissions.PRODUCT_GROUP.READ,
       },
       {
+        to: '/product-categories',
+        labelKey: 'nav.productCategories',
+        permission: Permissions.PRODUCT_CATEGORY.READ,
+      },
+      {
         to: '/characteristics',
         labelKey: 'nav.characteristics',
         permission: Permissions.CHARACTERISTICS_GROUP.READ,
@@ -78,9 +84,32 @@ const NAV_ITEMS: NavEntry[] = [
         permission: Permissions.UNIT.READ,
       },
       {
+        to: '/currencies',
+        labelKey: 'nav.currencies',
+        permission: Permissions.CURRENCY.READ,
+      },
+      {
         to: '/accounting-products',
         labelKey: 'nav.accountingProducts',
         permission: Permissions.ACCOUNTING_PRODUCT.READ,
+      },
+    ],
+  },
+  {
+    kind: 'group',
+    key: 'integrations',
+    labelKey: 'nav.integrations',
+    icon: <ShareIcon size={18} />,
+    children: [
+      {
+        to: '/external-systems',
+        labelKey: 'nav.externalSystems',
+        permission: Permissions.EXTERNAL_SYSTEM.READ,
+      },
+      {
+        to: '/integration-configs',
+        labelKey: 'nav.integrationConfigs',
+        permission: Permissions.INTEGRATION_CONFIG.READ,
       },
     ],
   },
