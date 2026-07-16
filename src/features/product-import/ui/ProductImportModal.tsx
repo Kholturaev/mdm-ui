@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useGetClientTypesQuery } from '@entities/client-type/api/clientTypeApi';
 import { env } from '@shared/config/env';
 import type { ApiException } from '@shared/api/type';
 import { parseApiError } from '@shared/api/parseApiError';
@@ -11,7 +10,6 @@ import { Button } from '@shared/ui/Button';
 import { Spinner } from '@shared/ui/Spinner';
 import { Select } from '@shared/ui/Select';
 import type { SelectOption } from '@shared/ui/Select';
-import { Checkbox } from '@shared/ui/Checkbox';
 import { CheckIcon } from '@shared/ui/icons/CheckIcon';
 import { AlertTriangleIcon } from '@shared/ui/icons/AlertTriangleIcon';
 import { CheckCircleIcon } from '@shared/ui/icons/CheckCircleIcon';
@@ -22,7 +20,6 @@ import type {
   ProductImportPreviewDto,
   ProductImportResultDto,
 } from '../model/types';
-import { useDownloadProductTemplate } from '../model/useDownloadProductTemplate';
 import {
   useGetProductImportExternalSystemsQuery,
   usePreviewProductImportMutation,
@@ -34,6 +31,8 @@ type Step = 1 | 2 | 3;
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  /** Locks step 1's external-system picker to a single system (e.g. when opened from that system's own config page) instead of letting the user pick. */
+  defaultExternalSystemId?: number;
 };
 
 function StepIndicator({ current }: { current: Step }) {
@@ -152,16 +151,20 @@ function ErrorTable({
   );
 }
 
-export function ProductImportModal({ isOpen, onClose }: Props) {
+export function ProductImportModal({
+  isOpen,
+  onClose,
+  defaultExternalSystemId,
+}: Props) {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<Step>(1);
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [externalSystemIds, setExternalSystemIds] = useState<number[]>([]);
-  const [includePrice, setIncludePrice] = useState(false);
-  const [clientTypeIds, setClientTypeIds] = useState<number[]>([]);
+  const [externalSystemIds, setExternalSystemIds] = useState<number[]>(
+    defaultExternalSystemId ? [defaultExternalSystemId] : [],
+  );
   const [preview, setPreview] = useState<ProductImportPreviewDto | null>(null);
   const [result, setResult] = useState<ProductImportResultDto | null>(null);
 
@@ -176,29 +179,22 @@ export function ProductImportModal({ isOpen, onClose }: Props) {
     [externalSystemsData],
   );
 
-  const { data: clientTypesData, isFetching: isLoadingClientTypes } =
-    useGetClientTypesQuery({ page: 0, size: 100 }, { skip: !includePrice });
-  const clientTypes = clientTypesData?.data?.data ?? [];
-
-  const { downloadTemplate, isDownloading } = useDownloadProductTemplate();
   const [previewImport, { isLoading: isPreviewing }] =
     usePreviewProductImportMutation();
   const [executeImport, { isLoading: isExecuting }] =
     useExecuteProductImportMutation();
 
-  const hasSystemSelection = externalSystemIds.length > 0;
-  const clientTypeSatisfied = !includePrice || clientTypeIds.length > 0;
-  const isConfigValid = hasSystemSelection && clientTypeSatisfied;
+  const isConfigValid = externalSystemIds.length > 0;
 
   const resetAll = useCallback(() => {
     setStep(1);
     setFile(null);
-    setExternalSystemIds([]);
-    setIncludePrice(false);
-    setClientTypeIds([]);
+    setExternalSystemIds(
+      defaultExternalSystemId ? [defaultExternalSystemId] : [],
+    );
     setPreview(null);
     setResult(null);
-  }, []);
+  }, [defaultExternalSystemId]);
 
   const resetAndClose = useCallback(() => {
     resetAll();
@@ -219,24 +215,6 @@ export function ProductImportModal({ isOpen, onClose }: Props) {
       return;
     }
     setFile(selected);
-  };
-
-  const handleIncludePriceChange = (checked: boolean) => {
-    setIncludePrice(checked);
-    if (!checked) setClientTypeIds([]);
-  };
-
-  const toggleClientType = (id: number) => {
-    setClientTypeIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((existing) => existing !== id)
-        : [...prev, id],
-    );
-  };
-
-  const handleDownloadTemplate = () => {
-    if (!isConfigValid) return;
-    downloadTemplate({ externalSystemIds, includePrice, clientTypeIds });
   };
 
   const handleNext = async () => {
@@ -310,90 +288,39 @@ export function ProductImportModal({ isOpen, onClose }: Props) {
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
           {step === 1 && (
             <div className="flex flex-col gap-5">
-              {/* Config section: external system (required), price + client type (optional) */}
+              {/* External system (required) */}
               <div className="bg-bg border-border rounded-xl border p-5">
-                <div className="mb-4">
-                  <div className="text-fg text-sm font-semibold">
-                    {t('product.import.configTitle')}
-                  </div>
-                  <div className="text-fg-muted mt-0.5 text-xs leading-relaxed">
-                    {t('product.import.templateDesc')}
-                  </div>
-                </div>
-
-                <Select<SelectOption, true>
-                  label={t('product.import.externalSystemLabel')}
-                  required
-                  isMulti
-                  isSearchable
-                  size="sm"
-                  isLoading={isLoadingSystems}
-                  options={systemOptions}
-                  value={systemOptions.filter((o) =>
-                    externalSystemIds.includes(Number(o.value)),
-                  )}
-                  onChange={(next) =>
-                    setExternalSystemIds(
-                      (next ?? []).map((o) => Number(o.value)),
-                    )
-                  }
-                  placeholder={t('product.import.externalSystemPlaceholder')}
-                />
-
-                <div className="border-border mt-4 rounded-lg border p-3">
-                  <Checkbox
-                    label={t('product.import.includePrice')}
-                    checked={includePrice}
-                    onChange={(e) => handleIncludePriceChange(e.target.checked)}
-                  />
-
-                  {includePrice && (
-                    <div className="mt-3 pl-1">
-                      <div className="text-fg-muted mb-2 text-xs">
-                        {t('product.import.clientTypeLabel')}
-                      </div>
-                      {isLoadingClientTypes ? (
-                        <Spinner className="text-primary size-4" />
-                      ) : (
-                        <div className="grid grid-cols-2 gap-2">
-                          {clientTypes.map((ct) => (
-                            <Checkbox
-                              key={ct.id}
-                              label={ct.name}
-                              checked={clientTypeIds.includes(ct.id)}
-                              onChange={() => toggleClientType(ct.id)}
-                            />
-                          ))}
-                        </div>
-                      )}
-                      {!isLoadingClientTypes &&
-                        includePrice &&
-                        clientTypeIds.length === 0 && (
-                          <div className="text-warning mt-2 text-xs">
-                            {t('product.import.clientTypeRequiredHint')}
-                          </div>
-                        )}
+                {defaultExternalSystemId ? (
+                  <div>
+                    <div className="text-fg-muted mb-1 text-xs font-medium">
+                      {t('product.import.externalSystemLabel')}
                     </div>
-                  )}
-                </div>
-
-                <div className="mt-4 flex items-center gap-3">
-                  <Button
-                    variant="outline"
+                    <div className="border-border bg-surface text-fg rounded-lg border px-3 py-2 text-sm">
+                      {systemOptions.find(
+                        (o) => Number(o.value) === defaultExternalSystemId,
+                      )?.label ?? defaultExternalSystemId}
+                    </div>
+                  </div>
+                ) : (
+                  <Select<SelectOption, true>
+                    label={t('product.import.externalSystemLabel')}
+                    required
+                    isMulti
+                    isSearchable
                     size="sm"
-                    icon={<DownloadIcon size={14} />}
-                    isLoading={isDownloading}
-                    disabled={!isConfigValid}
-                    onClick={handleDownloadTemplate}
-                  >
-                    {t('product.import.downloadTemplate')}
-                  </Button>
-                  {!hasSystemSelection && (
-                    <span className="text-fg-muted text-xs">
-                      {t('product.import.externalSystemRequiredHint')}
-                    </span>
-                  )}
-                </div>
+                    isLoading={isLoadingSystems}
+                    options={systemOptions}
+                    value={systemOptions.filter((o) =>
+                      externalSystemIds.includes(Number(o.value)),
+                    )}
+                    onChange={(next) =>
+                      setExternalSystemIds(
+                        (next ?? []).map((o) => Number(o.value)),
+                      )
+                    }
+                    placeholder={t('product.import.externalSystemPlaceholder')}
+                  />
+                )}
               </div>
 
               {/* Upload section */}

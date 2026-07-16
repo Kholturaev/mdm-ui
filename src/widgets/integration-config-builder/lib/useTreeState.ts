@@ -5,10 +5,11 @@ import type {
 } from '@entities/external-system/model/types';
 import type { NodeMappingMode, TableViewMode } from './constants';
 import {
-  collectSelectableKeys,
+  collectCheckableKeys,
   findAncestorKeys,
   findNodeByKey,
   findNodeBySourcePath,
+  getDefaultTargetPath,
   getTableArrayChild,
   getTableColumnChildren,
   isTableContainerNode,
@@ -31,10 +32,6 @@ const EMPTY_STATE: TreeState = {
   tableViewByKey: {},
   expandedKeys: {},
 };
-
-function defaultTargetPath(node: ISourceSchemaNode): string {
-  return node.fieldKey || node.label;
-}
 
 /** Removes every empty (no static children, but was only ever a wrapper) selected container bottom-up, so toggling a leaf off doesn't leave a stray, meaningless selected ancestor behind. */
 function pruneEmptyContainers(
@@ -97,15 +94,18 @@ export function useTreeState(roots: ISourceSchemaNode[]) {
         const requiredByKey = { ...prev.requiredByKey };
 
         // Toggling a container (non-leaf) selects/deselects its whole subtree
-        // in one gesture — the common "map this entire branch" case.
+        // in one gesture — the common "map this entire branch" case. Uses
+        // "checkable" (not "selectable") so a non-selectable parent with
+        // children — e.g. the "product" root itself — is included too and
+        // its own checkbox reflects the selection.
         const subtreeKeys = node.isLeaf
           ? [node.key]
-          : collectSelectableKeys(node);
+          : collectCheckableKeys(node);
         subtreeKeys.forEach((key) => {
           selectedKeys[key] = turningOn;
           if (turningOn && !(key in targetPathByKey)) {
             const subNode = key === node.key ? node : findNodeByKey(node, key);
-            if (subNode) targetPathByKey[key] = defaultTargetPath(subNode);
+            if (subNode) targetPathByKey[key] = getDefaultTargetPath(subNode);
           }
           if (turningOn && !(key in requiredByKey)) {
             requiredByKey[key] = true;
@@ -121,7 +121,7 @@ export function useTreeState(roots: ISourceSchemaNode[]) {
             if (!(key in targetPathByKey)) {
               const ancestorNode = findNodeByKey(root, key);
               if (ancestorNode)
-                targetPathByKey[key] = defaultTargetPath(ancestorNode);
+                targetPathByKey[key] = getDefaultTargetPath(ancestorNode);
             }
           });
         }
@@ -169,9 +169,9 @@ export function useTreeState(roots: ISourceSchemaNode[]) {
       const columnChildren = getTableColumnChildren(node);
       const keysToPurge =
         mode === 'ROWS'
-          ? columnChildren.flatMap(collectSelectableKeys)
+          ? columnChildren.flatMap(collectCheckableKeys)
           : arrayChild
-            ? collectSelectableKeys(arrayChild)
+            ? collectCheckableKeys(arrayChild)
             : [];
 
       setState((prev) => {
@@ -188,6 +188,24 @@ export function useTreeState(roots: ISourceSchemaNode[]) {
   );
 
   const reset = useCallback(() => setState(EMPTY_STATE), []);
+
+  /** Drops every state entry whose (namespaced) key starts with `prefix` — used to clear an embedded branch's selections (e.g. `embedded_pg_...`) the moment it's hidden again, so stray selections don't silently leak into the saved payload. */
+  const clearKeysWithPrefix = useCallback((prefix: string) => {
+    setState((prev) => {
+      const keep = <T>(record: Record<string, T>): Record<string, T> =>
+        Object.fromEntries(
+          Object.entries(record).filter(([key]) => !key.startsWith(prefix)),
+        ) as Record<string, T>;
+      return {
+        selectedKeys: keep(prev.selectedKeys),
+        targetPathByKey: keep(prev.targetPathByKey),
+        requiredByKey: keep(prev.requiredByKey),
+        nodeModeByKey: keep(prev.nodeModeByKey),
+        tableViewByKey: keep(prev.tableViewByKey),
+        expandedKeys: keep(prev.expandedKeys),
+      };
+    });
+  }, []);
 
   /** Populates all state maps from a previously saved mapping tree — matches each mapping's `sourcePath` to a tree node, restores its target path/required/mode, and auto-selects+expands every ancestor so the restored branch is visible. */
   const restoreFromMappings = useCallback(
@@ -258,6 +276,7 @@ export function useTreeState(roots: ISourceSchemaNode[]) {
       setNodeMode,
       setTableView,
       reset,
+      clearKeysWithPrefix,
       restoreFromMappings,
     }),
     [
@@ -271,6 +290,7 @@ export function useTreeState(roots: ISourceSchemaNode[]) {
       setNodeMode,
       setTableView,
       reset,
+      clearKeysWithPrefix,
       restoreFromMappings,
     ],
   );

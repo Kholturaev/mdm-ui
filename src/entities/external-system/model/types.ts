@@ -102,3 +102,10 @@ export type IntegrationConfigMutationPayload = Omit<
   IIntegrationConfig,
   'id' | 'externalSystemName'
 >;
+
+/** A sample product-creation payload for one nomenclature type, as the target external system would receive it — used by the "Namuna JSON yuklab olish" download action. */
+export interface IProductCreationExample {
+  typeOfNomenclatureId: number;
+  typeOfNomenclatureName: string;
+  examplePayload: unknown;
+}

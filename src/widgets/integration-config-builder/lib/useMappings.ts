@@ -3,11 +3,11 @@ import type {
   ISourceSchemaNode,
 } from '@entities/external-system/model/types';
 import type { TreeState } from './useTreeState';
-import { getTableArrayChild, isTableContainerNode } from './treeUtils';
-
-function defaultTargetPath(node: ISourceSchemaNode): string {
-  return node.fieldKey || node.label;
-}
+import {
+  getDefaultTargetPath,
+  getTableArrayChild,
+  isTableContainerNode,
+} from './treeUtils';
 
 function buildNodeMapping(
   node: ISourceSchemaNode,
@@ -51,7 +51,7 @@ function buildNodeMapping(
       id: `map-${node.key}`,
       mappingType,
       sourcePath: node.sourcePath || node.key,
-      targetPath: state.targetPathByKey[node.key] ?? defaultTargetPath(node),
+      targetPath: state.targetPathByKey[node.key] ?? getDefaultTargetPath(node),
       sourceDataType: node.type,
       required: state.requiredByKey[node.key] ?? true,
       defaultValue: '',

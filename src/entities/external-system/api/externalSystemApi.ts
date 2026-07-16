@@ -8,6 +8,7 @@ import type {
   IIntegrationConfigListResponse,
   IntegrationConfigMutationPayload,
   ISourceSchemaNode,
+  IProductCreationExample,
 } from '../model/types';
 
 /** The backend sometimes wraps a source-tree response in the usual `IResponse` envelope and sometimes returns the bare node — read it via `extractSourceNode` in `../lib/sourceTree` rather than assuming either shape. */
@@ -92,6 +93,29 @@ export const externalSystemApiHooks = apiService
             method: 'GET',
           }),
         }),
+
+        /** The MDM field-dictionary schema for a nomenclature type's product-creation payload — a mutation (not a query) since it's only ever triggered on demand from a download button, not auto-fetched. */
+        getProductCreationSchema: build.mutation<IResponse<unknown>, number>({
+          query: (typeOfNomenclatureId) => ({
+            path: `/integration-configs/product-creation-schema/${typeOfNomenclatureId}`,
+            method: 'GET',
+          }),
+        }),
+        /** A filled-in sample of the product-creation payload for one nomenclature type — same on-demand-only shape as `getProductCreationSchema`. */
+        getProductCreationExample: build.mutation<
+          IResponse<IProductCreationExample>,
+          { typeOfNomenclatureId: number; externalSystemId?: number | null }
+        >({
+          query: ({ typeOfNomenclatureId, externalSystemId }) => {
+            const qs = externalSystemId
+              ? `?externalSystemId=${externalSystemId}`
+              : '';
+            return {
+              path: `/integration-configs/product-creation-example/${typeOfNomenclatureId}${qs}`,
+              method: 'GET',
+            };
+          },
+        }),
       };
     },
   });
@@ -113,4 +137,6 @@ export const {
   useGetProductRateSourceTreeQuery,
   useGetDealerSourceTreeQuery,
   useLazyGetNomenclatureSourceTreeByIdQuery,
+  useGetProductCreationSchemaMutation,
+  useGetProductCreationExampleMutation,
 } = externalSystemApiHooks;
