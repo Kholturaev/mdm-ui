@@ -89,30 +89,41 @@
     "stats": {
       "total": "Jami nomenklatura",
       "totalSubtext": "{{count}} ta tizimga ulangan",
-      "fullySynced": "To'liq sinxron",
-      "fullySyncedSubtext": "{{count}}/{{count}} tizimda mavjud",
-      "partial": "Qisman taqsimlangan",
-      "partialSubtext": "{{pending}} kutilmoqda • {{error}} xato",
-      "unconnected": "Hech bir tizimda yo'q",
-      "unconnectedSubtext": "Darhol e'tibor talab qiladi"
+      "todayEvents": "Bugungi hodisalar",
+      "todayEventsSubtext": "So'nggi 24 soat ichida",
+      "syncSuccess": "Muvaffaqiyatli sinxronlandi",
+      "syncSuccessSubtext": "Bugungi hodisalarning {{percent}}%",
+      "todayErrors": "Bugungi xatolar",
+      "todayErrorsSubtext": "Diqqat talab qiladi"
     },
     "attention": {
       "title": "E'tibor talab qiladi",
+      "subtitlePeriod": "So'nggi {{days}} kun",
+      "syncFailed": {
+        "title": "{{count}} ta yuborishda xatolik",
+        "desc": "Tashqi tizimga yuborilmadi"
+      },
+      "validationErrors": {
+        "title": "{{count}} ta ma'lumot xatosi",
+        "desc": "Majburiy maydonlar yoki qiymatlar noto'g'ri"
+      },
+      "dlqPending": {
+        "title": "{{count}} ta qayta ishlanishni kutmoqda",
+        "desc": "Muammo hal bo'lgach avtomatik qayta yuboriladi"
+      },
+      "dlqReplayed": {
+        "title": "{{count}} ta yozuv qayta yuborildi",
+        "desc": "Tanlangan davr ichida"
+      },
+      "dlqResolved": {
+        "title": "{{count}} ta yozuv muvaffaqiyatli qayta ishlandi",
+        "desc": "Muammo bartaraf etildi"
+      },
+      "topErrorTypes": "Eng ko'p uchraydigan xatolar",
       "allClear": "Diqqat talab qiladigan muammolar yo'q",
-      "unconnected": {
-        "title": "{{count}} mahsulot hech bir tizimda yo'q",
-        "desc": "Hali birorta tashqi tizimga yuborilmagan",
-        "cta": "Taqsimlash"
-      },
-      "syncErrors": {
-        "title": "{{count}} mahsulotda yuborish xatosi",
-        "desc": "Tizim javob bermadi — qayta urinish kerak",
-        "cta": "Qayta urinish"
-      },
-      "pendingSync": {
-        "title": "{{count}} mahsulot sinxron kutmoqda",
-        "desc": "Navbatda — odatda 1-2 daqiqada yetadi",
-        "cta": "Ko'rish"
+      "errorType": {
+        "TIMEOUT": "Tizim javob bermadi",
+        "VALIDATION_FAILED": "Majburiy maydon xatosi"
       }
     },
     "coverage": {
@@ -124,35 +135,172 @@
       }
     },
     "trend": {
-      "title": "Sinxronlash dinamikasi",
+      "title": "Hodisalar dinamikasi",
       "subtitle": "Xatolik darajasi: {{rate}}%",
-      "success": "Muvaffaqiyatli",
+      "events": "Hodisalar",
       "errors": "Xatolar"
     },
     "completeness": {
       "title": "Ma'lumotlar to'liqligi",
+      "subtitle": "Nomenklaturalarning to'liqlik darajasi bo'yicha taqsimoti",
+      "fullComplete": "To'liq to'ldirilgan",
+      "partial": "Qisman to'ldirilgan",
+      "incomplete": "Yetarli emas"
+    }
+  },
+  "nsiAnalytics": {
+    "title": "NSI Analitikasi",
+    "subtitle": "To'liqlik, dublikatlar, yo'qolgan va ziddiyatli ma'lumotlar — bir joyda",
+    "updatedAt": "Yangilandi: {{time}}",
+    "viewDetails": "Batafsil",
+    "backToHub": "Analitikaga qaytish",
+    "completeness": {
+      "title": "Ma'lumotlar to'liqligi",
+      "subtitle": "Majburiy maydonlarning to'ldirilganligi",
       "fullComplete": "To'liq to'ldirilgan",
       "partial": "Qisman to'ldirilgan",
       "incomplete": "Yetarli emas"
     },
-    "conflicts": {
-      "title": "Tizimlararo qarama-qarshilik",
-      "subtitle": "Bir mahsulot — turli tizimda turli qiymat",
-      "countLabel": "ta mahsulotda ziddiyat",
-      "viewAll": "Barchasini ko'rish",
-      "differsAcross": "{{field}}: {{count}} tizimda farqli",
-      "field": {
-        "PRICE": "Narx",
-        "UNIT": "O'lchov",
-        "BARCODE": "Shtrix-kod"
+    "duplicates": {
+      "title": "Dublikat nomenklaturalar",
+      "subtitle": "Ma'lumotlari bir xil bo'lgan nomenklaturalar",
+      "groupsLabel": "ta dublikat guruh",
+      "affectedProducts": "{{count}} ta nomenklaturaga ta'sir qiladi",
+      "explanation": "Bu guruhlar jami {{count}} ta nomenklaturani o'z ichiga oladi — ular aslida bitta nomenklatura bo'lishi mumkin."
+    },
+    "orphans": {
+      "title": "Yo'qolgan nomenklaturalar",
+      "subtitle": "Birorta tashqi tizimga ulanmagan",
+      "countLabel": "ta nomenklatura",
+      "attentionBadge": "Diqqat talab",
+      "barLabel": "Ulanmagan · {{percent}}%",
+      "unconnectedLabel": "Ulanmagan",
+      "connectedLabel": "Ulangan",
+      "linkAction": "Nomenklaturalarni ulash"
+    },
+    "syncHealth": {
+      "title": "Sinxronlash holati",
+      "subtitle": "{{systems}} tizim · {{items}} element",
+      "overallLabel": "Tasdiqlangan",
+      "noData": "Ma'lumot yo'q",
+      "caption": {
+        "rate": "{{percent}}%",
+        "confirmed": "{{count}} tasdiq",
+        "inProgress": "{{count}} jarayonda",
+        "failed": "{{count}} xato",
+        "dead": "{{count}} o'lik",
+        "allOneBucket": "Jami {{count}} element — hammasi {{label}}"
+      },
+      "label": {
+        "confirmed": "tasdiq",
+        "inProgress": "jarayonda",
+        "failed": "xato",
+        "dead": "o'lik"
+      },
+      "legend": {
+        "confirmed": "Tasdiqlandi",
+        "inProgress": "Jarayonda",
+        "failed": "Xato (qayta urinadi)",
+        "dead": "O'lik (qo'lda hal qilinsin)"
       }
     },
-    "dataQuality": {
-      "title": "Ma'lumotlar sifati",
-      "duplicates": "{{count}} ta dublikat guruh",
-      "duplicatesDesc": "{{count}} ta mahsulotga ta'sir qiladi",
-      "validationErrors": "{{count}} ta validatsiya xatosi",
-      "validationErrorsDesc": "Majburiy maydonlar to'ldirilmagan"
+    "completenessDetail": {
+      "title": "Ma'lumotlar to'liqligi",
+      "subtitle": "Maydonlar, guruhlar, tizimlar va dinamika bo'yicha taqsimot",
+      "stats": {
+        "overallScore": "Umumiy ball"
+      },
+      "byField": {
+        "title": "Maydonlar bo'yicha",
+        "missingCount": "{{count}} to'ldirilmagan ({{percent}}%)"
+      },
+      "field": {
+        "barcode": "Shtrix-kod",
+        "weight": "Og'irlik",
+        "volume": "Hajm",
+        "category": "Toifa",
+        "unit": "O'lchov birligi",
+        "manufacturer": "Ishlab chiqaruvchi",
+        "description": "Tavsif"
+      },
+      "byGroup": {
+        "title": "Guruhlar bo'yicha",
+        "productGroup": "Nomenklatura guruhi",
+        "category": "Toifa",
+        "unassigned": "Guruhsiz",
+        "productCount": "{{count}} ta nomenklatura"
+      },
+      "bySourceSystem": {
+        "title": "Tizimlar bo'yicha",
+        "subtitle": "Har bir tashqi tizim bo'yicha to'liqlik bahosi"
+      },
+      "trend": {
+        "title": "Dinamika",
+        "days30": "30 kun",
+        "days90": "90 kun",
+        "avgScore": "O'rtacha ball"
+      },
+      "list": {
+        "title": "To'liq bo'lmagan nomenklaturalar",
+        "article": "Artikul",
+        "name": "Nomi",
+        "score": "Ball",
+        "missingFields": "To'ldirilmagan maydonlar"
+      }
+    },
+    "duplicatesDetail": {
+      "title": "Dublikat nomenklaturalar",
+      "subtitle": "Ma'lumotlari bir xil bo'lgan nomenklatura guruhlari",
+      "affectedLabel": "Ta'sirlangan nomenklaturalar",
+      "explanation": "Bir guruhdagi nomenklaturalarning ma'lumotlari (artikul, nomi va boshqa maydonlar) bir-biriga mos keladi — ehtimol, bu bitta nomenklatura tizimga bir necha marta noto'g'ri qo'shilgan.",
+      "empty": "Dublikatlar topilmadi",
+      "matchType": {
+        "ARTICLE": "Artikul bo'yicha",
+        "NAME": "Nomi bo'yicha"
+      },
+      "itemCount": "{{count}} ta nomenklatura",
+      "article": "Artikul",
+      "name": "Nomi",
+      "createdAt": "Yaratilgan"
+    },
+    "orphansDetail": {
+      "title": "Yo'qolgan nomenklaturalar",
+      "subtitle": "Birorta tashqi tizimga yuborilmagan nomenklaturalar",
+      "percentLabel": "Katalogdagi ulushi",
+      "article": "Artikul",
+      "name": "Nomi",
+      "createdAt": "Yaratilgan",
+      "daysSinceCreation": "Tizimsiz kunlar"
+    },
+    "syncLogsDetail": {
+      "title": "Sinxronlash jurnali",
+      "subtitle": "Har bir tashqi tizimga yuborish urinishlari",
+      "tableTitle": "Sinxronlash urinishlari",
+      "systemFilter": "Tizim",
+      "allStatuses": "Barcha holatlar",
+      "allSections": "Barcha bo'limlar",
+      "columns": {
+        "system": "Tizim",
+        "section": "Bo'lim",
+        "externalEntityId": "Tashqi tizimdagi ID",
+        "status": "Holat",
+        "errorMessage": "Xato",
+        "retryCount": "Qayta urinishlar",
+        "createdAt": "Yaratilgan"
+      },
+      "status": {
+        "NOTIFIED": "Yuborildi",
+        "FETCHED": "Qabul qilindi",
+        "ACKNOWLEDGED": "Tasdiqlandi",
+        "FAILED": "Xato",
+        "DEAD": "Muvaffaqiyatsiz"
+      },
+      "section": {
+        "PRODUCT": "Nomenklatura",
+        "PRODUCT_GROUP": "Nomenklatura guruhi",
+        "PRODUCT_RATE": "Narx",
+        "DEALER": "Diler"
+      }
     }
   },
   "audit": {

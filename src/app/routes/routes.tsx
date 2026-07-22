@@ -1,7 +1,11 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '@widgets/app-shell/ui/AppShell';
 import { LoginPage } from '@pages/LoginPage';
-import { AnalyticsPage } from '@pages/AnalyticsPage';
+import { NsiAnalyticsPage } from '@pages/NsiAnalyticsPage';
+import { NsiCompletenessPage } from '@pages/NsiCompletenessPage';
+import { NsiDuplicatesPage } from '@pages/NsiDuplicatesPage';
+import { NsiOrphansPage } from '@pages/NsiOrphansPage';
+import { NsiSyncLogsPage } from '@pages/NsiSyncLogsPage';
 import { AuditPage } from '@pages/AuditPage';
 import { AuditLogPage } from '@pages/AuditLogPage';
 import { DealersPage } from '@pages/DealersPage';
@@ -37,8 +41,19 @@ export const router = createBrowserRouter([
       {
         element: <AppShell />,
         children: [
-          { index: true, element: <Navigate to="/analytics" replace /> },
-          { path: 'analytics', element: <AnalyticsPage /> },
+          { index: true, element: <Navigate to="/nsi-analytics" replace /> },
+          {
+            path: 'analytics',
+            element: <Navigate to="/nsi-analytics" replace />,
+          },
+          { path: 'nsi-analytics', element: <NsiAnalyticsPage /> },
+          {
+            path: 'nsi-analytics/completeness',
+            element: <NsiCompletenessPage />,
+          },
+          { path: 'nsi-analytics/duplicates', element: <NsiDuplicatesPage /> },
+          { path: 'nsi-analytics/orphans', element: <NsiOrphansPage /> },
+          { path: 'nsi-analytics/sync-logs', element: <NsiSyncLogsPage /> },
           { path: 'audit', element: <AuditPage /> },
           { path: 'audit/log', element: <AuditLogPage /> },
           { path: 'dealers', element: <DealersPage /> },

@@ -89,30 +89,41 @@
     "stats": {
       "total": "Всего номенклатуры",
       "totalSubtext": "Подключено к {{count}} системам",
-      "fullySynced": "Полностью синхронизировано",
-      "fullySyncedSubtext": "{{count}}/{{count}} систем",
-      "partial": "Частично распределено",
-      "partialSubtext": "{{pending}} в очереди • {{error}} с ошибкой",
-      "unconnected": "Не подключено ни к одной системе",
-      "unconnectedSubtext": "Требует немедленного внимания"
+      "todayEvents": "События сегодня",
+      "todayEventsSubtext": "За последние 24 часа",
+      "syncSuccess": "Успешно синхронизировано",
+      "syncSuccessSubtext": "{{percent}}% от событий сегодня",
+      "todayErrors": "Ошибки сегодня",
+      "todayErrorsSubtext": "Требует внимания"
     },
     "attention": {
       "title": "Требует внимания",
+      "subtitlePeriod": "Последние {{days}} дней",
+      "syncFailed": {
+        "title": "{{count}} ошибок отправки",
+        "desc": "Не отправлено во внешнюю систему"
+      },
+      "validationErrors": {
+        "title": "{{count}} ошибок данных",
+        "desc": "Обязательные поля или значения заполнены неверно"
+      },
+      "dlqPending": {
+        "title": "{{count}} ожидают повторной обработки",
+        "desc": "Будет отправлено повторно автоматически после устранения проблемы"
+      },
+      "dlqReplayed": {
+        "title": "{{count}} записей отправлено повторно",
+        "desc": "За выбранный период"
+      },
+      "dlqResolved": {
+        "title": "{{count}} записей успешно обработано повторно",
+        "desc": "Проблема устранена"
+      },
+      "topErrorTypes": "Самые частые ошибки",
       "allClear": "Нет проблем, требующих внимания",
-      "unconnected": {
-        "title": "{{count}} товара нет ни в одной системе",
-        "desc": "Ещё не отправлены ни в одну внешнюю систему",
-        "cta": "Распределить"
-      },
-      "syncErrors": {
-        "title": "Ошибка отправки у {{count}} товаров",
-        "desc": "Система не ответила — нужна повторная попытка",
-        "cta": "Повторить"
-      },
-      "pendingSync": {
-        "title": "{{count}} товара ожидают синхронизации",
-        "desc": "В очереди — обычно занимает 1-2 минуты",
-        "cta": "Посмотреть"
+      "errorType": {
+        "TIMEOUT": "Система не ответила",
+        "VALIDATION_FAILED": "Ошибка обязательного поля"
       }
     },
     "coverage": {
@@ -124,35 +135,172 @@
       }
     },
     "trend": {
-      "title": "Динамика синхронизации",
+      "title": "Динамика событий",
       "subtitle": "Доля ошибок: {{rate}}%",
-      "success": "Успешно",
+      "events": "События",
       "errors": "Ошибки"
     },
     "completeness": {
       "title": "Полнота данных",
+      "subtitle": "Распределение номенклатуры по уровню заполненности",
+      "fullComplete": "Полностью заполнено",
+      "partial": "Частично заполнено",
+      "incomplete": "Недостаточно данных"
+    }
+  },
+  "nsiAnalytics": {
+    "title": "Аналитика НСИ",
+    "subtitle": "Полнота, дубли, потерянные и противоречивые данные — в одном месте",
+    "updatedAt": "Обновлено: {{time}}",
+    "viewDetails": "Подробнее",
+    "backToHub": "Назад к аналитике",
+    "completeness": {
+      "title": "Полнота данных",
+      "subtitle": "Заполненность обязательных полей",
       "fullComplete": "Полностью заполнено",
       "partial": "Частично заполнено",
       "incomplete": "Недостаточно данных"
     },
-    "conflicts": {
-      "title": "Расхождение между системами",
-      "subtitle": "Один товар — разные значения в разных системах",
-      "countLabel": "товаров с расхождением",
-      "viewAll": "Смотреть все",
-      "differsAcross": "{{field}}: отличается в {{count}} системах",
-      "field": {
-        "PRICE": "Цена",
-        "UNIT": "Ед. изм.",
-        "BARCODE": "Штрихкод"
+    "duplicates": {
+      "title": "Дубликаты номенклатуры",
+      "subtitle": "Номенклатура с совпадающими данными",
+      "groupsLabel": "групп дублей",
+      "affectedProducts": "Затрагивает {{count}} позиций номенклатуры",
+      "explanation": "Эти группы охватывают {{count}} позиций номенклатуры, которые могут оказаться одной и той же номенклатурой."
+    },
+    "orphans": {
+      "title": "Потерянная номенклатура",
+      "subtitle": "Не подключена ни к одной внешней системе",
+      "countLabel": "позиций номенклатуры",
+      "attentionBadge": "Внимание",
+      "barLabel": "Не подключено · {{percent}}%",
+      "unconnectedLabel": "Не подключено",
+      "connectedLabel": "Подключено",
+      "linkAction": "Привязать номенклатуру"
+    },
+    "syncHealth": {
+      "title": "Статус синхронизации",
+      "subtitle": "{{systems}} систем · {{items}} записей",
+      "overallLabel": "Подтверждено",
+      "noData": "Нет данных",
+      "caption": {
+        "rate": "{{percent}}%",
+        "confirmed": "{{count}} подтв.",
+        "inProgress": "{{count}} в процессе",
+        "failed": "{{count}} ошибок",
+        "dead": "{{count}} не удалось",
+        "allOneBucket": "Всего {{count}} · Все — {{label}}"
+      },
+      "label": {
+        "confirmed": "подтверждено",
+        "inProgress": "в процессе",
+        "failed": "с ошибкой",
+        "dead": "не удалось"
+      },
+      "legend": {
+        "confirmed": "Подтверждено",
+        "inProgress": "В процессе",
+        "failed": "Ошибка (будет повторена)",
+        "dead": "Не удалось (нужно решить вручную)"
       }
     },
-    "dataQuality": {
-      "title": "Качество данных",
-      "duplicates": "{{count}} групп дублей",
-      "duplicatesDesc": "Затрагивает {{count}} товаров",
-      "validationErrors": "{{count}} ошибок валидации",
-      "validationErrorsDesc": "Не заполнены обязательные поля"
+    "completenessDetail": {
+      "title": "Полнота данных",
+      "subtitle": "Разбивка по полям, группам, системам и динамике",
+      "stats": {
+        "overallScore": "Общий балл"
+      },
+      "byField": {
+        "title": "По полям",
+        "missingCount": "{{count}} не заполнено ({{percent}}%)"
+      },
+      "field": {
+        "barcode": "Штрихкод",
+        "weight": "Вес",
+        "volume": "Объём",
+        "category": "Категория",
+        "unit": "Ед. изм.",
+        "manufacturer": "Производитель",
+        "description": "Описание"
+      },
+      "byGroup": {
+        "title": "По группам",
+        "productGroup": "Группа номенклатуры",
+        "category": "Категория",
+        "unassigned": "Без группы",
+        "productCount": "{{count}} позиций номенклатуры"
+      },
+      "bySourceSystem": {
+        "title": "По системам",
+        "subtitle": "Оценка полноты по внешней системе"
+      },
+      "trend": {
+        "title": "Динамика",
+        "days30": "30 дней",
+        "days90": "90 дней",
+        "avgScore": "Средний балл"
+      },
+      "list": {
+        "title": "Неполная номенклатура",
+        "article": "Артикул",
+        "name": "Название",
+        "score": "Балл",
+        "missingFields": "Незаполненные поля"
+      }
+    },
+    "duplicatesDetail": {
+      "title": "Дубликаты номенклатуры",
+      "subtitle": "Группы номенклатуры с совпадающими данными",
+      "affectedLabel": "Затронуто позиций номенклатуры",
+      "explanation": "Номенклатура в одной группе совпадает по ключевым данным (артикул, название и другие поля) — скорее всего, это одна и та же номенклатура, случайно добавленная в систему несколько раз.",
+      "empty": "Дубликаты не найдены",
+      "matchType": {
+        "ARTICLE": "По артикулу",
+        "NAME": "По названию"
+      },
+      "itemCount": "{{count}} позиций номенклатуры",
+      "article": "Артикул",
+      "name": "Название",
+      "createdAt": "Создан"
+    },
+    "orphansDetail": {
+      "title": "Потерянная номенклатура",
+      "subtitle": "Номенклатура, не отправленная ни в одну внешнюю систему",
+      "percentLabel": "Доля от каталога",
+      "article": "Артикул",
+      "name": "Название",
+      "createdAt": "Создан",
+      "daysSinceCreation": "Дней без системы"
+    },
+    "syncLogsDetail": {
+      "title": "Журнал синхронизации",
+      "subtitle": "Попытки отправки в каждую внешнюю систему",
+      "tableTitle": "Попытки синхронизации",
+      "systemFilter": "Система",
+      "allStatuses": "Все статусы",
+      "allSections": "Все разделы",
+      "columns": {
+        "system": "Система",
+        "section": "Раздел",
+        "externalEntityId": "ID во внешней системе",
+        "status": "Статус",
+        "errorMessage": "Ошибка",
+        "retryCount": "Повторов",
+        "createdAt": "Создано"
+      },
+      "status": {
+        "NOTIFIED": "Отправлено",
+        "FETCHED": "Получено",
+        "ACKNOWLEDGED": "Подтверждено",
+        "FAILED": "Ошибка",
+        "DEAD": "Не удалось"
+      },
+      "section": {
+        "PRODUCT": "Номенклатура",
+        "PRODUCT_GROUP": "Группа номенклатуры",
+        "PRODUCT_RATE": "Цена",
+        "DEALER": "Дилер"
+      }
     }
   },
   "audit": {

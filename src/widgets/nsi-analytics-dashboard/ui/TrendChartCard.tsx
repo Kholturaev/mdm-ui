@@ -10,16 +10,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type {
-  AnalyticsPeriod,
-  TrendPoint,
-} from '@entities/analytics/model/types';
+import type { AnalyticsPeriod } from '@entities/analytics/model/types';
+import type { TrendDataPoint } from '@entities/analytics/model/dashboardKpisTypes';
 import { Card, CardHeader } from '@shared/ui/Card';
 import { TrendingUpIcon } from '@shared/ui/icons/TrendingUpIcon';
-import { ChartTooltip } from './ChartTooltip';
+import { ChartTooltip } from '@shared/ui/ChartTooltip';
 
 type TrendChartCardProps = {
-  data: TrendPoint[];
+  data: TrendDataPoint[];
   period: AnalyticsPeriod;
 };
 
@@ -49,14 +47,17 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
     return (value: string) => formatter.format(new Date(value));
   }, [i18n.language]);
 
-  const { totalSuccess, totalError, errorRate } = useMemo(() => {
-    const success = data.reduce((sum, point) => sum + point.successCount, 0);
-    const error = data.reduce((sum, point) => sum + point.errorCount, 0);
-    const total = success + error;
+  // `eventCount` and `errorCount` are independent counters, not a
+  // whole/part pair — a single event can carry more than one error, so
+  // there's no "successCount = eventCount - errorCount" to derive. Both are
+  // shown as their own raw series.
+  const { totalEvents, totalErrors, errorRate } = useMemo(() => {
+    const events = data.reduce((sum, point) => sum + point.eventCount, 0);
+    const errors = data.reduce((sum, point) => sum + point.errorCount, 0);
     return {
-      totalSuccess: success,
-      totalError: error,
-      errorRate: total > 0 ? (error / total) * 100 : 0,
+      totalEvents: events,
+      totalErrors: errors,
+      errorRate: events > 0 ? (errors / events) * 100 : 0,
     };
   }, [data]);
 
@@ -69,12 +70,12 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
         action={
           <div className="flex items-center gap-4 text-xs">
             <span className="flex items-center gap-1.5">
-              <span className="bg-success size-2 rounded-full" />
+              <span className="bg-primary size-2 rounded-full" />
               <span className="text-fg-muted">
-                {t('analytics.trend.success')}
+                {t('analytics.trend.events')}
               </span>
               <span className="text-fg font-semibold tabular-nums">
-                {totalSuccess}
+                {totalEvents}
               </span>
             </span>
             <span className="flex items-center gap-1.5">
@@ -83,7 +84,7 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
                 {t('analytics.trend.errors')}
               </span>
               <span className="text-fg font-semibold tabular-nums">
-                {totalError}
+                {totalErrors}
               </span>
             </span>
           </div>
@@ -98,7 +99,7 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
           >
             <defs>
               <linearGradient
-                id="analyticsTrendSuccess"
+                id="analyticsTrendEvents"
                 x1="0"
                 y1="0"
                 x2="0"
@@ -106,12 +107,12 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
               >
                 <stop
                   offset="0%"
-                  stopColor="var(--color-success)"
+                  stopColor="var(--color-primary)"
                   stopOpacity={0.25}
                 />
                 <stop
                   offset="100%"
-                  stopColor="var(--color-success)"
+                  stopColor="var(--color-primary)"
                   stopOpacity={0}
                 />
               </linearGradient>
@@ -126,7 +127,7 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
               minTickGap={24}
             />
             <YAxis
-              yAxisId="success"
+              yAxisId="events"
               tick={{ fontSize: 11, fill: 'var(--color-fg-muted)' }}
               axisLine={false}
               tickLine={false}
@@ -151,13 +152,13 @@ export function TrendChartCard({ data, period }: TrendChartCardProps) {
               }}
             />
             <Area
-              yAxisId="success"
+              yAxisId="events"
               type="monotone"
-              dataKey="successCount"
-              name={t('analytics.trend.success')}
-              stroke="var(--color-success)"
+              dataKey="eventCount"
+              name={t('analytics.trend.events')}
+              stroke="var(--color-primary)"
               strokeWidth={2}
-              fill="url(#analyticsTrendSuccess)"
+              fill="url(#analyticsTrendEvents)"
             />
             <Line
               yAxisId="error"

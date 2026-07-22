@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useSystemHealth } from '@entities/analytics/lib/useSystemHealth';
-import type { SystemHealthStatus } from '@entities/analytics/lib/useSystemHealth';
+import { useSystemHealth } from '../lib/useSystemHealth';
+import type { SystemHealthStatus } from '../lib/useSystemHealth';
 import { cn } from '@shared/lib/cn';
 
 const STATUS_CLASSES: Record<SystemHealthStatus, string> = {

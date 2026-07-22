@@ -1,17 +1,30 @@
 import { useTranslation } from 'react-i18next';
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
-import type { CompletenessSummary } from '@entities/analytics/model/types';
+import { Link } from 'react-router-dom';
+import type { TooltipContentProps } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import type {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent';
+import type { CompletenessSummary } from '@entities/nsi-analytics/model/types';
 import { Card, CardHeader } from '@shared/ui/Card';
 import { GaugeIcon } from '@shared/ui/icons/GaugeIcon';
+import { ArrowRightIcon } from '@shared/ui/icons/ArrowRightIcon';
 
 type CompletenessCardProps = {
-  completeness: CompletenessSummary;
+  completeness: Pick<
+    CompletenessSummary,
+    'totalProducts' | 'fullComplete' | 'partial' | 'incomplete'
+  >;
 };
+
+type Segment = { key: string; value: number; color: string };
 
 export function CompletenessCard({ completeness }: CompletenessCardProps) {
   const { t } = useTranslation();
+  const { totalProducts } = completeness;
 
-  const segments = [
+  const segments: Segment[] = [
     {
       key: 'fullComplete',
       value: completeness.fullComplete,
@@ -29,10 +42,39 @@ export function CompletenessCard({ completeness }: CompletenessCardProps) {
     },
   ];
 
+  const fullCompletePercent =
+    totalProducts > 0 ? (completeness.fullComplete / totalProducts) * 100 : 0;
+
+  const renderTooltip = ({
+    active,
+    payload,
+  }: TooltipContentProps<ValueType, NameType>) => {
+    if (!active || !payload?.length) return null;
+    const entry = payload[0];
+    const segment = entry.payload as Segment;
+    const percent =
+      totalProducts > 0 ? (segment.value / totalProducts) * 100 : 0;
+    return (
+      <div className="border-border bg-surface rounded-md border px-3 py-2 text-xs shadow-lg">
+        <div className="text-fg-muted mb-1 flex items-center gap-1.5">
+          <span
+            className="size-2 shrink-0 rounded-full"
+            style={{ backgroundColor: segment.color }}
+          />
+          {t(`analytics.completeness.${segment.key}`)}
+        </div>
+        <div className="text-fg font-medium tabular-nums">
+          {segment.value} ({percent.toFixed(1)}%)
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Card className="flex flex-col">
       <CardHeader
         title={t('analytics.completeness.title')}
+        subtitle={t('analytics.completeness.subtitle')}
         icon={<GaugeIcon size={16} />}
       />
 
@@ -54,11 +96,12 @@ export function CompletenessCard({ completeness }: CompletenessCardProps) {
                   <Cell key={segment.key} fill={segment.color} />
                 ))}
               </Pie>
+              <Tooltip content={renderTooltip} wrapperStyle={{ zIndex: 20 }} />
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center">
             <span className="text-fg text-lg font-semibold tabular-nums">
-              {completeness.overallScore}%
+              {fullCompletePercent.toFixed(1)}%
             </span>
           </div>
         </div>
@@ -83,6 +126,14 @@ export function CompletenessCard({ completeness }: CompletenessCardProps) {
           ))}
         </div>
       </div>
+
+      <Link
+        to="/nsi-analytics/completeness"
+        className="text-primary mt-3 flex items-center gap-1 self-start text-xs font-semibold"
+      >
+        {t('nsiAnalytics.viewDetails')}
+        <ArrowRightIcon size={12} />
+      </Link>
     </Card>
   );
 }

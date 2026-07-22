@@ -40,7 +40,7 @@ const NAV_ITEMS: NavEntry[] = [
     key: 'analytics',
     labelKey: 'nav.analytics',
     icon: <BarChartIcon size={18} />,
-    children: [{ to: '/analytics', labelKey: 'nav.analytics' }],
+    children: [{ to: '/nsi-analytics', labelKey: 'nav.analytics' }],
   },
   {
     kind: 'link',

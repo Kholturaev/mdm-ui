@@ -10,11 +10,14 @@ type StatTileProps = {
   subtext: ReactNode;
   icon: ReactNode;
   iconClassName: string;
-  progressValue: number;
-  progressMax: number;
-  progressClassName: string;
+  /** Omit all three when there's no sound whole/part ratio to visualize — e.g. an error count that isn't a clean subset of some total. */
+  progressValue?: number;
+  progressMax?: number;
+  progressClassName?: string;
   /** When set, the whole tile links here — e.g. the same product list filtered to this bucket. */
   to?: string;
+  /** Supplementary content below the subtext — e.g. a row of activity-type badges. */
+  extra?: ReactNode;
 };
 
 export function StatTile({
@@ -27,11 +30,12 @@ export function StatTile({
   progressMax,
   progressClassName,
   to,
+  extra,
 }: StatTileProps) {
   const card = (
     <Card
       className={cn(
-        'flex flex-col gap-3',
+        'flex h-full flex-col gap-3',
         to &&
           'hover:border-border-strong hover:bg-surface-hover transition-colors',
       )}
@@ -55,17 +59,23 @@ export function StatTile({
         </div>
         <div className="text-fg-muted mt-0.5 text-xs">{subtext}</div>
       </div>
-      <Progress
-        size="sm"
-        max={progressMax}
-        segments={[{ value: progressValue, className: progressClassName }]}
-      />
+      {extra}
+      {progressMax !== undefined && (
+        <Progress
+          size="sm"
+          max={progressMax}
+          segments={[
+            { value: progressValue ?? 0, className: progressClassName ?? '' },
+          ]}
+          className="mt-auto"
+        />
+      )}
     </Card>
   );
 
   if (!to) return card;
   return (
-    <Link to={to} className="block">
+    <Link to={to} className="block h-full">
       {card}
     </Link>
   );
