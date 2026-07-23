@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '@shared/ui/Card';
-import { Progress } from '@shared/ui/Progress';
 import { cn } from '@shared/lib/cn';
 
 type StatTileProps = {
@@ -10,14 +9,8 @@ type StatTileProps = {
   subtext: ReactNode;
   icon: ReactNode;
   iconClassName: string;
-  /** Omit all three when there's no sound whole/part ratio to visualize — e.g. an error count that isn't a clean subset of some total. */
-  progressValue?: number;
-  progressMax?: number;
-  progressClassName?: string;
   /** When set, the whole tile links here — e.g. the same product list filtered to this bucket. */
   to?: string;
-  /** Supplementary content below the subtext — e.g. a row of activity-type badges. */
-  extra?: ReactNode;
 };
 
 export function StatTile({
@@ -26,11 +19,7 @@ export function StatTile({
   subtext,
   icon,
   iconClassName,
-  progressValue,
-  progressMax,
-  progressClassName,
   to,
-  extra,
 }: StatTileProps) {
   const card = (
     <Card
@@ -59,17 +48,6 @@ export function StatTile({
         </div>
         <div className="text-fg-muted mt-0.5 text-xs">{subtext}</div>
       </div>
-      {extra}
-      {progressMax !== undefined && (
-        <Progress
-          size="sm"
-          max={progressMax}
-          segments={[
-            { value: progressValue ?? 0, className: progressClassName ?? '' },
-          ]}
-          className="mt-auto"
-        />
-      )}
     </Card>
   );
 

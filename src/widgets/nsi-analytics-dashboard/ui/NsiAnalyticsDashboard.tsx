@@ -93,15 +93,7 @@ export function NsiAnalyticsDashboard() {
       {isFetching && <LoadingBar />}
 
       <div className="flex flex-col gap-5 p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-fg text-xl font-semibold">
-              {t('nsiAnalytics.title')}
-            </h1>
-            <p className="text-fg-muted mt-0.5 text-sm">
-              {t('nsiAnalytics.subtitle')}
-            </p>
-          </div>
+        <div className="flex flex-wrap items-center justify-end gap-3">
           <div className="flex items-center gap-3">
             {digest && (
               <span className="text-fg-muted text-xs">
@@ -143,7 +135,6 @@ export function NsiAnalyticsDashboard() {
                 totalEvents: digest.totalEvents,
                 syncSuccess: digest.syncSuccess,
                 errorCount: digest.errorCount,
-                topActivities: digest.topActivities,
               }}
               connectedCount={connectedCount}
             />

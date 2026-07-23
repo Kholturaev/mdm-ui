@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type {
+  SyncLogStatus,
   SyncSummaryResponse,
   SystemSyncStatus,
 } from '@entities/monitoring/model/types';
@@ -56,22 +57,26 @@ function bucketsFor(system: SystemSyncStatus): Buckets {
 }
 
 /**
- * Picks the single most useful number to headline for a system: the success
+ * Picks the single most useful number to headline for a system — the success
  * rate itself when it's already healthy, otherwise whichever non-success
- * bucket actually explains the gap — real failures/dead items (red) take
- * priority over items that are simply still in flight (blue, not a problem).
+ * bucket actually explains the gap (real failures/dead items take priority
+ * over items that are simply still in flight) — and, since that's already a
+ * judgment call about what's most relevant, reuses it as the default
+ * `syncStatus` filter for the drill-down link too, so clicking a row lands
+ * on exactly the rows its own headline is talking about.
  */
 function pickHighlight(
   system: SystemSyncStatus,
   buckets: Buckets,
   t: (key: string, opts?: Record<string, unknown>) => string,
-): { text: string; className: string } {
+): { text: string; className: string; status: SyncLogStatus } {
   if (system.successRate >= 70) {
     return {
       text: t('nsiAnalytics.syncHealth.caption.rate', {
         percent: system.successRate.toFixed(1),
       }),
       className: 'text-success',
+      status: 'ACKNOWLEDGED',
     };
   }
   const problems = buckets.failed + buckets.dead;
@@ -82,12 +87,14 @@ function pickHighlight(
             count: buckets.dead,
           }),
           className: 'text-danger',
+          status: 'DEAD',
         }
       : {
           text: t('nsiAnalytics.syncHealth.caption.failed', {
             count: buckets.failed,
           }),
           className: 'text-danger',
+          status: 'FAILED',
         };
   }
   if (buckets.inProgress > 0) {
@@ -96,11 +103,14 @@ function pickHighlight(
         count: buckets.inProgress,
       }),
       className: 'text-primary',
+      status:
+        system.fetchedCount >= system.notifiedCount ? 'FETCHED' : 'NOTIFIED',
     };
   }
   return {
     text: t('nsiAnalytics.syncHealth.noData'),
     className: 'text-fg-muted',
+    status: 'ACKNOWLEDGED',
   };
 }
 
@@ -122,8 +132,13 @@ function SystemRow({ system }: { system: SystemSyncStatus }) {
     t(`nsiAnalytics.syncHealth.caption.${entry.key}`, { count: entry.value }),
   );
 
+  const linkTo = `/nsi-analytics/sync-logs?externalSystemId=${system.externalSystemId}&syncStatus=${highlight.status}`;
+
   return (
-    <div className="flex flex-col gap-1.5 py-3 first:pt-0">
+    <Link
+      to={linkTo}
+      className="hover:bg-surface-hover -mx-2 flex flex-col gap-1.5 rounded-md px-2 py-3 transition-colors first:pt-0"
+    >
       <div className="flex items-center justify-between gap-2">
         <span className="flex min-w-0 items-center gap-2">
           <span
@@ -163,7 +178,7 @@ function SystemRow({ system }: { system: SystemSyncStatus }) {
             })
           : captionParts.join(' · ')}
       </p>
-    </div>
+    </Link>
   );
 }
 

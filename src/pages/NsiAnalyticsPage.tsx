@@ -1,9 +1,9 @@
-import { NsiAnalyticsDashboard } from '@widgets/nsi-analytics-dashboard/ui/NsiAnalyticsDashboard';
+import { NsiAnalyticsHub } from '@widgets/nsi-analytics-dashboard/ui/NsiAnalyticsHub';
 
 export function NsiAnalyticsPage() {
   return (
     <div className="h-full">
-      <NsiAnalyticsDashboard />
+      <NsiAnalyticsHub />
     </div>
   );
 }

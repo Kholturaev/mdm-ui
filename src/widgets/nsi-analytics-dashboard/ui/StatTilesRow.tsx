@@ -1,7 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { buildNomenclatureLink } from '@shared/lib/nomenclatureLink';
-import { AUDIT_ACTION_BADGE_VARIANT } from '@entities/audit/lib/actionMeta';
-import { Badge } from '@shared/ui/Badge';
 import { PackageIcon } from '@shared/ui/icons/PackageIcon';
 import { ZapIcon } from '@shared/ui/icons/ZapIcon';
 import { CheckCircleIcon } from '@shared/ui/icons/CheckCircleIcon';
@@ -9,13 +7,12 @@ import { XCircleIcon } from '@shared/ui/icons/XCircleIcon';
 import { StatTile } from './StatTile';
 
 type StatTilesRowProps = {
-  /** Real akfa-shaped KPIs: `coverage.totalProducts` + `daily-digest`'s `totalEvents`/`syncSuccess`/`errorCount`/`topActivities`. */
+  /** Real akfa-shaped KPIs: `coverage.totalProducts` + `daily-digest`'s `totalEvents`/`syncSuccess`/`errorCount`. */
   kpis: {
     totalProducts: number;
     totalEvents: number;
     syncSuccess: number;
     errorCount: number;
-    topActivities: string[];
   };
   /**
    * `totalProducts` connected to at least one external system — not a field
@@ -42,9 +39,6 @@ export function StatTilesRow({ kpis, connectedCount }: StatTilesRowProps) {
         subtext={t('analytics.stats.totalSubtext', { count: connectedCount })}
         icon={<PackageIcon size={16} />}
         iconClassName="bg-fg/10 text-fg"
-        progressValue={connectedCount}
-        progressMax={kpis.totalProducts}
-        progressClassName="bg-fg"
         to={buildNomenclatureLink()}
       />
       <StatTile
@@ -53,24 +47,6 @@ export function StatTilesRow({ kpis, connectedCount }: StatTilesRowProps) {
         subtext={t('analytics.stats.todayEventsSubtext')}
         icon={<ZapIcon size={16} />}
         iconClassName="bg-fg/10 text-fg"
-        extra={
-          kpis.topActivities.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {kpis.topActivities.map((activity, index) => (
-                <Badge
-                  key={`${activity}-${index}`}
-                  variant={
-                    AUDIT_ACTION_BADGE_VARIANT[
-                      activity as keyof typeof AUDIT_ACTION_BADGE_VARIANT
-                    ] ?? 'neutral'
-                  }
-                >
-                  {t(`audit.action.${activity}`, { defaultValue: activity })}
-                </Badge>
-              ))}
-            </div>
-          )
-        }
       />
       <StatTile
         label={t('analytics.stats.syncSuccess')}

@@ -154,6 +154,40 @@
     "updatedAt": "Yangilandi: {{time}}",
     "viewDetails": "Batafsil",
     "backToHub": "Analitikaga qaytish",
+    "tabs": {
+      "overview": "Umumiy",
+      "nomenclature": "Nomenklatura",
+      "dealers": "Dealerlar",
+      "characteristics": "Xarakteristikalar",
+      "prices": "Narxlar",
+      "productGroups": "Nomenklatura guruhlari"
+    },
+    "overview": {
+      "status": {
+        "active": "Faol",
+        "pending": "Kutilmoqda"
+      },
+      "connected": "Ulangan",
+      "openIssues": "Ochiq masalalar",
+      "entity": {
+        "nomenclature": "Nomenklatura",
+        "dealers": "Dealerlar",
+        "characteristics": "Xarakteristikalar",
+        "prices": "Narxlar",
+        "productGroups": "Nomenklatura guruhlari"
+      },
+      "matrixTitle": "Qamrov matritsasi",
+      "matrixSubtitle": "Qaysi tizim qaysi ma'lumot turini qabul qiladi. '—' = qabul qilinmaydi (xato emas).",
+      "entityColumn": "Ma'lumot turi",
+      "pending": "Kutilmoqda",
+      "notAccepted": "qabul qilinmaydi",
+      "footer": "Yuqorida ma'lumot turini tanlang — batafsil analitika uchun. Hozircha faqat Nomenklatura ma'lumotlari mavjud; qolganlari tez orada qo'shiladi."
+    },
+    "comingSoon": {
+      "badge": "Tez orada",
+      "title": "«{{entity}}» tahlili",
+      "description": "Bu bo'lim uchun tahlil hozircha mavjud emas. Tayyor bo'lganda shu yerda ko'rinadi."
+    },
     "completeness": {
       "title": "Ma'lumotlar to'liqligi",
       "subtitle": "Majburiy maydonlarning to'ldirilganligi",
